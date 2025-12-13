@@ -3,7 +3,7 @@ import Navbar from "@/components/landing/Navbar";
 
 export default function Layout({ children, currentPageName }) {
   // Pages that need app layout (authenticated with sidebar)
-  const appPages = ["Partnerships", "Opportunities"];
+  const appPages = ["Partnerships", "Opportunities", "Recommendations"];
   const isAppPage = appPages.includes(currentPageName);
 
   // Landing page doesn't need any navbar (has its own)

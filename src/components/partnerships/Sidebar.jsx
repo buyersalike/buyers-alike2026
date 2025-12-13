@@ -10,13 +10,15 @@ import {
   Building2,
   Search,
   Briefcase,
-  Handshake
+  Handshake,
+  Sparkles
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
 const mainMenuItems = [
+  { icon: Sparkles, label: "Recommendations", href: "Recommendations" },
   { icon: Briefcase, label: "Opportunities", href: "Opportunities" },
   { icon: Handshake, label: "Partnerships", href: "Partnerships" },
 ];
