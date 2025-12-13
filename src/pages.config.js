@@ -6,6 +6,7 @@ import Vendors from './pages/Vendors';
 import Messages from './pages/Messages';
 import Forum from './pages/Forum';
 import PostDetail from './pages/PostDetail';
+import News from './pages/News';
 import __Layout from './Layout.jsx';
 
 
@@ -18,6 +19,7 @@ export const PAGES = {
     "Messages": Messages,
     "Forum": Forum,
     "PostDetail": PostDetail,
+    "News": News,
 }
 
 export const pagesConfig = {

@@ -12,7 +12,8 @@ import {
   Briefcase,
   Handshake,
   Sparkles,
-  Store
+  Store,
+  Newspaper
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Link, useLocation } from "react-router-dom";
@@ -24,6 +25,7 @@ const mainMenuItems = [
   { icon: Handshake, label: "Partnerships", href: "Partnerships" },
   { icon: Store, label: "Vendors", href: "Vendors" },
   { icon: MessageSquare, label: "Forum", href: "Forum" },
+  { icon: Newspaper, label: "News", href: "News" },
 ];
 
 const menuItems = [
