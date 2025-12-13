@@ -9,11 +9,31 @@ import {
   Users, 
   Calendar,
   Bookmark,
-  Share2
+  Share2,
+  Eye,
+  LogOut,
+  CheckCircle2,
+  Circle,
+  X
 } from "lucide-react";
 
 export default function PartnershipCard({ partnership, index }) {
   const matchPercentage = partnership.matchScore || 85;
+  
+  // Partnership stages
+  const stages = [
+    { id: 'intent', label: 'Intent Created', completed: true },
+    { id: 'pending', label: 'Pending Group Join', completed: true },
+    { id: 'accepted', label: 'Accepted into Group', completed: true },
+    { id: 'documents', label: 'Document Gathering', completed: false },
+    { id: 'approvals', label: 'Approvals Complete', completed: false },
+    { id: 'active', label: 'Partnership Active', completed: false },
+    { id: 'forming', label: 'Group Forming', completed: true },
+    { id: 'completed', label: 'Partnership Completed', completed: false }
+  ];
+  
+  const currentStageIndex = stages.findIndex(s => s.id === 'forming');
+  const progress = ((currentStageIndex + 1) / stages.length) * 100;
   
   return (
     <motion.div
@@ -28,83 +48,82 @@ export default function PartnershipCard({ partnership, index }) {
       }}
     >
       {/* Header */}
-      <div className="flex items-start justify-between mb-4">
+      <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold mb-1 transition-colors" style={{ color: '#E5EDFF' }}>
+          <h3 className="text-lg font-semibold mb-2 transition-colors" style={{ color: '#E5EDFF' }}>
             {partnership.title}
           </h3>
-          <p className="text-sm line-clamp-2" style={{ color: '#B6C4E0' }}>{partnership.description}</p>
+          
+          {/* Status Badge */}
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium mb-2" style={{ background: 'rgba(34, 197, 94, 0.15)', color: '#22C55E', border: '1px solid rgba(34, 197, 94, 0.3)' }}>
+            <CheckCircle2 className="w-3 h-3" />
+            accepted into group
+          </div>
+          
+          <p className="text-sm line-clamp-2 mt-2" style={{ color: '#B6C4E0' }}>{partnership.description}</p>
         </div>
-        <div className="flex gap-2 ml-4">
-          <button className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-white/10" style={{ color: '#7A8BA6', background: 'rgba(255, 255, 255, 0.05)' }}>
-            <Bookmark className="w-4 h-4" />
-          </button>
-          <button className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-white/10" style={{ color: '#7A8BA6', background: 'rgba(255, 255, 255, 0.05)' }}>
-            <Share2 className="w-4 h-4" />
-          </button>
+      </div>
+      
+      {/* Group Info */}
+      <div className="mb-4 p-3 rounded-lg" style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+        <p className="text-sm font-semibold mb-1" style={{ color: '#E5EDFF' }}>
+          Group: Group for "{partnership.title}"
+        </p>
+        <div className="flex items-center gap-1.5 text-sm" style={{ color: '#B6C4E0' }}>
+          <Users className="w-4 h-4" />
+          <span>Members: 1/20</span>
         </div>
       </div>
 
-      {/* Rating */}
-      <div className="flex items-center gap-1 mb-4">
-        {Array(5).fill(0).map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-current" style={{ color: '#FACC15' }} />
-        ))}
-        <span className="text-xs ml-1" style={{ color: '#7A8BA6' }}>(4.9)</span>
+      {/* Action Buttons */}
+      <div className="flex gap-2 mb-4">
+        <Button 
+          className="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2" 
+          style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}
+        >
+          <Eye className="w-4 h-4" />
+          View Group Details
+        </Button>
+        <Button 
+          className="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2" 
+          style={{ background: '#EF4444', color: '#fff' }}
+        >
+          <LogOut className="w-4 h-4" />
+          Leave Partnership
+        </Button>
       </div>
-
-      {/* Match Score */}
-      <div className="mb-5">
+      
+      {/* Group Forming Progress */}
+      <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm" style={{ color: '#B6C4E0' }}>Match Score</span>
-          <span className="text-sm font-semibold" style={{ color: '#E5EDFF' }}>{matchPercentage}%</span>
+          <span className="text-sm font-medium" style={{ color: '#FACC15' }}>Group Forming</span>
+          <span className="text-xs" style={{ color: '#7A8BA6' }}>{Math.round(progress)}%</span>
         </div>
         <div className="relative h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
           <motion.div
             initial={{ width: 0 }}
-            animate={{ width: `${matchPercentage}%` }}
+            animate={{ width: `${progress}%` }}
             transition={{ duration: 1, delay: 0.2 }}
             className="h-full rounded-full"
-            style={{
-              background: matchPercentage >= 90 
-                ? 'linear-gradient(90deg, #22C55E 0%, #22C55E 100%)' 
-                : matchPercentage >= 75
-                ? 'linear-gradient(90deg, #FACC15 0%, #EF4444 100%)'
-                : 'linear-gradient(90deg, #FACC15 0%, #FACC15 100%)'
-            }}
+            style={{ background: 'linear-gradient(90deg, #FACC15 0%, #3B82F6 100%)' }}
           />
         </div>
       </div>
-
-      {/* Details Grid */}
-      <div className="grid grid-cols-2 gap-3 mb-5">
-        <div className="flex items-center gap-2">
-          <MapPin className="w-4 h-4" style={{ color: '#3B82F6' }} />
-          <span className="text-sm" style={{ color: '#B6C4E0' }}>{partnership.location}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Building2 className="w-4 h-4" style={{ color: '#7C3AED' }} />
-          <span className="text-sm" style={{ color: '#B6C4E0' }}>{partnership.industry}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <DollarSign className="w-4 h-4" style={{ color: '#22C55E' }} />
-          <span className="text-sm" style={{ color: '#B6C4E0' }}>{partnership.dealSize}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Users className="w-4 h-4" style={{ color: '#3B82F6' }} />
-          <span className="text-sm" style={{ color: '#B6C4E0' }}>{partnership.companySize}</span>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="flex items-center justify-between pt-4" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.18)' }}>
-        <div className="flex items-center gap-2 text-xs" style={{ color: '#7A8BA6' }}>
-          <Calendar className="w-3 h-3" />
-          <span>Posted {partnership.postedDate}</span>
-        </div>
-        <Button className="rounded-lg px-4 py-2 text-sm font-medium transition-all duration-300 hover:scale-105" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}>
-          View Full Details
-        </Button>
+      
+      {/* Partnership Stages */}
+      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+        {stages.map((stage) => (
+          <div key={stage.id} className="flex items-center gap-2">
+            {stage.completed ? (
+              <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: '#3B82F6' }} />
+            ) : (
+              <X className="w-4 h-4 flex-shrink-0" style={{ color: '#7A8BA6' }} />
+            )}
+            <span className="text-xs" style={{ color: stage.completed ? '#B6C4E0' : '#7A8BA6' }}>
+              {stage.label}
+            </span>
+          </div>
+        ))}
       </div>
     </motion.div>
   );
