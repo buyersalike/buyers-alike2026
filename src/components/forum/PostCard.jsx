@@ -5,10 +5,13 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { ThumbsUp, MessageSquare, User, FileText, ExternalLink, Flag, AlertTriangle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import ModerationMenu from "./ModerationMenu";
 
 export default function PostCard({ post, category, likes, comments, hasLiked, currentUser }) {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const likeMutation = useMutation({
     mutationFn: async () => {
@@ -43,6 +46,7 @@ export default function PostCard({ post, category, likes, comments, hasLiked, cu
 
   const handleCardClick = () => {
     viewMutation.mutate();
+    navigate(createPageUrl('PostDetail') + `?id=${post.id}`);
   };
 
   return (
