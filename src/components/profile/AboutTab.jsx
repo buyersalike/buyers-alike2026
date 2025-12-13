@@ -8,6 +8,11 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Briefcase, MapPin, Calendar, Mail, Heart, Edit, Building2, Phone, User as UserIcon } from "lucide-react";
 import { motion } from "framer-motion";
+import SkillsSection from "./SkillsSection";
+import ExperienceSection from "./ExperienceSection";
+import EducationSection from "./EducationSection";
+import CertificationsSection from "./CertificationsSection";
+import PortfolioSection from "./PortfolioSection";
 
 export default function AboutTab({ user, isOwnProfile }) {
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -282,7 +287,7 @@ export default function AboutTab({ user, isOwnProfile }) {
         </div>
 
         {/* Member Information */}
-        <div>
+        <div className="mb-8">
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: '#E5EDFF' }}>
             <div className="w-1 h-6 rounded-full" style={{ background: 'linear-gradient(135deg, #FCCB90 0%, #D57EEB 100%)' }} />
             Membership
@@ -308,6 +313,21 @@ export default function AboutTab({ user, isOwnProfile }) {
             </motion.div>
           </div>
         </div>
+
+        {/* Skills Section */}
+        <SkillsSection user={user} isOwnProfile={isOwnProfile} />
+
+        {/* Experience Section */}
+        <ExperienceSection user={user} isOwnProfile={isOwnProfile} />
+
+        {/* Education Section */}
+        <EducationSection user={user} isOwnProfile={isOwnProfile} />
+
+        {/* Certifications Section */}
+        <CertificationsSection user={user} isOwnProfile={isOwnProfile} />
+
+        {/* Portfolio Section */}
+        <PortfolioSection user={user} isOwnProfile={isOwnProfile} />
       </div>
 
       {/* Edit Dialog */}
