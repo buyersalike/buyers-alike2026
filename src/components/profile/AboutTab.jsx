@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Briefcase, MapPin, Calendar, Mail, Heart, Edit } from "lucide-react";
+import { Briefcase, MapPin, Calendar, Mail, Heart, Edit, Building2, Phone, User as UserIcon } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function AboutTab({ user, isOwnProfile }) {
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -52,146 +53,259 @@ export default function AboutTab({ user, isOwnProfile }) {
         </div>
 
         {user.bio && (
-          <div className="mb-8 p-6 rounded-2xl" style={{ background: 'rgba(102, 126, 234, 0.1)', border: '1px solid rgba(102, 126, 234, 0.2)' }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 p-6 rounded-2xl" 
+            style={{ background: 'rgba(102, 126, 234, 0.1)', border: '1px solid rgba(102, 126, 234, 0.2)' }}
+          >
             <p className="text-lg leading-relaxed" style={{ color: '#E5EDFF' }}>{user.bio}</p>
+          </motion.div>
+        )}
+
+        {/* Professional Information */}
+        {(user.title || user.occupation || user.business_name) && (
+          <div className="mb-8">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: '#E5EDFF' }}>
+              <div className="w-1 h-6 rounded-full" style={{ background: 'linear-gradient(135deg, #667EEA 0%, #764BA2 100%)' }} />
+              Professional
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {user.title && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  className="glass-card p-6 rounded-2xl cursor-pointer"
+                  style={{ transition: 'all 0.3s ease' }}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg" style={{ background: 'linear-gradient(135deg, #667EEA 0%, #764BA2 100%)' }}>
+                      <Briefcase className="w-6 h-6" style={{ color: '#E5EDFF' }} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#667EEA' }}>Title</p>
+                      <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.title}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {user.occupation && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 }}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  className="glass-card p-6 rounded-2xl cursor-pointer"
+                  style={{ transition: 'all 0.3s ease' }}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg" style={{ background: 'linear-gradient(135deg, #43E97B 0%, #38F9D7 100%)' }}>
+                      <UserIcon className="w-6 h-6" style={{ color: '#E5EDFF' }} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#43E97B' }}>Occupation</p>
+                      <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.occupation}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {user.business_name && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  className="glass-card p-6 rounded-2xl cursor-pointer"
+                  style={{ transition: 'all 0.3s ease' }}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg" style={{ background: 'linear-gradient(135deg, #FA8BFF 0%, #2BD2FF 90%)' }}>
+                      <Building2 className="w-6 h-6" style={{ color: '#E5EDFF' }} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#2BD2FF' }}>Business</p>
+                      <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.business_name}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </div>
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {user.title && (
-            <div className="glass-card glass-card-hover p-6 rounded-2xl">
+        {/* Personal Information */}
+        {(user.birth_date || user.status || user.marital_status) && (
+          <div className="mb-8">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: '#E5EDFF' }}>
+              <div className="w-1 h-6 rounded-full" style={{ background: 'linear-gradient(135deg, #F093FB 0%, #F5576C 100%)' }} />
+              Personal
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {user.birth_date && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25 }}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  className="glass-card p-6 rounded-2xl cursor-pointer"
+                  style={{ transition: 'all 0.3s ease' }}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg" style={{ background: 'linear-gradient(135deg, #F093FB 0%, #F5576C 100%)' }}>
+                      <Calendar className="w-6 h-6" style={{ color: '#E5EDFF' }} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#F093FB' }}>Birth Date</p>
+                      <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{new Date(user.birth_date).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {user.status && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  className="glass-card p-6 rounded-2xl cursor-pointer"
+                  style={{ transition: 'all 0.3s ease' }}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg" style={{ background: 'linear-gradient(135deg, #FA709A 0%, #FEE140 100%)' }}>
+                      <Heart className="w-6 h-6" style={{ color: '#E5EDFF' }} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#FA709A' }}>Status</p>
+                      <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.status}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {user.marital_status && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.35 }}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  className="glass-card p-6 rounded-2xl cursor-pointer"
+                  style={{ transition: 'all 0.3s ease' }}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg" style={{ background: 'linear-gradient(135deg, #FFA8A8 0%, #FCFF00 100%)' }}>
+                      <Heart className="w-6 h-6" style={{ color: '#0A1628' }} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#FFA8A8' }}>Marital Status</p>
+                      <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.marital_status}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Contact & Location */}
+        <div className="mb-8">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: '#E5EDFF' }}>
+            <div className="w-1 h-6 rounded-full" style={{ background: 'linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)' }} />
+            Contact & Location
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {user.location && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                whileHover={{ scale: 1.02, y: -4 }}
+                className="glass-card p-6 rounded-2xl cursor-pointer"
+                style={{ transition: 'all 0.3s ease' }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg" style={{ background: 'linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)' }}>
+                    <MapPin className="w-6 h-6" style={{ color: '#E5EDFF' }} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#4FACFE' }}>Location</p>
+                    <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.location}</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {user.phone_number && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.45 }}
+                whileHover={{ scale: 1.02, y: -4 }}
+                className="glass-card p-6 rounded-2xl cursor-pointer"
+                style={{ transition: 'all 0.3s ease' }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg" style={{ background: 'linear-gradient(135deg, #A8EDEA 0%, #FED6E3 100%)' }}>
+                    <Phone className="w-6 h-6" style={{ color: '#0A1628' }} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#A8EDEA' }}>Phone</p>
+                    <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.phone_number}</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              whileHover={{ scale: 1.02, y: -4 }}
+              className="glass-card p-6 rounded-2xl cursor-pointer"
+              style={{ transition: 'all 0.3s ease' }}
+            >
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #667EEA 0%, #764BA2 100%)' }}>
-                  <Briefcase className="w-6 h-6" style={{ color: '#E5EDFF' }} />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg" style={{ background: 'linear-gradient(135deg, #667EEA 0%, #764BA2 100%)' }}>
+                  <Mail className="w-6 h-6" style={{ color: '#E5EDFF' }} />
                 </div>
                 <div>
-                  <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Title</p>
-                  <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.title}</p>
+                  <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#667EEA' }}>Email</p>
+                  <p className="text-lg font-semibold break-all" style={{ color: '#E5EDFF' }}>{user.email}</p>
                 </div>
               </div>
-            </div>
-          )}
+            </motion.div>
+          </div>
+        </div>
 
-          {user.birth_date && (
-            <div className="glass-card glass-card-hover p-6 rounded-2xl">
+        {/* Member Information */}
+        <div>
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: '#E5EDFF' }}>
+            <div className="w-1 h-6 rounded-full" style={{ background: 'linear-gradient(135deg, #FCCB90 0%, #D57EEB 100%)' }} />
+            Membership
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.55 }}
+              whileHover={{ scale: 1.02, y: -4 }}
+              className="glass-card p-6 rounded-2xl cursor-pointer"
+              style={{ transition: 'all 0.3s ease' }}
+            >
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #F093FB 0%, #F5576C 100%)' }}>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg" style={{ background: 'linear-gradient(135deg, #FCCB90 0%, #D57EEB 100%)' }}>
                   <Calendar className="w-6 h-6" style={{ color: '#E5EDFF' }} />
                 </div>
                 <div>
-                  <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Birth Date</p>
-                  <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{new Date(user.birth_date).toLocaleDateString()}</p>
+                  <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#FCCB90' }}>Member Since</p>
+                  <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{new Date(user.created_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
                 </div>
               </div>
-            </div>
-          )}
-
-          {user.status && (
-            <div className="glass-card glass-card-hover p-6 rounded-2xl">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #FA709A 0%, #FEE140 100%)' }}>
-                  <Heart className="w-6 h-6" style={{ color: '#E5EDFF' }} />
-                </div>
-                <div>
-                  <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Status</p>
-                  <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.status}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {user.location && (
-            <div className="glass-card glass-card-hover p-6 rounded-2xl">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)' }}>
-                  <MapPin className="w-6 h-6" style={{ color: '#E5EDFF' }} />
-                </div>
-                <div>
-                  <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Location</p>
-                  <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.location}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {user.occupation && (
-            <div className="glass-card glass-card-hover p-6 rounded-2xl">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #43E97B 0%, #38F9D7 100%)' }}>
-                  <Briefcase className="w-6 h-6" style={{ color: '#E5EDFF' }} />
-                </div>
-                <div>
-                  <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Occupation</p>
-                  <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.occupation}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {user.business_name && (
-            <div className="glass-card glass-card-hover p-6 rounded-2xl">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #FA8BFF 0%, #2BD2FF 90%)' }}>
-                  <Briefcase className="w-6 h-6" style={{ color: '#E5EDFF' }} />
-                </div>
-                <div>
-                  <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Business</p>
-                  <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.business_name}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {user.phone_number && (
-            <div className="glass-card glass-card-hover p-6 rounded-2xl">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #A8EDEA 0%, #FED6E3 100%)' }}>
-                  <Mail className="w-6 h-6" style={{ color: '#0A1628' }} />
-                </div>
-                <div>
-                  <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Phone</p>
-                  <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.phone_number}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {user.marital_status && (
-            <div className="glass-card glass-card-hover p-6 rounded-2xl">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #FFA8A8 0%, #FCFF00 100%)' }}>
-                  <Heart className="w-6 h-6" style={{ color: '#0A1628' }} />
-                </div>
-                <div>
-                  <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Marital Status</p>
-                  <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.marital_status}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="glass-card glass-card-hover p-6 rounded-2xl">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #FCCB90 0%, #D57EEB 100%)' }}>
-                <Calendar className="w-6 h-6" style={{ color: '#E5EDFF' }} />
-              </div>
-              <div>
-                <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Member Since</p>
-                <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{new Date(user.created_date).toLocaleDateString()}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="glass-card glass-card-hover p-6 rounded-2xl">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, #667EEA 0%, #764BA2 100%)' }}>
-                <Mail className="w-6 h-6" style={{ color: '#E5EDFF' }} />
-              </div>
-              <div>
-                <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Email</p>
-                <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.email}</p>
-              </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
