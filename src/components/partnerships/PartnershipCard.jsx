@@ -20,7 +20,12 @@ export default function PartnershipCard({ partnership, index }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="group glass-card glass-card-hover p-6"
+      className="group p-6 rounded-2xl transition-all duration-300 hover:transform hover:-translate-y-1"
+      style={{
+        background: '#0F2744',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)'
+      }}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
@@ -31,10 +36,10 @@ export default function PartnershipCard({ partnership, index }) {
           <p className="text-sm line-clamp-2" style={{ color: '#B6C4E0' }}>{partnership.description}</p>
         </div>
         <div className="flex gap-2 ml-4">
-          <button className="w-8 h-8 rounded-lg glass-card glass-card-hover flex items-center justify-center" style={{ color: '#7A8BA6' }}>
+          <button className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-white/10" style={{ color: '#7A8BA6', background: 'rgba(255, 255, 255, 0.05)' }}>
             <Bookmark className="w-4 h-4" />
           </button>
-          <button className="w-8 h-8 rounded-lg glass-card glass-card-hover flex items-center justify-center" style={{ color: '#7A8BA6' }}>
+          <button className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-white/10" style={{ color: '#7A8BA6', background: 'rgba(255, 255, 255, 0.05)' }}>
             <Share2 className="w-4 h-4" />
           </button>
         </div>
