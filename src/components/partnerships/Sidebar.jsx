@@ -8,12 +8,20 @@ import {
   TrendingUp,
   Users,
   Building2,
-  Search
+  Search,
+  Briefcase,
+  Handshake
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Link, useLocation } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+
+const mainMenuItems = [
+  { icon: Briefcase, label: "Opportunities", href: "Opportunities" },
+  { icon: Handshake, label: "Partnerships", href: "Partnerships" },
+];
 
 const menuItems = [
-  { icon: LayoutGrid, label: "All Partnerships", active: true },
   { icon: Bookmark, label: "Saved", count: 12 },
   { icon: MessageSquare, label: "Messages", count: 5 },
   { icon: TrendingUp, label: "Trending" },
@@ -28,6 +36,9 @@ const categories = [
 ];
 
 export default function Sidebar() {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <aside className="w-64 h-screen sticky top-0 p-6 overflow-y-auto" style={{ 
       background: 'rgba(255, 255, 255, 0.08)',
@@ -54,21 +65,43 @@ export default function Sidebar() {
         />
       </div>
 
-      {/* Menu Items */}
+      {/* Main Menu Items */}
       <div className="space-y-2 mb-8">
-        <p className="text-xs uppercase tracking-wider mb-3" style={{ color: '#7A8BA6' }}>Menu</p>
+        <p className="text-xs uppercase tracking-wider mb-3" style={{ color: '#7A8BA6' }}>Main Menu</p>
+        {mainMenuItems.map((item) => {
+          const isActive = currentPath.includes(item.href);
+          return (
+            <Link key={item.label} to={createPageUrl(item.href)}>
+              <motion.div
+                whileHover={{ x: 4 }}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all cursor-pointer"
+                style={isActive ? {
+                  background: 'linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, rgba(31, 58, 138, 0.2) 100%)',
+                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  color: '#E5EDFF'
+                } : {
+                  color: '#B6C4E0'
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <item.icon className="w-5 h-5" />
+                  <span className="font-medium">{item.label}</span>
+                </div>
+              </motion.div>
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* Secondary Menu Items */}
+      <div className="space-y-2 mb-8">
+        <p className="text-xs uppercase tracking-wider mb-3" style={{ color: '#7A8BA6' }}>More</p>
         {menuItems.map((item) => (
           <motion.button
             key={item.label}
             whileHover={{ x: 4 }}
             className="w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all"
-            style={item.active ? {
-              background: 'linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, rgba(31, 58, 138, 0.2) 100%)',
-              border: '1px solid rgba(59, 130, 246, 0.3)',
-              color: '#E5EDFF'
-            } : {
-              color: '#B6C4E0'
-            }}
+            style={{ color: '#B6C4E0' }}
           >
             <div className="flex items-center gap-3">
               <item.icon className="w-5 h-5" />

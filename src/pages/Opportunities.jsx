@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import OpportunityCard from "@/components/opportunities/OpportunityCard";
+import Sidebar from "@/components/partnerships/Sidebar";
 import { Search } from "lucide-react";
 
 const opportunitiesData = [
@@ -145,8 +146,13 @@ export default function Opportunities() {
   };
 
   return (
-    <div style={{ minHeight: 'calc(100vh - 73px)' }}>
-      <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="flex">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content */}
+      <main className="flex-1 p-8 overflow-y-auto" style={{ minHeight: 'calc(100vh - 73px)' }}>
+        <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#E5EDFF' }}>
@@ -222,7 +228,8 @@ export default function Opportunities() {
             </p>
           </div>
         )}
-      </div>
+        </div>
+      </main>
     </div>
   );
 }
