@@ -103,6 +103,54 @@ export default function AboutTab({ user, isOwnProfile }) {
             </div>
           )}
 
+          {user.occupation && (
+            <div className="glass-card p-4">
+              <div className="flex items-center gap-3">
+                <Briefcase className="w-5 h-5" style={{ color: '#3B82F6' }} />
+                <div>
+                  <p className="text-sm" style={{ color: '#7A8BA6' }}>Occupation</p>
+                  <p className="font-medium" style={{ color: '#E5EDFF' }}>{user.occupation}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {user.business_name && (
+            <div className="glass-card p-4">
+              <div className="flex items-center gap-3">
+                <Briefcase className="w-5 h-5" style={{ color: '#3B82F6' }} />
+                <div>
+                  <p className="text-sm" style={{ color: '#7A8BA6' }}>Business</p>
+                  <p className="font-medium" style={{ color: '#E5EDFF' }}>{user.business_name}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {user.phone_number && (
+            <div className="glass-card p-4">
+              <div className="flex items-center gap-3">
+                <Mail className="w-5 h-5" style={{ color: '#3B82F6' }} />
+                <div>
+                  <p className="text-sm" style={{ color: '#7A8BA6' }}>Phone</p>
+                  <p className="font-medium" style={{ color: '#E5EDFF' }}>{user.phone_number}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {user.marital_status && (
+            <div className="glass-card p-4">
+              <div className="flex items-center gap-3">
+                <Heart className="w-5 h-5" style={{ color: '#3B82F6' }} />
+                <div>
+                  <p className="text-sm" style={{ color: '#7A8BA6' }}>Marital Status</p>
+                  <p className="font-medium" style={{ color: '#E5EDFF' }}>{user.marital_status}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="glass-card p-4">
             <div className="flex items-center gap-3">
               <Calendar className="w-5 h-5" style={{ color: '#3B82F6' }} />
