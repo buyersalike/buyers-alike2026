@@ -166,6 +166,20 @@ const opportunitiesData = [
 
 export default function Recommendations() {
   const [activeTab, setActiveTab] = useState("connections");
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(user => setCurrentUser(user)).catch(() => setCurrentUser(null));
+  }, []);
+
+  const { data: aiRecommendations, isLoading: loadingAI } = useQuery({
+    queryKey: ['aiRecommendations'],
+    queryFn: async () => {
+      const response = await base44.functions.invoke('getPersonalizedRecommendations', {});
+      return response.data;
+    },
+    enabled: !!currentUser,
+  });
 
   return (
     <div className="flex">

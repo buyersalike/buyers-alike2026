@@ -12,14 +12,15 @@ export default function News() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data: newsData, isLoading } = useQuery({
-    queryKey: ['news'],
+    queryKey: ['personalizedNews'],
     queryFn: async () => {
-      const response = await base44.functions.invoke('fetchNews', {});
+      const response = await base44.functions.invoke('getPersonalizedNews', {});
       return response.data;
     },
   });
 
   const articles = newsData?.articles || [];
+  const recommendations = newsData?.recommendations || [];
 
   const filteredArticles = articles.filter(article => {
     if (!searchQuery) return true;
@@ -96,6 +97,23 @@ export default function News() {
         {/* Content Area */}
         <div className="px-8 py-8">
           <div className="max-w-6xl mx-auto">
+            {/* AI Recommendations */}
+            {recommendations.length > 0 && (
+              <div className="glass-card p-6 mb-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <TrendingUp className="w-5 h-5" style={{ color: '#3B82F6' }} />
+                  <h3 className="text-lg font-bold" style={{ color: '#E5EDFF' }}>Personalized for You</h3>
+                </div>
+                <div className="space-y-2">
+                  {recommendations.map((rec, idx) => (
+                    <p key={idx} className="text-sm" style={{ color: '#B6C4E0' }}>
+                      • {rec}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Search Bar */}
             <div className="relative mb-6">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#7A8BA6' }} />
