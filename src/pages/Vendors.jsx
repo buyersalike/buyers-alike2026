@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Store, Search, Filter } from "lucide-react";
 import VendorCard from "@/components/vendors/VendorCard";
 import BecomeVendorBanner from "@/components/vendors/BecomeVendorBanner";
+import VendorApplicationDialog from "@/components/vendors/VendorApplicationDialog";
 
 const vendorsData = [
   {
@@ -102,6 +103,7 @@ export default function Vendors() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedProvince, setSelectedProvince] = useState("All Provinces");
+  const [isApplicationDialogOpen, setIsApplicationDialogOpen] = useState(false);
 
   const filteredVendors = vendorsData.filter((vendor) => {
     const matchesSearch = vendor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -139,7 +141,13 @@ export default function Vendors() {
           </div>
 
           {/* Become a Vendor Banner */}
-          <BecomeVendorBanner />
+          <BecomeVendorBanner onApplyClick={() => setIsApplicationDialogOpen(true)} />
+
+          {/* Vendor Application Dialog */}
+          <VendorApplicationDialog 
+            open={isApplicationDialogOpen} 
+            onOpenChange={setIsApplicationDialogOpen}
+          />
 
           {/* Featured Vendors Section */}
           <div className="mb-8">

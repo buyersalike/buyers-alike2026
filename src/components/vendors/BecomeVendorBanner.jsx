@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Store, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function BecomeVendorBanner() {
+export default function BecomeVendorBanner({ onApplyClick }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -29,6 +29,7 @@ export default function BecomeVendorBanner() {
           </div>
         </div>
         <Button 
+          onClick={onApplyClick}
           className="rounded-xl px-8 py-6 text-base font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 whitespace-nowrap" 
           style={{ background: '#EA580C', color: '#fff' }}
         >
