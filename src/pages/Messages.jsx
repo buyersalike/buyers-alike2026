@@ -177,7 +177,7 @@ export default function Messages() {
 
   if (!user) {
     return (
-      <div className="flex">
+      <div className="flex min-h-screen bg-gradient-main">
         <Sidebar />
         <main className="flex-1 flex items-center justify-center">
           <p style={{ color: '#B6C4E0' }}>Loading...</p>
@@ -189,9 +189,9 @@ export default function Messages() {
   const conversations = getConversations();
 
   return (
-    <div className="flex">
+    <div className="flex min-h-screen bg-gradient-main">
       <Sidebar />
-      <main className="flex-1 flex" style={{ height: 'calc(100vh - 73px)' }}>
+      <main className="flex-1 flex">
         <ConversationList
           conversations={conversations}
           groups={groups}
