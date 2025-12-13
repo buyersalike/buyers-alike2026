@@ -14,7 +14,7 @@ export default function PartnerSearchSection() {
           className="relative"
         >
           {/* Glass card */}
-          <div className="backdrop-blur-2xl rounded-3xl p-12 md:p-16 text-center overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(31, 58, 138, 0.1) 50%, rgba(124, 58, 237, 0.2) 100%)', border: '1px solid rgba(255, 255, 255, 0.18)' }}>
+          <div className="glass-card glass-card-hover rounded-3xl p-12 md:p-16 text-center overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(31, 58, 138, 0.1) 50%, rgba(124, 58, 237, 0.2) 100%)' }}>
             {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#7C3AED]/20 rounded-full blur-3xl" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#3B82F6]/20 rounded-full blur-3xl" />

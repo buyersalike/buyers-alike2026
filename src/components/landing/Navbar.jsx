@@ -30,11 +30,14 @@ export default function Navbar() {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled 
-            ? "glass-card" 
-            : "bg-transparent"
-        }`}
+        style={scrolled ? {
+          background: 'rgba(255, 255, 255, 0.08)',
+          backdropFilter: 'blur(10px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(10px) saturate(180%)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.18)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+        } : {}}
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
       >
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">

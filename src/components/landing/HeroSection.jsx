@@ -59,13 +59,13 @@ export default function HeroSection() {
 
             {/* Search input - glassmorphism */}
             <div className="relative mb-8">
-              <div className="glass-card p-2 flex gap-2">
+              <div className="glass-card glass-card-hover p-2 flex gap-2">
                 <div className="flex-1 relative">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#7A8BA6' }} />
                   <Input
                     placeholder="Enter your email to get started"
-                    className="w-full pl-12 pr-4 py-4 bg-transparent border-0 focus-visible:ring-0 text-lg"
-                    style={{ color: '#E5EDFF' }}
+                    className="w-full pl-12 pr-4 py-4 border-0 focus-visible:ring-0 text-lg glass-input"
+                    style={{ color: '#E5EDFF', background: 'transparent' }}
                   />
                 </div>
                 <Link to={createPageUrl("Partnerships")}>
@@ -111,7 +111,7 @@ export default function HeroSection() {
             className="hidden lg:block"
           >
             <div className="relative">
-              <div className="glass-card p-8 shadow-2xl">
+              <div className="glass-card glass-card-hover p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)' }}>
                     <Users className="w-7 h-7" style={{ color: '#E5EDFF' }} />

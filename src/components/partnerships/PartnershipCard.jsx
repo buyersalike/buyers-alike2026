@@ -31,10 +31,10 @@ export default function PartnershipCard({ partnership, index }) {
           <p className="text-sm line-clamp-2" style={{ color: '#B6C4E0' }}>{partnership.description}</p>
         </div>
         <div className="flex gap-2 ml-4">
-          <button className="w-8 h-8 rounded-lg glass-card flex items-center justify-center transition-all" style={{ color: '#7A8BA6' }}>
+          <button className="w-8 h-8 rounded-lg glass-card glass-card-hover flex items-center justify-center" style={{ color: '#7A8BA6' }}>
             <Bookmark className="w-4 h-4" />
           </button>
-          <button className="w-8 h-8 rounded-lg glass-card flex items-center justify-center transition-all" style={{ color: '#7A8BA6' }}>
+          <button className="w-8 h-8 rounded-lg glass-card glass-card-hover flex items-center justify-center" style={{ color: '#7A8BA6' }}>
             <Share2 className="w-4 h-4" />
           </button>
         </div>

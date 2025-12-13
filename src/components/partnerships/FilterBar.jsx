@@ -27,8 +27,8 @@ export default function FilterBar({ viewMode, setViewMode, totalResults }) {
           </p>
           <Button
             variant="outline"
-            className="glass-card hover:bg-white/10 rounded-xl"
-            style={{ color: '#B6C4E0', borderColor: 'rgba(255, 255, 255, 0.18)' }}
+            className="glass-card glass-card-hover rounded-xl"
+            style={{ color: '#B6C4E0' }}
           >
             <Filter className="w-4 h-4 mr-2" />
             Filters
@@ -52,7 +52,12 @@ export default function FilterBar({ viewMode, setViewMode, totalResults }) {
           </Select>
 
           {/* View toggle */}
-          <div className="flex items-center gap-1 glass-card rounded-xl p-1">
+          <div className="flex items-center gap-1 rounded-xl p-1" style={{
+            background: 'rgba(255, 255, 255, 0.08)',
+            backdropFilter: 'blur(10px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(10px) saturate(180%)',
+            border: '1px solid rgba(255, 255, 255, 0.18)'
+          }}>
             <button
               onClick={() => setViewMode("grid")}
               className="p-2 rounded-lg transition-all"

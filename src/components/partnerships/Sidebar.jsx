@@ -29,7 +29,13 @@ const categories = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 h-screen sticky top-0 glass-card p-6 overflow-y-auto" style={{ borderRadius: 0, borderTop: 0, borderLeft: 0, borderBottom: 0 }}>
+    <aside className="w-64 h-screen sticky top-0 p-6 overflow-y-auto" style={{ 
+      background: 'rgba(255, 255, 255, 0.08)',
+      backdropFilter: 'blur(10px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(10px) saturate(180%)',
+      borderRight: '1px solid rgba(255, 255, 255, 0.18)',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+    }}>
       {/* Logo */}
       <div className="flex items-center gap-3 mb-8">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)' }}>
@@ -43,8 +49,8 @@ export default function Sidebar() {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#7A8BA6' }} />
         <Input
           placeholder="Search..."
-          className="w-full pl-10 glass-card rounded-xl focus:border-[#3B82F6]/50"
-          style={{ color: '#E5EDFF', background: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.18)' }}
+          className="w-full pl-10 glass-input rounded-xl focus:border-[#3B82F6]/50"
+          style={{ color: '#E5EDFF' }}
         />
       </div>
 
