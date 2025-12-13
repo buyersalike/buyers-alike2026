@@ -50,17 +50,27 @@ export default function PostCard({ post, category, likes, comments, hasLiked, cu
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -2, scale: 1.005 }}
       onClick={handleCardClick}
-      className="glass-card glass-card-hover p-6 cursor-pointer"
+      className="glass-card glass-card-hover p-6 cursor-pointer relative overflow-hidden"
+      style={{
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+      }}
     >
-      <div className="flex items-start gap-5">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+      <div className="flex items-start gap-5 relative z-10">
         <div 
           className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg"
-          style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)' }}
+          style={{ 
+            background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)',
+            boxShadow: '0 8px 24px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+          }}
         >
           <User className="w-7 h-7" style={{ color: '#E5EDFF' }} />
         </div>
 
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 relative z-10">
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
               <h3 className="text-xl font-bold mb-2 hover:opacity-80 transition-opacity" style={{ color: '#E5EDFF' }}>
@@ -118,7 +128,7 @@ export default function PostCard({ post, category, likes, comments, hasLiked, cu
             </div>
           )}
 
-          <div className="flex items-center gap-3 pt-3" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+          <div className="flex items-center gap-3 pt-3 relative z-10" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.15)' }}>
             <Button
               onClick={(e) => {
                 e.stopPropagation();
