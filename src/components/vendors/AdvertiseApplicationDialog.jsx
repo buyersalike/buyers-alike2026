@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Megaphone } from "lucide-react";
+import { Megaphone, Upload, X } from "lucide-react";
 
 const advertisingPackages = [
   "Featured Listing - $299/month",
@@ -26,10 +26,23 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
     budget: "",
     additionalInfo: "",
   });
+  const [uploadedFile, setUploadedFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadedFile(file);
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setUploadedFile(null);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Advertising application:", formData);
+    console.log("Uploaded flyer:", uploadedFile);
     setFormData({
       businessName: "",
       contactName: "",
@@ -41,6 +54,7 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
       budget: "",
       additionalInfo: "",
     });
+    setUploadedFile(null);
     onOpenChange(false);
   };
 
@@ -188,6 +202,62 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
                 style={{ color: '#E5EDFF' }}
                 placeholder="Any other details you'd like to share..."
               />
+            </div>
+
+            <div>
+              <Label htmlFor="flyer" style={{ color: '#B6C4E0' }}>Upload Advertising Flyer</Label>
+              <p className="text-xs mb-2" style={{ color: '#7A8BA6' }}>
+                Accepted formats: JPG, PNG, PDF (Max 5MB)
+              </p>
+              
+              {!uploadedFile ? (
+                <label
+                  htmlFor="flyer"
+                  className="flex flex-col items-center justify-center w-full h-32 rounded-xl border-2 border-dashed cursor-pointer transition-all hover:border-opacity-50"
+                  style={{ borderColor: 'rgba(255, 255, 255, 0.18)', background: 'rgba(255, 255, 255, 0.03)' }}
+                >
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <Upload className="w-8 h-8 mb-2" style={{ color: '#6366F1' }} />
+                    <p className="text-sm" style={{ color: '#B6C4E0' }}>
+                      Click to upload or drag and drop
+                    </p>
+                  </div>
+                  <input
+                    id="flyer"
+                    type="file"
+                    className="hidden"
+                    accept=".jpg,.jpeg,.png,.pdf"
+                    onChange={handleFileChange}
+                  />
+                </label>
+              ) : (
+                <div 
+                  className="flex items-center justify-between p-4 rounded-xl"
+                  style={{ background: 'rgba(99, 102, 241, 0.15)', border: '1px solid rgba(99, 102, 241, 0.3)' }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: '#6366F1' }}>
+                      <Upload className="w-5 h-5" style={{ color: '#fff' }} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>
+                        {uploadedFile.name}
+                      </p>
+                      <p className="text-xs" style={{ color: '#7A8BA6' }}>
+                        {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={handleRemoveFile}
+                    className="rounded-lg p-2"
+                    style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
 
