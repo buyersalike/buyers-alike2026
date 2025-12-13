@@ -8,12 +8,14 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, X, CheckCircle, XCircle, Clock, Sparkles } from "lucide-react";
+import { Plus, Trash2, X, CheckCircle, XCircle, Clock, Sparkles, Upload, FileImage, File } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function InterestTab({ user, isOwnProfile }) {
   const [showAddDialog, setShowAddDialog] = useState(false);
-  const [newInterest, setNewInterest] = useState({ interest_name: "", description: "" });
+  const [newInterest, setNewInterest] = useState({ interest_name: "", description: "", attachment_urls: [] });
+  const [uploadingFiles, setUploadingFiles] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const queryClient = useQueryClient();
 
   const { data: interests = [] } = useQuery({
@@ -26,9 +28,42 @@ export default function InterestTab({ user, isOwnProfile }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['interests'] });
       setShowAddDialog(false);
-      setNewInterest({ interest_name: "", description: "" });
+      setNewInterest({ interest_name: "", description: "", attachment_urls: [] });
+      setSelectedFiles([]);
     },
   });
+
+  const handleFileSelect = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    setUploadingFiles(true);
+    try {
+      const uploadPromises = files.map(file => 
+        base44.integrations.Core.UploadFile({ file })
+      );
+      const results = await Promise.all(uploadPromises);
+      const urls = results.map(r => r.file_url);
+      
+      setNewInterest(prev => ({
+        ...prev,
+        attachment_urls: [...(prev.attachment_urls || []), ...urls]
+      }));
+      setSelectedFiles(prev => [...prev, ...files]);
+    } catch (error) {
+      console.error('Upload failed:', error);
+    } finally {
+      setUploadingFiles(false);
+    }
+  };
+
+  const removeFile = (index) => {
+    setNewInterest(prev => ({
+      ...prev,
+      attachment_urls: prev.attachment_urls.filter((_, i) => i !== index)
+    }));
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
 
   const deleteInterestMutation = useMutation({
     mutationFn: (id) => base44.entities.Interest.delete(id),
@@ -94,7 +129,28 @@ export default function InterestTab({ user, isOwnProfile }) {
             </div>
           </div>
           {interest.description && (
-            <p className="text-sm leading-relaxed ml-13" style={{ color: '#B6C4E0' }}>{interest.description}</p>
+            <p className="text-sm leading-relaxed ml-13 mb-3" style={{ color: '#B6C4E0' }}>{interest.description}</p>
+          )}
+          {interest.attachment_urls && interest.attachment_urls.length > 0 && (
+            <div className="ml-13 flex flex-wrap gap-2">
+              {interest.attachment_urls.map((url, idx) => (
+                <a 
+                  key={idx}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all hover:scale-105"
+                  style={{ background: 'rgba(102, 126, 234, 0.15)', color: '#667EEA', border: '1px solid rgba(102, 126, 234, 0.3)' }}
+                >
+                  {url.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
+                    <FileImage className="w-4 h-4" />
+                  ) : (
+                    <File className="w-4 h-4" />
+                  )}
+                  Attachment {idx + 1}
+                </a>
+              ))}
+            </div>
           )}
         </div>
         {showDelete && isOwnProfile && (
@@ -316,6 +372,69 @@ export default function InterestTab({ user, isOwnProfile }) {
                 style={{ color: '#E5EDFF' }}
                 rows={3}
               />
+            </div>
+            <div>
+              <Label style={{ color: '#B6C4E0' }}>Attachments (Optional)</Label>
+              <div className="mt-2">
+                <label 
+                  htmlFor="file-upload"
+                  className="flex items-center justify-center gap-3 p-6 rounded-xl cursor-pointer transition-all hover:scale-[1.02]"
+                  style={{ 
+                    background: 'rgba(102, 126, 234, 0.1)', 
+                    border: '2px dashed rgba(102, 126, 234, 0.3)',
+                    color: '#B6C4E0'
+                  }}
+                >
+                  <Upload className="w-5 h-5" style={{ color: '#667EEA' }} />
+                  <span className="font-medium">
+                    {uploadingFiles ? 'Uploading...' : 'Click to upload files or images'}
+                  </span>
+                </label>
+                <input
+                  id="file-upload"
+                  type="file"
+                  multiple
+                  accept="image/*,.pdf,.doc,.docx"
+                  onChange={handleFileSelect}
+                  disabled={uploadingFiles}
+                  className="hidden"
+                />
+              </div>
+              
+              {selectedFiles.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <p className="text-xs font-medium" style={{ color: '#7A8BA6' }}>
+                    {selectedFiles.length} file{selectedFiles.length !== 1 ? 's' : ''} selected
+                  </p>
+                  {selectedFiles.map((file, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="flex items-center justify-between p-3 rounded-lg"
+                      style={{ background: 'rgba(102, 126, 234, 0.1)', border: '1px solid rgba(102, 126, 234, 0.2)' }}
+                    >
+                      <div className="flex items-center gap-3">
+                        {file.type.startsWith('image/') ? (
+                          <FileImage className="w-5 h-5" style={{ color: '#667EEA' }} />
+                        ) : (
+                          <File className="w-5 h-5" style={{ color: '#667EEA' }} />
+                        )}
+                        <span className="text-sm font-medium" style={{ color: '#E5EDFF' }}>{file.name}</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeFile(index)}
+                        className="h-8 w-8"
+                        style={{ color: '#EF4444' }}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
           <div className="flex gap-3">
