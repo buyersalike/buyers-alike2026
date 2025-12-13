@@ -62,7 +62,12 @@ export default function Forum() {
 
   const totalViews = posts.reduce((sum, post) => sum + (post.views || 0), 0);
 
+  const isModerator = user?.role === 'admin' || user?.forum_moderator;
+
   const filteredPosts = posts.filter(post => {
+    // Hide removed posts from non-moderators
+    if (post.removed && !isModerator) return false;
+    
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
     return (

@@ -3,8 +3,9 @@ import { motion } from "framer-motion";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { ThumbsUp, MessageSquare, User, FileText, ExternalLink } from "lucide-react";
+import { ThumbsUp, MessageSquare, User, FileText, ExternalLink, Flag, AlertTriangle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import ModerationMenu from "./ModerationMenu";
 
 export default function PostCard({ post, category, likes, comments, hasLiked, currentUser }) {
   const queryClient = useQueryClient();
@@ -73,9 +74,23 @@ export default function PostCard({ post, category, likes, comments, hasLiked, cu
         <div className="flex-1 min-w-0 relative z-10">
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
-              <h3 className="text-xl font-bold mb-2 hover:opacity-80 transition-opacity" style={{ color: '#E5EDFF' }}>
-                {post.title}
-              </h3>
+              <div className="flex items-center gap-3 mb-2">
+                <h3 className="text-xl font-bold hover:opacity-80 transition-opacity" style={{ color: '#E5EDFF' }}>
+                  {post.title}
+                </h3>
+                {post.flagged && (
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-full" style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B' }}>
+                    <Flag className="w-3 h-3" />
+                    <span className="text-xs font-medium">Flagged</span>
+                  </div>
+                )}
+                {post.removed && (
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-full" style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}>
+                    <AlertTriangle className="w-3 h-3" />
+                    <span className="text-xs font-medium">Removed</span>
+                  </div>
+                )}
+              </div>
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-semibold text-sm px-3 py-1 rounded-full" style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#3B82F6' }}>
                   {post.author_name || post.author_email.split('@')[0]}
@@ -86,14 +101,26 @@ export default function PostCard({ post, category, likes, comments, hasLiked, cu
                 </span>
               </div>
             </div>
-            <span className="text-sm px-3 py-1 rounded-full" style={{ background: 'rgba(255, 255, 255, 0.05)', color: '#7A8BA6' }}>
-              {formatDistanceToNow(new Date(post.created_date), { addSuffix: true })}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm px-3 py-1 rounded-full" style={{ background: 'rgba(255, 255, 255, 0.05)', color: '#7A8BA6' }}>
+                {formatDistanceToNow(new Date(post.created_date), { addSuffix: true })}
+              </span>
+              <ModerationMenu post={post} currentUser={currentUser} />
+            </div>
           </div>
 
-          <p className="mb-4 line-clamp-3 leading-relaxed" style={{ color: '#B6C4E0' }}>
-            {post.content}
-          </p>
+          {post.removed ? (
+            <div className="mb-4 p-4 rounded-xl" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+              <p className="font-medium mb-1" style={{ color: '#EF4444' }}>This post has been removed</p>
+              {post.removal_reason && (
+                <p className="text-sm" style={{ color: '#B6C4E0' }}>Reason: {post.removal_reason}</p>
+              )}
+            </div>
+          ) : (
+            <p className="mb-4 line-clamp-3 leading-relaxed" style={{ color: '#B6C4E0' }}>
+              {post.content}
+            </p>
+          )}
 
           {post.link_url && (
             <a

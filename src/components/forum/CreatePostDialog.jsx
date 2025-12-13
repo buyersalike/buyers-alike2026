@@ -53,9 +53,15 @@ export default function CreatePostDialog({ open, onOpenChange, categories, curre
     },
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!currentUser) return;
+    
+    // Check if user is banned from forum
+    if (currentUser.forum_banned) {
+      alert("You have been banned from the forum and cannot create posts.");
+      return;
+    }
     
     createPostMutation.mutate({
       ...formData,
@@ -63,6 +69,8 @@ export default function CreatePostDialog({ open, onOpenChange, categories, curre
       author_name: currentUser.full_name || currentUser.email.split('@')[0],
       views: 0,
       file_urls: uploadedFiles.map(f => f.url),
+      flagged: false,
+      removed: false,
     });
   };
 
