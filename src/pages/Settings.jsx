@@ -437,7 +437,7 @@ export default function Settings() {
                 Update password
               </Button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>
