@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Eye, EyeOff } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Settings() {
   const queryClient = useQueryClient();
@@ -23,7 +24,15 @@ export default function Settings() {
     state: "",
     country: "",
     business_name: "",
-    overview: ""
+    overview: "",
+    notification_preferences: {
+      connection_requests: true,
+      connection_accepted: true,
+      new_messages: true,
+      post_mentions: true,
+      post_comments: true,
+      post_likes: false,
+    }
   });
 
   const [passwordData, setPasswordData] = useState({
@@ -53,7 +62,15 @@ export default function Settings() {
         state: user.state || "",
         country: user.country || "",
         business_name: user.business_name || "",
-        overview: user.overview || ""
+        overview: user.overview || "",
+        notification_preferences: user.notification_preferences || {
+          connection_requests: true,
+          connection_accepted: true,
+          new_messages: true,
+          post_mentions: true,
+          post_comments: true,
+          post_likes: false,
+        }
       });
     });
   }, []);
@@ -277,8 +294,70 @@ export default function Settings() {
             </div>
           </div>
 
+          {/* Notification Preferences */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="glass-card p-8 rounded-2xl mb-8"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #A855F7 100%)' }}>
+                <svg className="w-6 h-6" style={{ color: '#E5EDFF' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>Notification Preferences</h2>
+                <p className="text-sm" style={{ color: '#7A8BA6' }}>Manage what notifications you receive</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {[
+                { key: 'connection_requests', label: 'Connection Requests', description: 'Get notified when someone sends you a connection request' },
+                { key: 'connection_accepted', label: 'Connection Accepted', description: 'Get notified when someone accepts your connection request' },
+                { key: 'new_messages', label: 'New Messages', description: 'Get notified when you receive a new message' },
+                { key: 'post_mentions', label: 'Post Mentions', description: 'Get notified when someone mentions you in a post' },
+                { key: 'post_comments', label: 'Post Comments', description: 'Get notified when someone comments on your posts' },
+                { key: 'post_likes', label: 'Post Likes', description: 'Get notified when someone likes your posts' },
+              ].map((pref) => (
+                <div 
+                  key={pref.key}
+                  className="flex items-start justify-between p-4 rounded-xl transition-all"
+                  style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(255, 255, 255, 0.08)' }}
+                >
+                  <div className="flex-1">
+                    <p className="font-semibold mb-1" style={{ color: '#E5EDFF' }}>{pref.label}</p>
+                    <p className="text-sm" style={{ color: '#B6C4E0' }}>{pref.description}</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer ml-4">
+                    <input
+                      type="checkbox"
+                      checked={formData.notification_preferences?.[pref.key] ?? true}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        notification_preferences: {
+                          ...formData.notification_preferences,
+                          [pref.key]: e.target.checked
+                        }
+                      })}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all" style={{ background: formData.notification_preferences?.[pref.key] ? '#3B82F6' : '#4B5563' }}></div>
+                  </label>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
           {/* Change Password */}
-          <div className="glass-card p-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="glass-card p-6"
+          >
             <h2 className="text-xl font-bold mb-6" style={{ color: '#E5EDFF' }}>
               Change your password
             </h2>
