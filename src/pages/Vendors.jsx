@@ -6,7 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Store, Search, Filter } from "lucide-react";
 import VendorCard from "@/components/vendors/VendorCard";
 import BecomeVendorBanner from "@/components/vendors/BecomeVendorBanner";
+import AdvertiseBanner from "@/components/vendors/AdvertiseBanner";
 import VendorApplicationDialog from "@/components/vendors/VendorApplicationDialog";
+import AdvertiseApplicationDialog from "@/components/vendors/AdvertiseApplicationDialog";
 
 const vendorsData = [
   {
@@ -104,6 +106,7 @@ export default function Vendors() {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedProvince, setSelectedProvince] = useState("All Provinces");
   const [isApplicationDialogOpen, setIsApplicationDialogOpen] = useState(false);
+  const [isAdvertiseDialogOpen, setIsAdvertiseDialogOpen] = useState(false);
 
   const filteredVendors = vendorsData.filter((vendor) => {
     const matchesSearch = vendor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -143,10 +146,19 @@ export default function Vendors() {
           {/* Become a Vendor Banner */}
           <BecomeVendorBanner onApplyClick={() => setIsApplicationDialogOpen(true)} />
 
+          {/* Apply to Advertise Banner */}
+          <AdvertiseBanner onApplyClick={() => setIsAdvertiseDialogOpen(true)} />
+
           {/* Vendor Application Dialog */}
           <VendorApplicationDialog 
             open={isApplicationDialogOpen} 
             onOpenChange={setIsApplicationDialogOpen}
+          />
+
+          {/* Advertise Application Dialog */}
+          <AdvertiseApplicationDialog 
+            open={isAdvertiseDialogOpen} 
+            onOpenChange={setIsAdvertiseDialogOpen}
           />
 
           {/* Featured Vendors Section */}
