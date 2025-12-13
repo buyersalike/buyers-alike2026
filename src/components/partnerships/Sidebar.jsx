@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
+import NotificationBell from "@/components/notifications/NotificationBell";
 
 const mainMenuItems = [
   { icon: Sparkles, label: "Recommendations", href: "Recommendations" },
@@ -65,11 +66,14 @@ export default function Sidebar() {
     }}>
       <div className="flex-1">
         {/* Logo */}
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)' }}>
-            <Building2 className="w-5 h-5" style={{ color: '#E5EDFF' }} />
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)' }}>
+              <Building2 className="w-5 h-5" style={{ color: '#E5EDFF' }} />
+            </div>
+            <span className="text-xl font-bold" style={{ color: '#E5EDFF' }}>BuyersAlike</span>
           </div>
-          <span className="text-xl font-bold" style={{ color: '#E5EDFF' }}>BuyersAlike</span>
+          {currentUser && <NotificationBell currentUser={currentUser} />}
         </div>
 
         {/* Search */}

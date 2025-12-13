@@ -77,8 +77,19 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
 
   // Mutations
   const acceptRequestMutation = useMutation({
-    mutationFn: (connectionId) => 
-      base44.entities.Connection.update(connectionId, { status: 'connected' }),
+    mutationFn: async ({ connectionId, senderEmail, senderName }) => {
+      await base44.entities.Connection.update(connectionId, { status: 'connected' });
+      // Create notification for the sender
+      await base44.entities.Notification.create({
+        recipient_email: senderEmail,
+        type: 'connection_accepted',
+        title: 'Connection Accepted',
+        message: `${currentUser?.full_name || 'Someone'} accepted your connection request`,
+        sender_email: currentUser?.email,
+        sender_name: currentUser?.full_name,
+        link: createPageUrl('Profile') + `?email=${currentUser?.email}`,
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['connections'] });
     },
@@ -106,12 +117,23 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
   });
 
   const sendRequestMutation = useMutation({
-    mutationFn: (targetEmail) => 
-      base44.entities.Connection.create({
+    mutationFn: async ({ targetEmail, targetName }) => {
+      await base44.entities.Connection.create({
         user1_email: currentUser.email,
         user2_email: targetEmail,
         status: 'pending'
-      }),
+      });
+      // Create notification for the recipient
+      await base44.entities.Notification.create({
+        recipient_email: targetEmail,
+        type: 'connection_request',
+        title: 'New Connection Request',
+        message: `${currentUser.full_name} sent you a connection request`,
+        sender_email: currentUser.email,
+        sender_name: currentUser.full_name,
+        link: createPageUrl('Profile') + `?email=${currentUser.email}`,
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['connections'] });
     },
@@ -168,7 +190,11 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
       {actionType === 'accept-reject' && isOwnProfile && (
         <div className="flex gap-2">
           <Button
-            onClick={() => acceptRequestMutation.mutate(user.connectionId)}
+            onClick={() => acceptRequestMutation.mutate({ 
+              connectionId: user.connectionId, 
+              senderEmail: user.email, 
+              senderName: user.full_name 
+            })}
             className="flex-1 rounded-xl font-semibold"
             style={{ background: '#22C55E', color: '#fff' }}
             disabled={acceptRequestMutation.isPending}
@@ -204,7 +230,10 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
 
       {actionType === 'connect' && isOwnProfile && currentUser && (
         <Button
-          onClick={() => sendRequestMutation.mutate(user.email)}
+          onClick={() => sendRequestMutation.mutate({ 
+            targetEmail: user.email, 
+            targetName: user.full_name 
+          })}
           className="w-full rounded-xl font-semibold"
           style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#fff' }}
           disabled={sendRequestMutation.isPending}
