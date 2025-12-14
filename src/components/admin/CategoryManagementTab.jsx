@@ -172,13 +172,13 @@ export default function CategoryManagementTab() {
 
       {/* Create Dialog */}
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogContent className="glass-card border-0" style={{ color: '#E5EDFF' }}>
+        <DialogContent className="sm:max-w-md" style={{ background: '#fff', border: 'none', color: '#000' }}>
           <DialogHeader>
-            <DialogTitle style={{ color: '#E5EDFF' }}>Create New Category</DialogTitle>
+            <DialogTitle className="text-lg font-normal" style={{ color: '#9CA3AF' }}>Create New Category</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-5 py-4">
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#B6C4E0' }}>
+              <label className="text-sm font-normal mb-2 block" style={{ color: '#9CA3AF' }}>
                 Name
               </label>
               <Input
@@ -188,47 +188,44 @@ export default function CategoryManagementTab() {
                   setFormData({ ...formData, name, slug: generateSlug(name) });
                 }}
                 placeholder="Category name"
-                className="glass-input"
-                style={{ color: '#E5EDFF' }}
+                className="border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#B6C4E0' }}>
+              <label className="text-sm font-normal mb-2 block" style={{ color: '#9CA3AF' }}>
                 Description
               </label>
               <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Category description"
-                className="glass-input"
-                style={{ color: '#E5EDFF' }}
+                rows={4}
+                className="border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500 resize-none"
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#B6C4E0' }}>
+              <label className="text-sm font-normal mb-2 block" style={{ color: '#9CA3AF' }}>
                 Slug
               </label>
               <Input
                 value={formData.slug}
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                 placeholder="category-slug"
-                className="glass-input"
-                style={{ color: '#E5EDFF' }}
+                className="border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button
               onClick={() => setIsCreateDialogOpen(false)}
               variant="outline"
-              className="glass-input"
-              style={{ color: '#B6C4E0' }}
+              className="border-gray-300 text-gray-700 hover:bg-gray-50"
             >
               Cancel
             </Button>
             <Button
               onClick={handleCreate}
-              style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               Create
             </Button>
@@ -238,60 +235,57 @@ export default function CategoryManagementTab() {
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="glass-card border-0" style={{ color: '#E5EDFF' }}>
+        <DialogContent className="sm:max-w-md" style={{ background: '#fff', border: 'none', color: '#000' }}>
           <DialogHeader>
-            <DialogTitle style={{ color: '#E5EDFF' }}>Edit Category</DialogTitle>
+            <DialogTitle className="text-lg font-normal" style={{ color: '#9CA3AF' }}>Edit Category</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-5 py-4">
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#B6C4E0' }}>
+              <label className="text-sm font-normal mb-2 block" style={{ color: '#9CA3AF' }}>
                 Name
               </label>
               <Input
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Category name"
-                className="glass-input"
-                style={{ color: '#E5EDFF' }}
+                className="border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#B6C4E0' }}>
+              <label className="text-sm font-normal mb-2 block" style={{ color: '#9CA3AF' }}>
                 Description
               </label>
               <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Category description"
-                className="glass-input"
-                style={{ color: '#E5EDFF' }}
+                rows={4}
+                className="border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500 resize-none"
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#B6C4E0' }}>
+              <label className="text-sm font-normal mb-2 block" style={{ color: '#9CA3AF' }}>
                 Slug
               </label>
               <Input
                 value={formData.slug}
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                 placeholder="category-slug"
-                className="glass-input"
-                style={{ color: '#E5EDFF' }}
+                className="border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button
               onClick={() => setIsEditDialogOpen(false)}
               variant="outline"
-              className="glass-input"
-              style={{ color: '#B6C4E0' }}
+              className="border-gray-300 text-gray-700 hover:bg-gray-50"
             >
               Cancel
             </Button>
             <Button
               onClick={handleUpdate}
-              style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               Update
             </Button>
