@@ -6,25 +6,40 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Shield, Edit, Eye, User as UserIcon } from "lucide-react";
+import { Shield, User as UserIcon, BarChart3, Megaphone, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { ROLES, PERMISSIONS } from "@/utils/permissions";
 
 const ROLE_CONFIG = {
-  admin: {
+  [ROLES.ADMIN]: {
     icon: Shield,
     color: '#EF4444',
     bgColor: 'rgba(239, 68, 68, 0.15)',
-    borderColor: 'rgba(239, 68, 68, 0.3)',
-    description: 'Full access to all platform features',
-    label: 'Admin'
+    borderColor: 'rgba(239, 68, 68, 0.3)'
   },
-  user: {
+  [ROLES.MANAGER]: {
+    icon: Settings,
+    color: '#F59E0B',
+    bgColor: 'rgba(245, 158, 11, 0.15)',
+    borderColor: 'rgba(245, 158, 11, 0.3)'
+  },
+  [ROLES.ANALYST]: {
+    icon: BarChart3,
+    color: '#3B82F6',
+    bgColor: 'rgba(59, 130, 246, 0.15)',
+    borderColor: 'rgba(59, 130, 246, 0.3)'
+  },
+  [ROLES.ADVERTISER]: {
+    icon: Megaphone,
+    color: '#8B5CF6',
+    bgColor: 'rgba(139, 92, 246, 0.15)',
+    borderColor: 'rgba(139, 92, 246, 0.3)'
+  },
+  [ROLES.USER]: {
     icon: UserIcon,
     color: '#10B981',
     bgColor: 'rgba(16, 185, 129, 0.15)',
-    borderColor: 'rgba(16, 185, 129, 0.3)',
-    description: 'Standard user access',
-    label: 'User'
+    borderColor: 'rgba(16, 185, 129, 0.3)'
   }
 };
 
@@ -69,8 +84,9 @@ export default function EditUserDialog({ user, open, onOpenChange }) {
 
   if (!user) return null;
 
-  const RoleIcon = ROLE_CONFIG[formData.role]?.icon || UserIcon;
   const roleConfig = ROLE_CONFIG[formData.role];
+  const rolePermissions = PERMISSIONS[formData.role];
+  const RoleIcon = roleConfig?.icon || UserIcon;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -114,13 +130,15 @@ export default function EditUserDialog({ user, open, onOpenChange }) {
                     <RoleIcon className="w-5 h-5" style={{ color: roleConfig?.color || '#10B981' }} />
                   </div>
                   <div>
-                    <p className="font-semibold text-left">{roleConfig?.label || formData.role}</p>
-                    <p className="text-xs text-left" style={{ color: '#7A8BA6' }}>{roleConfig?.description}</p>
+                    <p className="font-semibold text-left">{rolePermissions?.label || formData.role}</p>
+                    <p className="text-xs text-left" style={{ color: '#7A8BA6' }}>{rolePermissions?.description}</p>
                   </div>
                 </div>
               </SelectTrigger>
               <SelectContent style={{ background: '#0F2744', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                {Object.entries(ROLE_CONFIG).map(([role, config]) => {
+                {Object.keys(ROLE_CONFIG).map((role) => {
+                  const config = ROLE_CONFIG[role];
+                  const permissions = PERMISSIONS[role];
                   const Icon = config.icon;
                   return (
                     <SelectItem key={role} value={role} style={{ color: '#E5EDFF' }}>
@@ -135,8 +153,8 @@ export default function EditUserDialog({ user, open, onOpenChange }) {
                           <Icon className="w-4 h-4" style={{ color: config.color }} />
                         </div>
                         <div>
-                          <p className="font-semibold" style={{ color: '#E5EDFF' }}>{config.label}</p>
-                          <p className="text-xs" style={{ color: '#7A8BA6' }}>{config.description}</p>
+                          <p className="font-semibold" style={{ color: '#E5EDFF' }}>{permissions.label}</p>
+                          <p className="text-xs" style={{ color: '#7A8BA6' }}>{permissions.description}</p>
                         </div>
                       </div>
                     </SelectItem>
