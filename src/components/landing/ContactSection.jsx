@@ -13,18 +13,31 @@ import {
   Twitter,
   Facebook
 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import { useMutation } from "@tanstack/react-query";
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    subject: "General Inquiry",
     message: "",
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const submitMutation = useMutation({
+    mutationFn: (data) => base44.entities.ContactSubmission.create(data),
+    onSuccess: () => {
+      setSubmitted(true);
+      setFormData({ name: "", email: "", subject: "General Inquiry", message: "" });
+      setTimeout(() => setSubmitted(false), 5000);
+    },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
+    if (!formData.name || !formData.email || !formData.message) return;
+    submitMutation.mutate(formData);
   };
 
   return (
@@ -69,9 +82,15 @@ export default function ContactSection() {
               </div>
               
               <form onSubmit={handleSubmit} className="space-y-5">
+                {submitted && (
+                  <div className="bg-green-500/20 border border-green-500/50 rounded-xl p-4 text-green-200 text-sm">
+                    Thank you! Your message has been sent successfully.
+                  </div>
+                )}
                 <div>
                   <label className="text-white/70 text-sm mb-2 block">Your Name</label>
                   <Input
+                    required
                     placeholder="John Doe"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -81,6 +100,7 @@ export default function ContactSection() {
                 <div>
                   <label className="text-white/70 text-sm mb-2 block">Email Address</label>
                   <Input
+                    required
                     type="email"
                     placeholder="john@example.com"
                     value={formData.email}
@@ -89,17 +109,32 @@ export default function ContactSection() {
                   />
                 </div>
                 <div>
+                  <label className="text-white/70 text-sm mb-2 block">Subject</label>
+                  <Input
+                    required
+                    placeholder="Partnership Opportunities"
+                    value={formData.subject}
+                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 rounded-xl py-6"
+                  />
+                </div>
+                <div>
                   <label className="text-white/70 text-sm mb-2 block">Message</label>
                   <Textarea
+                    required
                     placeholder="How can we help you?"
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 rounded-xl min-h-[150px]"
                   />
                 </div>
-                <Button className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white py-6 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02]">
+                <Button 
+                  type="submit"
+                  disabled={submitMutation.isPending}
+                  className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 text-white py-6 rounded-xl font-semibold transition-all duration-300 hover:scale-[1.02] disabled:opacity-50"
+                >
                   <Send className="w-5 h-5 mr-2" />
-                  Send Message
+                  {submitMutation.isPending ? 'Sending...' : 'Send Message'}
                 </Button>
               </form>
             </div>

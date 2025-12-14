@@ -23,6 +23,7 @@ import AdCampaignChart from "@/components/admin/AdCampaignChart";
 import CategoryManagementTab from "@/components/admin/CategoryManagementTab";
 import SystemActivityFeed from "@/components/admin/SystemActivityFeed";
 import ForumCategoriesManagementTab from "@/components/admin/ForumCategoriesManagementTab";
+import ContactManagementTab from "@/components/admin/ContactManagementTab";
 
 export default function Admin() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -357,9 +358,7 @@ export default function Admin() {
             </TabsContent>
 
             <TabsContent value="contact">
-              <div className="glass-card p-8 rounded-2xl text-center">
-                <p style={{ color: '#7A8BA6' }}>Contact management coming soon...</p>
-              </div>
+              <ContactManagementTab />
             </TabsContent>
 
             <TabsContent value="roles">
