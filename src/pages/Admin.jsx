@@ -12,6 +12,8 @@ import UserGrowthChart from "@/components/admin/UserGrowthChart";
 import OpportunityDistributionChart from "@/components/admin/OpportunityDistributionChart";
 import ActivityChart from "@/components/admin/ActivityChart";
 import InterestTrendsChart from "@/components/admin/InterestTrendsChart";
+import RoleManagement from "@/components/admin/RoleManagement";
+import { hasPermission } from "@/components/admin/adminPermissions";
 
 export default function Admin() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -150,39 +152,66 @@ export default function Admin() {
           {/* Tabs */}
           <Tabs defaultValue="dashboard" className="w-full">
             <TabsList className="glass-card p-2 rounded-2xl mb-8" style={{ background: 'rgba(255, 255, 255, 0.08)' }}>
-              <TabsTrigger value="dashboard" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
-                Dashboard
-              </TabsTrigger>
-              <TabsTrigger value="users" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
-                Users
-              </TabsTrigger>
-              <TabsTrigger value="partner" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
-                Partner
-              </TabsTrigger>
-              <TabsTrigger value="opportunity" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
-                Opportunity
-              </TabsTrigger>
-              <TabsTrigger value="interest" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
-                Interest
-              </TabsTrigger>
-              <TabsTrigger value="vendor" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
-                Vendor
-              </TabsTrigger>
-              <TabsTrigger value="category" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
-                Category
-              </TabsTrigger>
-              <TabsTrigger value="forum" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
-                Forum
-              </TabsTrigger>
-              <TabsTrigger value="profession" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
-                Profession
-              </TabsTrigger>
-              <TabsTrigger value="activity" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
-                Activity
-              </TabsTrigger>
-              <TabsTrigger value="contact" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
-                Contact
-              </TabsTrigger>
+              {hasPermission(currentUser?.admin_role, 'dashboard') && (
+                <TabsTrigger value="dashboard" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
+                  Dashboard
+                </TabsTrigger>
+              )}
+              {hasPermission(currentUser?.admin_role, 'users') && (
+                <TabsTrigger value="users" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
+                  Users
+                </TabsTrigger>
+              )}
+              {hasPermission(currentUser?.admin_role, 'partner') && (
+                <TabsTrigger value="partner" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
+                  Partner
+                </TabsTrigger>
+              )}
+              {hasPermission(currentUser?.admin_role, 'opportunity') && (
+                <TabsTrigger value="opportunity" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
+                  Opportunity
+                </TabsTrigger>
+              )}
+              {hasPermission(currentUser?.admin_role, 'interest') && (
+                <TabsTrigger value="interest" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
+                  Interest
+                </TabsTrigger>
+              )}
+              {hasPermission(currentUser?.admin_role, 'vendor') && (
+                <TabsTrigger value="vendor" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
+                  Vendor
+                </TabsTrigger>
+              )}
+              {hasPermission(currentUser?.admin_role, 'category') && (
+                <TabsTrigger value="category" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
+                  Category
+                </TabsTrigger>
+              )}
+              {hasPermission(currentUser?.admin_role, 'forum') && (
+                <TabsTrigger value="forum" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
+                  Forum
+                </TabsTrigger>
+              )}
+              {hasPermission(currentUser?.admin_role, 'profession') && (
+                <TabsTrigger value="profession" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
+                  Profession
+                </TabsTrigger>
+              )}
+              {hasPermission(currentUser?.admin_role, 'activity') && (
+                <TabsTrigger value="activity" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
+                  Activity
+                </TabsTrigger>
+              )}
+              {hasPermission(currentUser?.admin_role, 'contact') && (
+                <TabsTrigger value="contact" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
+                  Contact
+                </TabsTrigger>
+              )}
+              {hasPermission(currentUser?.admin_role, 'manageRoles') && (
+                <TabsTrigger value="roles" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
+                  Roles
+                </TabsTrigger>
+              )}
             </TabsList>
 
             <TabsContent value="dashboard" className="space-y-8">
@@ -264,6 +293,10 @@ export default function Admin() {
               <div className="glass-card p-8 rounded-2xl text-center">
                 <p style={{ color: '#7A8BA6' }}>Contact management coming soon...</p>
               </div>
+            </TabsContent>
+
+            <TabsContent value="roles">
+              <RoleManagement currentUser={currentUser} />
             </TabsContent>
           </Tabs>
         </div>
