@@ -6,10 +6,27 @@ import { Search, Users, Building2, Handshake, ArrowRight, Sparkles, TrendingUp, 
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import ConvergenceAnimation from "./ConvergenceAnimation";
+import { base44 } from "@/api/base44Client";
 
 export default function HeroSection() {
   const [activeUsers, setActiveUsers] = useState(9847);
   const [dealsToday, setDealsToday] = useState(23);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const user = await base44.auth.me();
+        setCurrentUser(user);
+      } catch (error) {
+        setCurrentUser(null);
+      } finally {
+        setIsAuthChecking(false);
+      }
+    };
+    checkAuth();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -157,25 +174,43 @@ export default function HeroSection() {
                       placeholder="Enter your email to get started..."
                       className="w-full pl-12 pr-4 py-6 border-0 focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50 text-lg glass-input rounded-xl"
                       style={{ color: '#E5EDFF', background: 'rgba(255, 255, 255, 0.05)' }}
+                      readOnly
                     />
                   </div>
-                  <Link to={createPageUrl("Partnerships")}>
-                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-                      <Button className="w-full sm:w-auto px-8 py-6 rounded-xl font-bold text-lg shadow-2xl relative overflow-hidden group" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}>
-                        <motion.div
-                          animate={{
-                            x: ['-100%', '100%'],
-                          }}
-                          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                        />
-                        <span className="relative z-10 flex items-center">
-                          Get Started Free
-                          <ArrowRight className="ml-2 w-5 h-5" />
-                        </span>
-                      </Button>
-                    </motion.div>
-                  </Link>
+                  {!isAuthChecking && (
+                    currentUser ? (
+                      <Link to={createPageUrl("Partnerships")}>
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+                          <Button className="w-full sm:w-auto px-8 py-6 rounded-xl font-bold text-lg shadow-2xl" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}>
+                            <span className="flex items-center">
+                              Go to Dashboard
+                              <ArrowRight className="ml-2 w-5 h-5" />
+                            </span>
+                          </Button>
+                        </motion.div>
+                      </Link>
+                    ) : (
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+                        <Button 
+                          onClick={() => base44.auth.redirectToLogin()}
+                          className="w-full sm:w-auto px-8 py-6 rounded-xl font-bold text-lg shadow-2xl relative overflow-hidden group" 
+                          style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}
+                        >
+                          <motion.div
+                            animate={{
+                              x: ['-100%', '100%'],
+                            }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                          />
+                          <span className="relative z-10 flex items-center">
+                            Get Started Free
+                            <ArrowRight className="ml-2 w-5 h-5" />
+                          </span>
+                        </Button>
+                      </motion.div>
+                    )
+                  )}
                 </div>
               </motion.div>
               
