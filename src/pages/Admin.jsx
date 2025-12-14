@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import Sidebar from "@/components/partnerships/Sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, AlertCircle } from "lucide-react";
+import { motion } from "framer-motion";
 import GeneralSummary from "@/components/admin/GeneralSummary";
 import OpportunitiesSummary from "@/components/admin/OpportunitiesSummary";
 import ConnectionSummary from "@/components/admin/ConnectionSummary";
@@ -133,23 +134,62 @@ export default function Admin() {
       <div className="flex-1 overflow-y-auto p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center gap-4 mb-8">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)' }}>
-              <Shield className="w-7 h-7" style={{ color: '#fff' }} />
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative overflow-hidden rounded-3xl p-8 mb-8"
+            style={{
+              background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.05) 100%)',
+              backdropFilter: 'blur(10px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(10px) saturate(180%)',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              boxShadow: '0 8px 32px rgba(239, 68, 68, 0.2)',
+            }}
+          >
+            {/* Animated background elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 opacity-10" style={{
+              background: 'radial-gradient(circle, #EF4444 0%, transparent 70%)',
+            }} />
+            
+            <div className="relative z-10 flex items-center gap-6">
+              <motion.div
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.6 }}
+                className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-2xl"
+                style={{ 
+                  background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)',
+                  boxShadow: '0 10px 40px rgba(239, 68, 68, 0.4)'
+                }}
+              >
+                <Shield className="w-10 h-10" style={{ color: '#fff' }} />
+              </motion.div>
+              
+              <div>
+                <h1 className="text-4xl font-black mb-2" style={{ 
+                  color: '#E5EDFF',
+                  textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)'
+                }}>
+                  Admin Dashboard
+                </h1>
+                <p className="text-base font-medium" style={{ color: '#B6C4E0' }}>
+                  Monitor and manage platform metrics
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold" style={{ color: '#E5EDFF' }}>
-                Admin Dashboard
-              </h1>
-              <p className="text-sm" style={{ color: '#7A8BA6' }}>
-                Monitor and manage platform metrics
-              </p>
-            </div>
-          </div>
+          </motion.div>
 
           {/* Tabs */}
           <Tabs defaultValue="dashboard" className="w-full">
-            <TabsList className="glass-card p-2 rounded-2xl mb-8" style={{ background: 'rgba(255, 255, 255, 0.08)' }}>
+            <TabsList 
+              className="p-2 rounded-2xl mb-8"
+              style={{ 
+                background: 'rgba(255, 255, 255, 0.05)',
+                backdropFilter: 'blur(10px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(10px) saturate(180%)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+              }}
+            >
               <TabsTrigger value="dashboard" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
                 Dashboard
               </TabsTrigger>
@@ -189,17 +229,24 @@ export default function Admin() {
               <GeneralSummary metrics={generalMetrics} />
               
               {/* Analytics Charts */}
-              <div>
-                <h2 className="text-xl font-bold mb-6" style={{ color: '#E5EDFF' }}>
-                  Analytics & Insights
-                </h2>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-2 h-8 rounded-full" style={{ background: 'linear-gradient(180deg, #3B82F6 0%, #7C3AED 100%)' }} />
+                  <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>
+                    Analytics & Insights
+                  </h2>
+                </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                   <UserGrowthChart users={users} />
                   <OpportunityDistributionChart opportunities={opportunities} />
                   <ActivityChart activities={activities} />
                   <InterestTrendsChart interests={interests} />
                 </div>
-              </div>
+              </motion.div>
 
               <OpportunitiesSummary metrics={opportunitiesMetrics} />
               <ConnectionSummary metrics={connectionMetrics} />

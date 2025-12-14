@@ -5,9 +5,12 @@ import MetricCard from "./MetricCard";
 export default function InterestsSummary({ metrics }) {
   return (
     <div>
-      <h2 className="text-xl font-bold mb-6" style={{ color: '#E5EDFF' }}>
-        Interests Summary
-      </h2>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-2 h-8 rounded-full" style={{ background: 'linear-gradient(180deg, #10B981 0%, #06B6D4 100%)' }} />
+        <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>
+          Interests Summary
+        </h2>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           icon={Sparkles}

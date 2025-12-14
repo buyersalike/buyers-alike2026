@@ -5,9 +5,12 @@ import MetricCard from "./MetricCard";
 export default function GeneralSummary({ metrics }) {
   return (
     <div>
-      <h2 className="text-xl font-bold mb-6" style={{ color: '#E5EDFF' }}>
-        General Summary
-      </h2>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-2 h-8 rounded-full" style={{ background: 'linear-gradient(180deg, #3B82F6 0%, #10B981 100%)' }} />
+        <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>
+          General Summary
+        </h2>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <MetricCard
           icon={Users}
