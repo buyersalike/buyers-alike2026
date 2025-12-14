@@ -3,6 +3,8 @@ import Sidebar from "@/components/partnerships/Sidebar";
 import FilterBar from "@/components/partnerships/FilterBar";
 import PartnershipCard from "@/components/partnerships/PartnershipCard";
 import { Button } from "@/components/ui/button";
+import SEO from "@/components/seo/SEO";
+import { pageMetadata } from "@/components/seo/seoMetadata";
 
 // Sample data with status
 const partnershipsData = [
@@ -270,6 +272,7 @@ const tabs = [
 ];
 
 export default function Partnerships() {
+  const metadata = pageMetadata.Partnerships;
   const [viewMode, setViewMode] = useState("grid");
   const [activeTab, setActiveTab] = useState("active");
 
@@ -296,6 +299,11 @@ export default function Partnerships() {
 
   return (
     <div className="flex">
+      <SEO 
+        title={metadata.title}
+        description={metadata.description}
+        keywords={metadata.keywords}
+      />
       {/* Sidebar */}
       <Sidebar />
 
