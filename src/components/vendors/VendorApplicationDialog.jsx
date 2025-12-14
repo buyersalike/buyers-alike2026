@@ -6,6 +6,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Store, Upload, X, FileText } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import { useMutation } from "@tanstack/react-query";
+import { useToast } from "@/components/ui/use-toast";
 
 const serviceCategories = [
   "Accounting",
@@ -35,6 +38,7 @@ const provinces = [
 ];
 
 export default function VendorApplicationDialog({ open, onOpenChange }) {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     businessName: "",
     contactName: "",
@@ -47,6 +51,11 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
     description: "",
   });
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [user, setUser] = useState(null);
+
+  React.useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => setUser(null));
+  }, []);
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files || []);
@@ -57,23 +66,59 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
     setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e) => {
+  const submitMutation = useMutation({
+    mutationFn: async (data) => {
+      return await base44.entities.VendorApplication.create(data);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Application Submitted",
+        description: "Your vendor application has been submitted successfully. We'll review it shortly.",
+      });
+      setFormData({
+        businessName: "",
+        contactName: "",
+        email: "",
+        phone: "",
+        website: "",
+        category: "",
+        province: "",
+        address: "",
+        description: "",
+      });
+      setUploadedFiles([]);
+      onOpenChange(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Submission Failed",
+        description: error.message || "Failed to submit application. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Vendor application:", formData);
-    console.log("Uploaded documents:", uploadedFiles);
-    setFormData({
-      businessName: "",
-      contactName: "",
-      email: "",
-      phone: "",
-      website: "",
-      category: "",
-      province: "",
-      address: "",
-      description: "",
-    });
-    setUploadedFiles([]);
-    onOpenChange(false);
+    
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to submit a vendor application.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const applicationData = {
+      business_name: formData.businessName,
+      user_email: user.email,
+      category: formData.category,
+      province: formData.province,
+      status: "pending"
+    };
+
+    submitMutation.mutate(applicationData);
   };
 
   return (
@@ -314,10 +359,11 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
             </Button>
             <Button
               type="submit"
+              disabled={submitMutation.isPending}
               className="flex-1 rounded-lg"
               style={{ background: '#EA580C', color: '#fff' }}
             >
-              Submit Application
+              {submitMutation.isPending ? "Submitting..." : "Submit Application"}
             </Button>
           </div>
         </form>
