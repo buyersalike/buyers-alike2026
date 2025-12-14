@@ -150,8 +150,8 @@ export default function ConvergenceAnimation() {
       </AnimatePresence>
 
       {/* Main animation container */}
-      <div className="relative w-full h-[500px] flex items-center justify-center py-8">
-        <div className="relative w-full max-w-xl h-full flex items-center justify-center">
+      <div className="relative w-full flex items-center justify-center" style={{ minHeight: '480px' }}>
+        <div className="relative w-full max-w-xl" style={{ height: '480px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {/* Center goal - always visible */}
           <motion.div
             key={`center-${animationKey}`}
