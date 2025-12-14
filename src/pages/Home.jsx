@@ -8,10 +8,20 @@ import JourneySection from "@/components/landing/JourneySection";
 import PricingSection from "@/components/landing/PricingSection";
 import ContactSection from "@/components/landing/ContactSection";
 import Footer from "@/components/landing/Footer";
+import SEO from "@/components/seo/SEO";
+import { pageMetadata } from "@/components/seo/seoMetadata";
 
 export default function Home() {
+  const metadata = pageMetadata.Home;
+  
   return (
     <div className="min-h-screen overflow-x-hidden" style={{ background: 'linear-gradient(135deg, #0A1628 0%, #1E3A5F 100%)' }}>
+      <SEO 
+        title={metadata.title}
+        description={metadata.description}
+        keywords={metadata.keywords}
+        canonicalUrl={typeof window !== 'undefined' ? window.location.origin : ''}
+      />
       {/* Base gradient background */}
       <div className="fixed inset-0 bg-gradient-to-br from-[#0A1628] via-[#1F3A8A]/20 to-[#1E3A5F] -z-10" />
       
