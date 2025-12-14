@@ -119,10 +119,19 @@ export default function VendorAdsSection() {
     fetchApprovedAds();
   }, []);
 
-  // Split ads into 3 columns (up to 10 ads per column)
-  const column1 = ads.slice(0, 10);
-  const column2 = ads.slice(10, 20);
-  const column3 = ads.slice(20, 30);
+  // Organize ads by column assignment
+  const column1 = ads.filter(ad => ad.landing_column === 1).slice(0, 10);
+  const column2 = ads.filter(ad => ad.landing_column === 2).slice(0, 10);
+  const column3 = ads.filter(ad => ad.landing_column === 3).slice(0, 10);
+  
+  // Distribute unassigned ads evenly across columns
+  const unassignedAds = ads.filter(ad => !ad.landing_column || ![1, 2, 3].includes(ad.landing_column));
+  unassignedAds.forEach((ad, idx) => {
+    const targetColumn = (idx % 3) + 1;
+    if (targetColumn === 1 && column1.length < 10) column1.push(ad);
+    else if (targetColumn === 2 && column2.length < 10) column2.push(ad);
+    else if (targetColumn === 3 && column3.length < 10) column3.push(ad);
+  });
 
   if (loading) {
     return (

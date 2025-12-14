@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle, Clock, Eye, Search, ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -25,6 +27,7 @@ import {
 export default function AdvertiseApplicationsTable() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedApplication, setSelectedApplication] = useState(null);
+  const [columnSelection, setColumnSelection] = useState(1);
   const queryClient = useQueryClient();
 
   const { data: applications = [], isLoading } = useQuery({
@@ -33,7 +36,7 @@ export default function AdvertiseApplicationsTable() {
   });
 
   const approveMutation = useMutation({
-    mutationFn: async (applicationId) => {
+    mutationFn: async ({ applicationId, column }) => {
       const app = applications.find(a => a.id === applicationId);
       const approvedDate = new Date();
       const expiryDate = new Date(approvedDate);
@@ -42,7 +45,8 @@ export default function AdvertiseApplicationsTable() {
       await base44.entities.AdvertiseApplication.update(applicationId, {
         status: 'approved',
         approved_date: approvedDate.toISOString(),
-        expiry_date: expiryDate.toISOString()
+        expiry_date: expiryDate.toISOString(),
+        landing_column: column
       });
     },
     onSuccess: () => {
@@ -163,7 +167,7 @@ export default function AdvertiseApplicationsTable() {
                           <>
                             <Button
                               size="sm"
-                              onClick={() => approveMutation.mutate(app.id)}
+                              onClick={() => setSelectedApplication(app)}
                               className="bg-green-600 hover:bg-green-700"
                             >
                               <CheckCircle className="w-4 h-4" />
@@ -263,22 +267,43 @@ export default function AdvertiseApplicationsTable() {
               )}
 
               {selectedApplication.status === 'pending' && (
-                <div className="flex gap-3 pt-4">
-                  <Button
-                    onClick={() => approveMutation.mutate(selectedApplication.id)}
-                    className="flex-1 bg-green-600 hover:bg-green-700"
-                  >
-                    <CheckCircle className="w-4 h-4 mr-2" />
-                    Approve Application
-                  </Button>
-                  <Button
-                    onClick={() => rejectMutation.mutate(selectedApplication.id)}
-                    variant="destructive"
-                    className="flex-1"
-                  >
-                    <XCircle className="w-4 h-4 mr-2" />
-                    Reject Application
-                  </Button>
+                <div className="space-y-4 pt-4 border-t" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+                  <div>
+                    <Label style={{ color: '#B6C4E0' }}>Landing Page Column Placement</Label>
+                    <Select value={String(columnSelection)} onValueChange={(val) => setColumnSelection(Number(val))}>
+                      <SelectTrigger className="glass-input mt-2" style={{ color: '#E5EDFF' }}>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">Column 1 (Left)</SelectItem>
+                        <SelectItem value="2">Column 2 (Center)</SelectItem>
+                        <SelectItem value="3">Column 3 (Right)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs mt-1" style={{ color: '#7A8BA6' }}>
+                      Choose which column this ad will appear in on the landing page
+                    </p>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => approveMutation.mutate({ applicationId: selectedApplication.id, column: columnSelection })}
+                      className="flex-1 bg-green-600 hover:bg-green-700"
+                      disabled={approveMutation.isPending}
+                    >
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      {approveMutation.isPending ? 'Approving...' : 'Approve Application'}
+                    </Button>
+                    <Button
+                      onClick={() => rejectMutation.mutate(selectedApplication.id)}
+                      variant="destructive"
+                      className="flex-1"
+                      disabled={rejectMutation.isPending}
+                    >
+                      <XCircle className="w-4 h-4 mr-2" />
+                      Reject Application
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
