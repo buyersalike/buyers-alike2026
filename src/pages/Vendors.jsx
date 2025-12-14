@@ -9,73 +9,10 @@ import BecomeVendorBanner from "@/components/vendors/BecomeVendorBanner";
 import AdvertiseBanner from "@/components/vendors/AdvertiseBanner";
 import VendorApplicationDialog from "@/components/vendors/VendorApplicationDialog";
 import AdvertiseApplicationDialog from "@/components/vendors/AdvertiseApplicationDialog";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
 
-const vendorsData = [
-  {
-    id: 1,
-    name: "Test vendor",
-    category: "Accounting",
-    address: "123 Main Street, Anytown, Ontario, Canada",
-    logo: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=200&h=200&fit=crop",
-    province: "Ontario",
-  },
-  {
-    id: 2,
-    name: "Nicety AI Inc.",
-    category: "Franchise Agent",
-    address: "855 Crossgate Street, Ottawa, Ontario, Canada",
-    logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=200&fit=crop",
-    province: "Ontario",
-  },
-  {
-    id: 3,
-    name: "Legal Solutions Pro",
-    category: "Legal Services",
-    address: "456 Bay Street, Toronto, Ontario, Canada",
-    logo: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=200&h=200&fit=crop",
-    province: "Ontario",
-  },
-  {
-    id: 4,
-    name: "Marketing Masters",
-    category: "Marketing",
-    address: "789 Yonge Street, Toronto, Ontario, Canada",
-    logo: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=200&h=200&fit=crop",
-    province: "Ontario",
-  },
-  {
-    id: 5,
-    name: "Tech Consultants Ltd",
-    category: "IT Services",
-    address: "321 King Street, Vancouver, British Columbia, Canada",
-    logo: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=200&h=200&fit=crop",
-    province: "British Columbia",
-  },
-  {
-    id: 6,
-    name: "Financial Advisors Group",
-    category: "Financial Services",
-    address: "654 Queen Street, Calgary, Alberta, Canada",
-    logo: "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=200&h=200&fit=crop",
-    province: "Alberta",
-  },
-  {
-    id: 7,
-    name: "Construction Pros",
-    category: "Construction",
-    address: "987 Main Avenue, Montreal, Quebec, Canada",
-    logo: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=200&h=200&fit=crop",
-    province: "Quebec",
-  },
-  {
-    id: 8,
-    name: "HR Solutions Inc",
-    category: "Human Resources",
-    address: "147 Spadina Road, Toronto, Ontario, Canada",
-    logo: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=200&h=200&fit=crop",
-    province: "Ontario",
-  },
-];
+
 
 const categories = [
   "All Categories",
@@ -107,6 +44,22 @@ export default function Vendors() {
   const [selectedProvince, setSelectedProvince] = useState("All Provinces");
   const [isApplicationDialogOpen, setIsApplicationDialogOpen] = useState(false);
   const [isAdvertiseDialogOpen, setIsAdvertiseDialogOpen] = useState(false);
+
+  // Fetch approved vendors from database
+  const { data: vendorsData = [], isLoading } = useQuery({
+    queryKey: ['approvedVendors'],
+    queryFn: async () => {
+      const vendors = await base44.entities.VendorApplication.filter({ status: 'approved' });
+      return vendors.map(vendor => ({
+        id: vendor.id,
+        name: vendor.business_name,
+        category: vendor.category,
+        address: `${vendor.province}, Canada`,
+        province: vendor.province,
+        logo: `https://ui-avatars.com/api/?name=${encodeURIComponent(vendor.business_name)}&background=EA580C&color=fff&size=200`
+      }));
+    },
+  });
 
   const filteredVendors = vendorsData.filter((vendor) => {
     const matchesSearch = vendor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -232,7 +185,13 @@ export default function Vendors() {
             </div>
 
             {/* Vendors Grid */}
-            {filteredVendors.length > 0 ? (
+            {isLoading ? (
+              <div className="text-center py-16 glass-card">
+                <p className="text-lg" style={{ color: '#7A8BA6' }}>
+                  Loading vendors...
+                </p>
+              </div>
+            ) : filteredVendors.length > 0 ? (
               <div className="grid md:grid-cols-2 gap-6">
                 {filteredVendors.map((vendor, index) => (
                   <VendorCard key={vendor.id} vendor={vendor} index={index} />
@@ -241,7 +200,7 @@ export default function Vendors() {
             ) : (
               <div className="text-center py-16 glass-card">
                 <p className="text-lg" style={{ color: '#7A8BA6' }}>
-                  No vendors found matching your search criteria
+                  {vendorsData.length === 0 ? 'No approved vendors yet' : 'No vendors found matching your search criteria'}
                 </p>
               </div>
             )}
