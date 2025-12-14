@@ -200,7 +200,7 @@ export default function HeroSection() {
             <div className="flex flex-wrap gap-6">
               {[
                 { icon: Users, value: "10K+", label: "Active Members", gradient: "from-[#3B82F6] to-[#7C3AED]" },
-                { icon: Building2, value: "5K+", label: "Fortune 500 Companies", gradient: "from-[#7C3AED] to-[#F59E0B]" },
+                { icon: Building2, value: "5K+", label: "Partners", gradient: "from-[#7C3AED] to-[#F59E0B]" },
                 { icon: Handshake, value: "2K+", label: "Deals Closed", gradient: "from-[#22C55E] to-[#3B82F6]" },
               ].map((stat, index) => (
                 <motion.div
