@@ -16,37 +16,70 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [hidden, setHidden] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 20);
+      
+      // Smart hide/show navbar
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+      }
+      setLastScrollY(currentScrollY);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   return (
     <>
       <motion.nav
         initial={{ y: -100 }}
-        animate={{ y: 0 }}
+        animate={{ y: hidden ? -100 : 0 }}
+        transition={{ duration: 0.3 }}
         style={scrolled ? {
-          background: 'rgba(255, 255, 255, 0.08)',
-          backdropFilter: 'blur(10px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(10px) saturate(180%)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.18)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+          background: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(20px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(200%)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)',
         } : {}}
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+        className="fixed top-4 left-4 right-4 z-50 rounded-2xl transition-all duration-500 mx-auto max-w-7xl"
       >
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="px-6 py-4">
           <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)' }}>
-                <Handshake className="w-5 h-5" style={{ color: '#E5EDFF' }} />
-              </div>
+            {/* Enhanced Logo with glow */}
+            <motion.div 
+              className="flex items-center gap-3"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <motion.div
+                whileHover={{ rotate: [0, -10, 10, 0] }}
+                transition={{ duration: 0.5 }}
+                className="w-11 h-11 rounded-xl flex items-center justify-center relative" 
+                style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)' }}
+              >
+                <motion.div
+                  animate={{
+                    boxShadow: [
+                      '0 0 20px rgba(59, 130, 246, 0.4)',
+                      '0 0 30px rgba(59, 130, 246, 0.6)',
+                      '0 0 20px rgba(59, 130, 246, 0.4)',
+                    ],
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="absolute inset-0 rounded-xl"
+                />
+                <Handshake className="w-6 h-6 relative z-10" style={{ color: '#E5EDFF' }} />
+              </motion.div>
               <span className="text-xl font-bold" style={{ color: '#E5EDFF' }}>BuyersAlike</span>
-            </div>
+            </motion.div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
@@ -77,14 +110,25 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* CTA Buttons */}
+            {/* Enhanced CTA Buttons */}
             <div className="hidden md:flex items-center gap-4">
-              <Button variant="ghost" className="hover:bg-white/10" style={{ color: '#B6C4E0' }}>
-                Sign In
-              </Button>
-              <Button className="rounded-xl px-6" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}>
-                Get Started
-              </Button>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button variant="ghost" className="hover:bg-white/10 rounded-xl px-5" style={{ color: '#B6C4E0' }}>
+                  Sign In
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button className="rounded-xl px-6 py-5 font-semibold shadow-lg relative overflow-hidden group" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}>
+                  <motion.div
+                    animate={{
+                      x: ['-100%', '100%'],
+                    }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                  />
+                  <span className="relative z-10">Get Started Free</span>
+                </Button>
+              </motion.div>
             </div>
 
             {/* Mobile menu button */}
