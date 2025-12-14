@@ -18,6 +18,8 @@ import InterestTrendsChart from "@/components/admin/InterestTrendsChart";
 import UsersTable from "@/components/admin/UsersTable";
 import VendorApplicationsTable from "@/components/admin/VendorApplicationsTable";
 import AdvertiseApplicationsTable from "@/components/admin/AdvertiseApplicationsTable";
+import AdCampaignsSummary from "@/components/admin/AdCampaignsSummary";
+import AdCampaignChart from "@/components/admin/AdCampaignChart";
 
 export default function Admin() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -72,6 +74,18 @@ export default function Admin() {
     enabled: currentUser?.role === 'admin',
   });
 
+  const { data: adCampaigns = [] } = useQuery({
+    queryKey: ['allAdCampaigns'],
+    queryFn: () => base44.entities.AdvertiseApplication.list(),
+    enabled: currentUser?.role === 'admin',
+  });
+
+  const { data: adMetrics = [] } = useQuery({
+    queryKey: ['allAdMetrics'],
+    queryFn: () => base44.entities.AdMetrics.list(),
+    enabled: currentUser?.role === 'admin',
+  });
+
   // Calculate metrics
   const generalMetrics = {
     totalUsers: users.length,
@@ -101,6 +115,23 @@ export default function Admin() {
     approved: interests.filter(i => i.status === 'approved').length,
     pending: interests.filter(i => i.status === 'pending').length,
     rejected: interests.filter(i => i.status === 'rejected').length,
+  };
+
+  const adCampaignsMetrics = {
+    total: adCampaigns.length,
+    active: adCampaigns.filter(c => {
+      if (c.status !== 'approved') return false;
+      if (!c.expiry_date) return true;
+      return new Date(c.expiry_date) > new Date();
+    }).length,
+    pending: adCampaigns.filter(c => c.status === 'pending').length,
+    rejected: adCampaigns.filter(c => c.status === 'rejected').length,
+    totalImpressions: adMetrics.reduce((sum, m) => sum + (m.impressions || 0), 0),
+    totalRevenue: adCampaigns.filter(c => c.status === 'approved').reduce((sum, c) => {
+      // Estimate revenue based on package type (simplified calculation)
+      const packageCosts = { 'basic': 500, 'premium': 1000, 'enterprise': 2000 };
+      return sum + (packageCosts[c.package] || 500);
+    }, 0),
   };
 
   if (isLoading) {
@@ -259,6 +290,22 @@ export default function Admin() {
               <OpportunitiesSummary metrics={opportunitiesMetrics} />
               <ConnectionSummary metrics={connectionMetrics} />
               <InterestsSummary metrics={interestsMetrics} />
+              <AdCampaignsSummary metrics={adCampaignsMetrics} />
+              
+              {/* Ad Campaign Analytics */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-2 h-8 rounded-full" style={{ background: 'linear-gradient(180deg, #7C3AED 0%, #F59E0B 100%)' }} />
+                  <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>
+                    Advertising Analytics
+                  </h2>
+                </div>
+                <AdCampaignChart campaigns={adCampaigns} metrics={adMetrics} />
+              </motion.div>
             </TabsContent>
 
             <TabsContent value="users">
