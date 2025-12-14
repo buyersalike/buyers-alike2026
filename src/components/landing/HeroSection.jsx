@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Users, Building2, Handshake, ArrowRight, Sparkles, TrendingUp, Award } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import ConvergenceAnimation from "./ConvergenceAnimation";
 
 export default function HeroSection() {
   const [activeUsers, setActiveUsers] = useState(9847);
@@ -229,150 +230,36 @@ export default function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Right side - Enhanced 3D glass card with live activity */}
+          {/* Right side - Convergence Animation */}
           <motion.div
             initial={{ opacity: 0, x: 50, scale: 0.9 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="hidden lg:block"
           >
-            <div className="relative">
-              {/* Main card with enhanced depth */}
-              <div className="relative glass-card p-8 rounded-3xl" style={{
-                background: 'rgba(255, 255, 255, 0.12)',
-                backdropFilter: 'blur(20px) saturate(180%)',
-                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-              }}>
-                {/* Animated gradient border */}
-                <motion.div
-                  animate={{
-                    rotate: [0, 360],
-                  }}
-                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 rounded-3xl"
-                  style={{
-                    background: 'linear-gradient(135deg, #3B82F6 0%, #7C3AED 50%, #3B82F6 100%)',
-                    padding: '2px',
-                    mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                    maskComposite: 'exclude',
-                    opacity: 0.3,
-                  }}
-                />
-
-                <div className="flex items-center gap-4 mb-6">
-                  <motion.div
-                    animate={{
-                      boxShadow: [
-                        '0 0 20px rgba(59, 130, 246, 0.3)',
-                        '0 0 40px rgba(59, 130, 246, 0.5)',
-                        '0 0 20px rgba(59, 130, 246, 0.3)',
-                      ],
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center" 
-                    style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)' }}
-                  >
-                    <Users className="w-8 h-8" style={{ color: '#E5EDFF' }} />
-                  </motion.div>
-                  <div>
-                    <h3 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>Live Matches</h3>
-                    <p className="text-sm" style={{ color: '#B6C4E0' }}>AI-powered partner discovery</p>
-                  </div>
-                </div>
-
-                {/* Enhanced partner cards with stagger animation */}
-                <div className="space-y-3 mb-4">
-                  {[
-                    { name: "Sarah Chen", role: "Tech Investor", match: "98%", location: "San Francisco", gradient: "from-[#3B82F6] to-[#7C3AED]" },
-                    { name: "Michael Ross", role: "M&A Advisor", match: "95%", location: "New York", gradient: "from-[#7C3AED] to-[#F59E0B]" },
-                    { name: "Emily Davis", role: "Startup Founder", match: "92%", location: "London", gradient: "from-[#22C55E] to-[#3B82F6]" },
-                  ].map((partner, index) => (
-                    <motion.div
-                      key={partner.name}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.7 + index * 0.15 }}
-                      whileHover={{ x: 5, scale: 1.02 }}
-                      className="glass-card glass-card-hover p-4 cursor-pointer rounded-2xl"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.08)',
-                      }}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg bg-gradient-to-br ${partner.gradient}`} style={{ color: '#fff' }}>
-                            {partner.name[0]}
-                          </div>
-                          <div>
-                            <p className="font-semibold text-base" style={{ color: '#E5EDFF' }}>{partner.name}</p>
-                            <p className="text-xs" style={{ color: '#7A8BA6' }}>{partner.role} • {partner.location}</p>
-                          </div>
-                        </div>
-                        <div className="px-3 py-1.5 rounded-xl" style={{ 
-                          background: 'rgba(34, 197, 94, 0.15)', 
-                          border: '1px solid rgba(34, 197, 94, 0.3)',
-                          boxShadow: '0 0 10px rgba(34, 197, 94, 0.2)',
-                        }}>
-                          <span className="text-sm font-bold" style={{ color: '#22C55E' }}>{partner.match}</span>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Live activity indicator */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.5 }}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl"
-                  style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)' }}
-                >
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="w-2 h-2 rounded-full bg-[#22C55E]"
-                  />
-                  <span className="text-xs font-medium" style={{ color: '#B6C4E0' }}>
-                    {Math.floor(Math.random() * 50) + 150} users online • {Math.floor(Math.random() * 10) + 5} new matches
-                  </span>
-                </motion.div>
-              </div>
-
-              {/* Floating elements with depth */}
+            <div className="relative glass-card p-8 rounded-3xl" style={{
+              background: 'rgba(255, 255, 255, 0.08)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
+              border: '1px solid rgba(255, 255, 255, 0.18)',
+            }}>
+              {/* Animated gradient border */}
               <motion.div
-                animate={{ 
-                  y: [0, -15, 0],
-                  rotate: [0, 5, 0],
+                animate={{
+                  rotate: [0, 360],
                 }}
-                transition={{ duration: 4, repeat: Infinity }}
-                className="absolute -top-8 -right-8 w-24 h-24 glass-card flex items-center justify-center rounded-3xl"
-                style={{ 
-                  background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.5) 0%, rgba(124, 58, 237, 0.5) 100%)',
-                  boxShadow: '0 15px 40px rgba(59, 130, 246, 0.3)',
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 rounded-3xl pointer-events-none"
+                style={{
+                  background: 'linear-gradient(135deg, #3B82F6 0%, #7C3AED 50%, #3B82F6 100%)',
+                  padding: '2px',
+                  mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                  maskComposite: 'exclude',
+                  opacity: 0.3,
                 }}
-              >
-                <Handshake className="w-12 h-12" style={{ color: '#E5EDFF' }} />
-              </motion.div>
+              />
 
-              <motion.div
-                animate={{ 
-                  y: [0, 10, 0],
-                  rotate: [0, -3, 0],
-                }}
-                transition={{ duration: 3.5, repeat: Infinity, delay: 0.5 }}
-                className="absolute -bottom-6 -left-6 glass-card px-4 py-2 rounded-2xl"
-                style={{ 
-                  background: 'rgba(124, 58, 237, 0.4)',
-                  boxShadow: '0 10px 30px rgba(124, 58, 237, 0.3)',
-                }}
-              >
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5" style={{ color: '#FACC15' }} />
-                  <span className="text-sm font-bold" style={{ color: '#E5EDFF' }}>AI Matching</span>
-                </div>
-              </motion.div>
+              <ConvergenceAnimation />
             </div>
           </motion.div>
         </div>
