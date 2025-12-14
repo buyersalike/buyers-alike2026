@@ -8,7 +8,7 @@ import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Shield, User as UserIcon, BarChart3, Megaphone, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { ROLES, PERMISSIONS } from "@/utils/permissions";
+import { ROLES, PERMISSIONS } from "@/components/utils/permissions";
 
 const ROLE_CONFIG = {
   [ROLES.ADMIN]: {

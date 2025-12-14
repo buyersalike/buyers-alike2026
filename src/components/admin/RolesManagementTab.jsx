@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ROLES, PERMISSIONS } from "@/utils/permissions";
+import { ROLES, PERMISSIONS } from "@/components/utils/permissions";
 import { Shield, Settings, BarChart3, Megaphone, User } from "lucide-react";
 
 const ROLE_ICONS = {
