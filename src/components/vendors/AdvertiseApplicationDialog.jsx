@@ -134,8 +134,8 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
       alert("Please fill in all required fields.");
       return;
     }
-    if (currentStep === 2 && formData.campaignGoals.length === 0) {
-      alert("Please select at least one campaign goal.");
+    if (currentStep === 2 && (formData.campaignGoals.length === 0 || !formData.objectives)) {
+      alert("Please select at least one campaign goal and describe your objectives.");
       return;
     }
     if (currentStep === 3 && (!formData.package || !formData.budget)) {
@@ -228,7 +228,16 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form 
+          onSubmit={handleSubmit}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && currentStep < totalSteps) {
+              e.preventDefault();
+              handleNext();
+            }
+          }}
+          className="space-y-6"
+        >
           {/* Vendor Status Alert */}
           {!isVendor && (
             <div className="p-4 rounded-xl flex items-start gap-3" style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
