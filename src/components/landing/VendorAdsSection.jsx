@@ -106,9 +106,11 @@ export default function VendorAdsSection() {
           return new Date(ad.expiry_date) > now;
         });
 
+        console.log("Active ads:", activeAds);
         setAds(activeAds);
       } catch (error) {
         console.error("Error fetching ads:", error);
+        setAds([]); // Set empty array on error
       } finally {
         setLoading(false);
       }
@@ -132,9 +134,8 @@ export default function VendorAdsSection() {
     );
   }
 
-  if (ads.length === 0) {
-    return null; // Don't show section if no ads
-  }
+  // Always show section with placeholder if no ads
+  const hasAds = ads.length > 0;
 
   return (
     <section className="relative py-24 px-4">
@@ -160,11 +161,17 @@ export default function VendorAdsSection() {
         </motion.div>
 
         {/* 3-Column Slider Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {column1.length > 0 && <AdSliderColumn ads={column1} delay={0} />}
-          {column2.length > 0 && <AdSliderColumn ads={column2} delay={500} />}
-          {column3.length > 0 && <AdSliderColumn ads={column3} delay={1000} />}
-        </div>
+        {hasAds ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {column1.length > 0 && <AdSliderColumn ads={column1} delay={0} />}
+            {column2.length > 0 && <AdSliderColumn ads={column2} delay={500} />}
+            {column3.length > 0 && <AdSliderColumn ads={column3} delay={1000} />}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p style={{ color: '#B6C4E0' }}>No active advertisements at the moment.</p>
+          </div>
+        )}
       </div>
     </section>
   );
