@@ -29,7 +29,7 @@ export default function ConnectionCard({ connection, index }) {
       </div>
 
       {/* Name */}
-      <h3 className="text-lg font-bold mb-2" style={{ color: '#E5EDFF' }}>
+      <h3 className="text-lg font-bold mb-2" style={{ color: '#fff' }}>
         {connection.name}
       </h3>
 
@@ -39,7 +39,7 @@ export default function ConnectionCard({ connection, index }) {
       </div>
 
       {/* Bio */}
-      <p className="text-sm mb-4 min-h-[40px]" style={{ color: '#B6C4E0' }}>
+      <p className="text-sm mb-4 min-h-[40px]" style={{ color: '#fff' }}>
         {connection.bio}
       </p>
 

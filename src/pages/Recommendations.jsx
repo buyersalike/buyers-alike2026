@@ -214,8 +214,8 @@ export default function Recommendations() {
                       <Sparkles className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1" style={{ color: '#000' }}>{topic.topic}</h3>
-                      <p className="text-sm" style={{ color: '#000' }}>{topic.reason}</p>
+                      <h3 className="font-semibold mb-1" style={{ color: '#fff' }}>{topic.topic}</h3>
+                      <p className="text-sm" style={{ color: '#fff' }}>{topic.reason}</p>
                     </div>
                   </div>
                 </div>
