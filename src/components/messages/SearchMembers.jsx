@@ -43,16 +43,16 @@ export default function SearchMembers({ connections, onSelectMember, onClose, cu
       <div 
         className="p-4 border-b"
         style={{ 
-          background: 'rgba(255, 255, 255, 0.05)',
-          borderColor: 'rgba(255, 255, 255, 0.18)'
+          background: '#fff',
+          borderColor: '#000'
         }}
       >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold" style={{ color: '#E5EDFF' }}>Search Connected Members</h2>
+          <h2 className="text-xl font-bold" style={{ color: '#000' }}>Search Connected Members</h2>
           <Button
             onClick={onClose}
             className="rounded-lg p-2"
-            style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#B6C4E0' }}
+            style={{ background: '#fff', color: '#000', border: '1px solid #000' }}
           >
             <X className="w-4 h-4" />
           </Button>
@@ -60,13 +60,13 @@ export default function SearchMembers({ connections, onSelectMember, onClose, cu
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#7A8BA6' }} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#666' }} />
           <Input
             placeholder="Search by name or email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 glass-input rounded-xl"
-            style={{ color: '#E5EDFF' }}
+            className="w-full pl-10 rounded-xl"
+            style={{ color: '#000', background: '#F9FAFB', border: '1px solid #000' }}
             autoFocus
           />
         </div>
@@ -76,7 +76,7 @@ export default function SearchMembers({ connections, onSelectMember, onClose, cu
       <div className="flex-1 overflow-y-auto p-4">
         {loading ? (
           <div className="text-center py-8">
-            <p style={{ color: '#7A8BA6' }}>Loading members...</p>
+            <p style={{ color: '#666' }}>Loading members...</p>
           </div>
         ) : filteredUsers.length > 0 ? (
           <div className="space-y-2">
@@ -85,38 +85,38 @@ export default function SearchMembers({ connections, onSelectMember, onClose, cu
                 key={user.id}
                 whileHover={{ x: 4 }}
                 onClick={() => onSelectMember(user.email)}
-                className="p-4 rounded-xl cursor-pointer transition-all glass-card-hover"
-                style={{ background: 'rgba(255, 255, 255, 0.05)' }}
+                className="p-4 rounded-xl cursor-pointer transition-all"
+                style={{ background: '#fff', border: '1px solid #000' }}
               >
                 <div className="flex items-center gap-3">
                   <div 
                     className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)' }}
+                    style={{ background: '#D8A11F' }}
                   >
-                    <User className="w-6 h-6" style={{ color: '#E5EDFF' }} />
+                    <User className="w-6 h-6" style={{ color: '#fff' }} />
                   </div>
                   
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium" style={{ color: '#E5EDFF' }}>
+                    <p className="font-medium" style={{ color: '#000' }}>
                       {user.full_name || 'User'}
                     </p>
-                    <p className="text-sm truncate" style={{ color: '#7A8BA6' }}>
+                    <p className="text-sm truncate" style={{ color: '#666' }}>
                       {user.email}
                     </p>
                   </div>
 
-                  <MessageSquare className="w-5 h-5" style={{ color: '#3B82F6' }} />
+                  <MessageSquare className="w-5 h-5" style={{ color: '#D8A11F' }} />
                 </div>
               </motion.div>
             ))}
           </div>
         ) : (
           <div className="text-center py-8">
-            <MessageSquare className="w-12 h-12 mx-auto mb-3" style={{ color: '#7A8BA6' }} />
-            <p className="text-lg mb-2" style={{ color: '#B6C4E0' }}>
+            <MessageSquare className="w-12 h-12 mx-auto mb-3" style={{ color: '#666' }} />
+            <p className="text-lg mb-2" style={{ color: '#000' }}>
               {searchQuery ? 'No members found' : 'No connected members'}
             </p>
-            <p className="text-sm" style={{ color: '#7A8BA6' }}>
+            <p className="text-sm" style={{ color: '#666' }}>
               {searchQuery 
                 ? 'Try searching with a different name or email'
                 : 'Connect with members to start messaging'
