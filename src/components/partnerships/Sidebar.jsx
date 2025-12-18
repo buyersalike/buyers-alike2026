@@ -29,7 +29,6 @@ import { canAccessAdmin } from "@/components/utils/permissions";
 
 const mainMenuItems = [
   { icon: Sparkles, label: "Recommendations", href: "Recommendations" },
-  { icon: TrendingUp, label: "Activity Feed", href: "ActivityFeed" },
   { icon: Briefcase, label: "Opportunities", href: "Opportunities" },
   { icon: Handshake, label: "Partnerships", href: "Partnerships" },
   { icon: Store, label: "Vendors", href: "Vendors" },
@@ -65,7 +64,7 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 h-screen sticky top-0 p-6 overflow-y-auto flex flex-col" style={{ 
-      background: 'rgba(255, 255, 255, 0.08)',
+      background: '#192234',
       backdropFilter: 'blur(10px) saturate(180%)',
       WebkitBackdropFilter: 'blur(10px) saturate(180%)',
       borderRight: '1px solid rgba(255, 255, 255, 0.18)',
