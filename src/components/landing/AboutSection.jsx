@@ -57,7 +57,7 @@ export default function AboutSection() {
                 backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
               }}
               transition={{ duration: 5, repeat: Infinity }}
-              className="bg-gradient-to-r from-purple-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent"
+              className="bg-gradient-to-r from-[#D8A11F] via-[#F59E0B] to-[#D8A11F] bg-clip-text text-transparent"
               style={{ backgroundSize: "200% 200%" }}
             >
               BuyersAlike
@@ -89,7 +89,7 @@ export default function AboutSection() {
                   backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
                 }}
                 transition={{ duration: 10, repeat: Infinity }}
-                className="absolute inset-0 opacity-10 bg-gradient-to-br from-purple-500 via-cyan-500 to-purple-500"
+                className="absolute inset-0 opacity-10 bg-gradient-to-br from-[#D8A11F] via-[#F59E0B] to-[#D8A11F]"
                 style={{ backgroundSize: "200% 200%" }}
               />
               
@@ -98,7 +98,7 @@ export default function AboutSection() {
                   <motion.div
                     animate={{ rotate: [0, 360] }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center"
+                    className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#D8A11F] to-[#F59E0B] flex items-center justify-center"
                   >
                     <TrendingUp className="w-6 h-6 text-white" />
                   </motion.div>
@@ -127,7 +127,7 @@ export default function AboutSection() {
                     transition={{ delay: index * 0.1 }}
                     className="flex items-center gap-3"
                   >
-                    <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-[#D8A11F] flex-shrink-0" />
                     <span className="text-white/80">{item}</span>
                   </motion.div>
                 ))}
@@ -146,7 +146,7 @@ export default function AboutSection() {
                     className="text-center"
                   >
                     <motion.p 
-                      className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent"
+                      className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#D8A11F] to-[#F59E0B] bg-clip-text text-transparent"
                       animate={{ scale: [1, 1.05, 1] }}
                       transition={{ duration: 2, repeat: Infinity, delay: index * 0.3 }}
                     >
@@ -180,7 +180,7 @@ export default function AboutSection() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 0.1 }}
-                  className="absolute inset-0 bg-gradient-to-br from-purple-500 to-cyan-500 transition-opacity duration-500"
+                  className="absolute inset-0 bg-gradient-to-br from-[#D8A11F] to-[#F59E0B] transition-opacity duration-500"
                 />
                 
                 <div className="relative z-10">
@@ -188,7 +188,7 @@ export default function AboutSection() {
                     animate={{ rotate: [0, 5, -5, 0] }}
                     transition={{ duration: 4, repeat: Infinity }}
                   >
-                    <Quote className="w-12 h-12 text-purple-400/40 mb-6" />
+                    <Quote className="w-12 h-12 text-[#D8A11F]/40 mb-6" />
                   </motion.div>
                   <p className="text-white/90 text-xl leading-relaxed mb-8 font-medium">
                     "{testimonial.quote}"
@@ -197,7 +197,7 @@ export default function AboutSection() {
                     <div className="flex items-center gap-4">
                       <motion.div
                         whileHover={{ scale: 1.1, rotate: 5 }}
-                        className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl shadow-xl"
+                        className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#D8A11F] to-[#F59E0B] flex items-center justify-center text-white font-bold text-xl shadow-xl"
                       >
                         {testimonial.author[0]}
                       </motion.div>
