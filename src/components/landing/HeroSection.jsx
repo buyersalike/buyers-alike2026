@@ -37,7 +37,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 pt-20 pb-10">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 pt-20 pb-10" style={{ background: '#192234' }}>
       {/* Enhanced animated background with depth layers */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Large gradient orbs */}
@@ -181,7 +181,7 @@ export default function HeroSection() {
                     currentUser ? (
                       <Link to={createPageUrl("Partnerships")}>
                         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-                          <Button className="w-full sm:w-auto px-8 py-6 rounded-xl font-bold text-lg shadow-2xl" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}>
+                          <Button className="w-full sm:w-auto px-8 py-6 rounded-xl font-bold text-lg shadow-2xl" style={{ background: '#D8A11F', color: '#fff' }}>
                             <span className="flex items-center">
                               Go to Dashboard
                               <ArrowRight className="ml-2 w-5 h-5" />
@@ -194,7 +194,7 @@ export default function HeroSection() {
                         <Button 
                           onClick={() => base44.auth.redirectToLogin()}
                           className="w-full sm:w-auto px-8 py-6 rounded-xl font-bold text-lg shadow-2xl relative overflow-hidden group" 
-                          style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}
+                          style={{ background: '#D8A11F', color: '#fff' }}
                         >
                           <motion.div
                             animate={{
