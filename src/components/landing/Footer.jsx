@@ -14,7 +14,7 @@ export default function Footer() {
     <footer className="relative pt-20 pb-8 px-4"
       style={{
         borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-        background: 'linear-gradient(180deg, transparent 0%, rgba(10, 22, 40, 0.5) 100%)',
+        background: '#192234',
       }}
     >
       {/* Background elements */}
