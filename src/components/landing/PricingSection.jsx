@@ -79,7 +79,7 @@ export default function PricingSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 backdrop-blur-xl px-4 py-2 rounded-full mb-6"
-            style={{ background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.18)' }}
+            style={{ background: 'rgba(255, 255, 255, 0.08)', border: '1px solid #000' }}
           >
             <Check className="w-4 h-4 text-green-400" />
             <span className="text-sm font-medium" style={{ color: '#000' }}>14-day free trial • No credit card required</span>
@@ -135,8 +135,8 @@ export default function PricingSection() {
                 whileHover={{ y: -10, scale: 1.03 }}
                 className={`h-full backdrop-blur-xl border rounded-3xl p-8 lg:p-10 transition-all duration-500 relative overflow-hidden ${
                   plan.popular 
-                    ? "border-purple-500/50 shadow-2xl shadow-purple-500/20" 
-                    : "border-white/10 hover:border-white/20"
+                    ? "border-black shadow-2xl shadow-purple-500/20" 
+                    : "border-black hover:border-black"
                 }`}
                 style={{
                   background: plan.popular ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.08)',

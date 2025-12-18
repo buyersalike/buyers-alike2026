@@ -64,7 +64,7 @@ export default function JourneySection() {
                 <div className="hidden md:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-white/20 to-transparent z-0" />
               )}
               
-              <div className="relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 text-center hover:bg-white/10 transition-all duration-500 h-full">
+              <div className="relative backdrop-blur-xl bg-white/5 border border-black rounded-3xl p-8 text-center hover:bg-white/10 transition-all duration-500 h-full">
                 {/* Step number */}
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold text-sm">
@@ -88,7 +88,7 @@ export default function JourneySection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="backdrop-blur-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-white/20 rounded-3xl p-8 md:p-12"
+          className="backdrop-blur-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-black rounded-3xl p-8 md:p-12"
         >
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">

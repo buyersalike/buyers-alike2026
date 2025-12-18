@@ -158,7 +158,7 @@ export default function ContactSection() {
                   { icon: MapPin, label: "Address", value: "123 Business Ave, San Francisco, CA 94102" },
                 ].map((item) => (
                   <div key={item.label} className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 rounded-xl bg-white/5 border border-black flex items-center justify-center flex-shrink-0">
                       <item.icon className="w-5 h-5 text-cyan-400" />
                     </div>
                     <div>
@@ -192,7 +192,7 @@ export default function ContactSection() {
             </div>
 
             {/* Stats */}
-            <div className="backdrop-blur-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-white/20 rounded-3xl p-8">
+            <div className="backdrop-blur-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-black rounded-3xl p-8">
               <div className="grid grid-cols-3 gap-4 text-center">
                 {[
                   { value: "24/7", label: "Support" },
