@@ -58,7 +58,8 @@ const AdSliderColumn = ({ ads, delay = 0 }) => {
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#7C3AED] text-white font-medium"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white font-medium"
+            style={{ backgroundColor: '#D8A11F' }}
             onClick={(e) => {
               if (!currentAd.source_url) {
                 e.preventDefault();
