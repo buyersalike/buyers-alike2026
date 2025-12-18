@@ -44,8 +44,6 @@ export default function AboutSection() {
     <section className="relative py-24 px-4" style={{ background: '#192234' }}>
       {/* Background elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-cyan-600/10 rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto">
@@ -91,8 +89,9 @@ export default function AboutSection() {
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
+            className="h-full"
           >
-            <div className="backdrop-blur-xl rounded-3xl p-8 lg:p-10 relative overflow-hidden"
+            <div className="backdrop-blur-xl rounded-3xl p-8 lg:p-10 relative overflow-hidden h-full flex flex-col"
               style={{
                 background: 'rgba(255, 255, 255, 0.08)',
                 border: '1px solid rgba(255, 255, 255, 0.18)',
@@ -176,7 +175,7 @@ export default function AboutSection() {
           </motion.div>
 
           {/* Right - Core Values Grid */}
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-6 h-full">
             {values.map((value, index) => (
               <motion.div
                 key={value.title}
