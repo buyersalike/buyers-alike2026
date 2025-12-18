@@ -76,10 +76,10 @@ export default function CreatePostDialog({ open, onOpenChange, categories, curre
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl" style={{ background: '#0F2744', border: '1px solid rgba(255, 255, 255, 0.18)' }}>
+      <DialogContent className="max-w-2xl" style={{ background: '#F2F1F5', border: '1px solid #000' }}>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-3 text-2xl" style={{ color: '#E5EDFF' }}>
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%)' }}>
+          <DialogTitle className="flex items-center gap-3 text-2xl" style={{ color: '#000' }}>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#D8A11F' }}>
               <MessageSquare className="w-5 h-5" style={{ color: '#fff' }} />
             </div>
             Create New Post
@@ -88,26 +88,26 @@ export default function CreatePostDialog({ open, onOpenChange, categories, curre
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div>
-            <Label htmlFor="title" style={{ color: '#B6C4E0' }}>Post Title *</Label>
+            <Label htmlFor="title" style={{ color: '#000' }}>Post Title *</Label>
             <Input
               id="title"
               required
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="glass-input mt-1"
-              style={{ color: '#E5EDFF' }}
+              className="mt-1"
+              style={{ color: '#000', background: '#fff', border: '1px solid #000' }}
               placeholder="What would you like to discuss?"
             />
           </div>
 
           <div>
-            <Label htmlFor="category" style={{ color: '#B6C4E0' }}>Category *</Label>
+            <Label htmlFor="category" style={{ color: '#000' }}>Category *</Label>
             <Select 
               required 
               value={formData.category_id} 
               onValueChange={(value) => setFormData({ ...formData, category_id: value })}
             >
-              <SelectTrigger className="glass-input mt-1" style={{ color: '#E5EDFF' }}>
+              <SelectTrigger className="mt-1" style={{ color: '#000', background: '#fff', border: '1px solid #000' }}>
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
@@ -119,48 +119,48 @@ export default function CreatePostDialog({ open, onOpenChange, categories, curre
           </div>
 
           <div>
-            <Label htmlFor="content" style={{ color: '#B6C4E0' }}>Content *</Label>
+            <Label htmlFor="content" style={{ color: '#000' }}>Content *</Label>
             <Textarea
               id="content"
               required
               value={formData.content}
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              className="glass-input mt-1 h-40"
-              style={{ color: '#E5EDFF' }}
+              className="mt-1 h-40"
+              style={{ color: '#000', background: '#fff', border: '1px solid #000' }}
               placeholder="Share your thoughts, insights, or questions..."
             />
           </div>
 
           <div>
-            <Label htmlFor="link_url" style={{ color: '#B6C4E0' }}>Share a Link (Optional)</Label>
+            <Label htmlFor="link_url" style={{ color: '#000' }}>Share a Link (Optional)</Label>
             <div className="relative">
-              <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#7A8BA6' }} />
+              <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#000' }} />
               <Input
                 id="link_url"
                 type="url"
                 value={formData.link_url}
                 onChange={(e) => setFormData({ ...formData, link_url: e.target.value })}
-                className="glass-input mt-1 pl-10"
-                style={{ color: '#E5EDFF' }}
+                className="mt-1 pl-10"
+                style={{ color: '#000', background: '#fff', border: '1px solid #000' }}
                 placeholder="https://example.com"
               />
             </div>
           </div>
 
           <div>
-            <Label style={{ color: '#B6C4E0' }}>Attach Files (Optional)</Label>
-            <p className="text-xs mb-2" style={{ color: '#7A8BA6' }}>
+            <Label style={{ color: '#000' }}>Attach Files (Optional)</Label>
+            <p className="text-xs mb-2" style={{ color: '#666' }}>
               Upload documents, images, or PDFs (Max 5MB per file)
             </p>
             
             <label
               htmlFor="files"
               className="flex flex-col items-center justify-center w-full h-24 rounded-xl border-2 border-dashed cursor-pointer transition-all hover:border-opacity-50 mb-3"
-              style={{ borderColor: 'rgba(255, 255, 255, 0.18)', background: 'rgba(255, 255, 255, 0.03)' }}
+              style={{ borderColor: '#000', background: '#fff' }}
             >
               <div className="flex flex-col items-center justify-center">
-                <Upload className="w-6 h-6 mb-1" style={{ color: '#7C3AED' }} />
-                <p className="text-sm" style={{ color: '#B6C4E0' }}>
+                <Upload className="w-6 h-6 mb-1" style={{ color: '#D8A11F' }} />
+                <p className="text-sm" style={{ color: '#000' }}>
                   {uploading ? 'Uploading...' : 'Click to upload files'}
                 </p>
               </div>
@@ -181,13 +181,13 @@ export default function CreatePostDialog({ open, onOpenChange, categories, curre
                   <div 
                     key={index}
                     className="flex items-center justify-between p-3 rounded-xl"
-                    style={{ background: 'rgba(124, 58, 237, 0.15)', border: '1px solid rgba(124, 58, 237, 0.3)' }}
+                    style={{ background: '#FEF3C7', border: '1px solid #D8A11F' }}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#7C3AED' }}>
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: '#D8A11F' }}>
                         <FileText className="w-4 h-4" style={{ color: '#fff' }} />
                       </div>
-                      <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>
+                      <p className="text-sm font-medium" style={{ color: '#000' }}>
                         {file.name}
                       </p>
                     </div>
@@ -210,14 +210,14 @@ export default function CreatePostDialog({ open, onOpenChange, categories, curre
               type="button"
               onClick={() => onOpenChange(false)}
               className="flex-1 rounded-lg"
-              style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#B6C4E0', border: '1px solid rgba(255, 255, 255, 0.18)' }}
+              style={{ background: '#fff', color: '#000', border: '1px solid #000' }}
             >
               Cancel
             </Button>
             <Button
               type="submit"
               className="flex-1 rounded-lg"
-              style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%)', color: '#fff' }}
+              style={{ background: '#D8A11F', color: '#fff' }}
               disabled={createPostMutation.isPending}
             >
               {createPostMutation.isPending ? 'Creating...' : 'Create Post'}
