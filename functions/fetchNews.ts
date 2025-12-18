@@ -26,6 +26,8 @@ Deno.serve(async (req) => {
     ];
 
     const allArticles = [];
+    const fourWeeksAgo = new Date();
+    fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
 
     for (const query of queries) {
       try {
@@ -38,19 +40,27 @@ Deno.serve(async (req) => {
         const data = await response.json();
         
         if (data.news_results) {
-          const articles = data.news_results.map((article, index) => ({
-            id: `${query.region}-${index}-${Date.now()}`,
-            title: article.title,
-            description: article.snippet || article.title,
-            content: article.snippet,
-            url: article.link,
-            image: article.thumbnail,
-            source: article.source?.name || query.region,
-            author: article.source?.name,
-            publishedAt: article.date || new Date().toISOString(),
-            category: 'Business',
-            region: query.region,
-          }));
+          const articles = data.news_results.map((article, index) => {
+            const publishedDate = article.date ? new Date(article.date) : new Date();
+            return {
+              id: `${query.region}-${index}-${Date.now()}`,
+              title: article.title,
+              description: article.snippet || article.title,
+              content: article.snippet,
+              url: article.link,
+              image: article.thumbnail,
+              source: article.source?.name || query.region,
+              author: article.source?.name,
+              publishedAt: publishedDate.toISOString(),
+              category: 'Business',
+              region: query.region,
+              timestamp: publishedDate.getTime(),
+            };
+          }).filter(article => {
+            // Only include articles from last 4 weeks
+            const articleDate = new Date(article.publishedAt);
+            return articleDate >= fourWeeksAgo;
+          });
           
           allArticles.push(...articles);
         }
@@ -58,6 +68,9 @@ Deno.serve(async (req) => {
         console.error(`Error fetching news for ${query.region}:`, error);
       }
     }
+
+    // Sort by latest first
+    allArticles.sort((a, b) => b.timestamp - a.timestamp);
 
     return Response.json({ 
       articles: allArticles.slice(0, 50),
