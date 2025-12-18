@@ -69,12 +69,24 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Remove duplicates based on title similarity
+    const uniqueArticles = [];
+    const seenTitles = new Set();
+    
+    for (const article of allArticles) {
+      const normalizedTitle = article.title.toLowerCase().trim();
+      if (!seenTitles.has(normalizedTitle)) {
+        seenTitles.add(normalizedTitle);
+        uniqueArticles.push(article);
+      }
+    }
+
     // Sort by latest first
-    allArticles.sort((a, b) => b.timestamp - a.timestamp);
+    uniqueArticles.sort((a, b) => b.timestamp - a.timestamp);
 
     return Response.json({ 
-      articles: allArticles.slice(0, 50),
-      totalResults: allArticles.length
+      articles: uniqueArticles.slice(0, 100),
+      totalResults: uniqueArticles.length
     });
 
   } catch (error) {

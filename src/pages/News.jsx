@@ -10,11 +10,27 @@ import { formatDistanceToNow } from "date-fns";
 
 export default function News() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [sortBy, setSortBy] = useState("date");
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(user => {
+      setCurrentUser(user);
+      // Load saved preferences
+      if (user?.news_preferences) {
+        setSelectedRegion(user.news_preferences.region || "all");
+        setSelectedCategory(user.news_preferences.category || "all");
+        setSortBy(user.news_preferences.sortBy || "date");
+      }
+    }).catch(() => setCurrentUser(null));
+  }, []);
 
   const { data: newsData, isLoading } = useQuery({
     queryKey: ['personalizedNews'],
     queryFn: async () => {
-      const response = await base44.functions.invoke('getPersonalizedNews', {});
+      const response = await base44.functions.invoke('fetchNews', {});
       return response.data;
     },
   });
@@ -22,14 +38,50 @@ export default function News() {
   const articles = newsData?.articles || [];
   const recommendations = newsData?.recommendations || [];
 
+  const savePreferences = async () => {
+    if (!currentUser) return;
+    try {
+      await base44.auth.updateMe({
+        news_preferences: {
+          region: selectedRegion,
+          category: selectedCategory,
+          sortBy: sortBy
+        }
+      });
+    } catch (error) {
+      console.error('Failed to save preferences:', error);
+    }
+  };
+
   const filteredArticles = articles.filter(article => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      article.title?.toLowerCase().includes(query) ||
-      article.description?.toLowerCase().includes(query) ||
-      article.source?.toLowerCase().includes(query)
-    );
+    // Search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      const matchesSearch = (
+        article.title?.toLowerCase().includes(query) ||
+        article.description?.toLowerCase().includes(query) ||
+        article.source?.toLowerCase().includes(query)
+      );
+      if (!matchesSearch) return false;
+    }
+
+    // Region filter
+    if (selectedRegion !== "all" && article.region !== selectedRegion) {
+      return false;
+    }
+
+    // Category filter
+    if (selectedCategory !== "all" && article.category !== selectedCategory) {
+      return false;
+    }
+
+    return true;
+  }).sort((a, b) => {
+    if (sortBy === "date") {
+      return new Date(b.publishedAt) - new Date(a.publishedAt);
+    }
+    // Relevance sorting (by source prominence or other factors)
+    return 0;
   });
 
   const getCategoryColor = (category) => {
@@ -124,6 +176,65 @@ export default function News() {
                 className="w-full pl-12 py-6 text-lg rounded-xl"
                 style={{ color: '#000', background: '#fff', border: '1px solid #000' }}
               />
+            </div>
+
+            {/* Filters */}
+            <div className="glass-card p-6 mb-6" style={{ background: '#fff', border: '1px solid #000' }}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-lg" style={{ color: '#000' }}>Filters & Sorting</h3>
+                {currentUser && (
+                  <Button
+                    onClick={savePreferences}
+                    size="sm"
+                    style={{ background: '#D8A11F', color: '#fff' }}
+                  >
+                    Save Preferences
+                  </Button>
+                )}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: '#000' }}>Region</label>
+                  <select
+                    value={selectedRegion}
+                    onChange={(e) => setSelectedRegion(e.target.value)}
+                    className="w-full px-4 py-2 rounded-lg"
+                    style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
+                  >
+                    <option value="all">All Regions</option>
+                    <option value="Canada">Canada</option>
+                    <option value="United States">United States</option>
+                    <option value="China">China</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: '#000' }}>Category</label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full px-4 py-2 rounded-lg"
+                    style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
+                  >
+                    <option value="all">All Categories</option>
+                    <option value="Business">Business</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Markets">Markets</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: '#000' }}>Sort By</label>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="w-full px-4 py-2 rounded-lg"
+                    style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
+                  >
+                    <option value="date">Latest First</option>
+                    <option value="relevance">Most Relevant</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
             {/* Articles Count */}
