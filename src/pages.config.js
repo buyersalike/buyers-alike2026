@@ -9,7 +9,6 @@ import PostDetail from './pages/PostDetail';
 import News from './pages/News';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
-import ActivityFeed from './pages/ActivityFeed';
 import Events from './pages/Events';
 import EventDetail from './pages/EventDetail';
 import AdCampaigns from './pages/AdCampaigns';
@@ -30,7 +29,6 @@ export const PAGES = {
     "News": News,
     "Profile": Profile,
     "Settings": Settings,
-    "ActivityFeed": ActivityFeed,
     "Events": Events,
     "EventDetail": EventDetail,
     "AdCampaigns": AdCampaigns,
