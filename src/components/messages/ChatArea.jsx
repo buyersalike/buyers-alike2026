@@ -49,22 +49,22 @@ export default function ChatArea({ conversation, onSendMessage, onMarkAsRead, cu
       <div 
         className="p-4 border-b"
         style={{ 
-          background: 'rgba(255, 255, 255, 0.05)',
-          borderColor: 'rgba(255, 255, 255, 0.18)'
+          background: '#fff',
+          borderColor: '#000'
         }}
       >
         <div className="flex items-center gap-3">
           <div 
             className="w-10 h-10 rounded-full flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)' }}
+            style={{ background: '#D8A11F' }}
           >
-            <User className="w-5 h-5" style={{ color: '#E5EDFF' }} />
+            <User className="w-5 h-5" style={{ color: '#fff' }} />
           </div>
           <div>
-            <p className="font-medium" style={{ color: '#E5EDFF' }}>
+            <p className="font-medium" style={{ color: '#000' }}>
               {conversation?.otherUserEmail.split('@')[0]}
             </p>
-            <p className="text-xs" style={{ color: '#7A8BA6' }}>
+            <p className="text-xs" style={{ color: '#666' }}>
               {conversation?.otherUserEmail}
             </p>
           </div>
@@ -85,7 +85,7 @@ export default function ChatArea({ conversation, onSendMessage, onMarkAsRead, cu
             <div key={msg.id}>
               {showTimestamp && (
                 <div className="text-center mb-4">
-                  <span className="text-xs px-3 py-1 rounded-full" style={{ background: 'rgba(255, 255, 255, 0.05)', color: '#7A8BA6' }}>
+                  <span className="text-xs px-3 py-1 rounded-full" style={{ background: '#F3F4F6', color: '#666' }}>
                     {format(new Date(msg.created_date), 'MMM d, h:mm a')}
                   </span>
                 </div>
@@ -99,12 +99,13 @@ export default function ChatArea({ conversation, onSendMessage, onMarkAsRead, cu
                 <div 
                   className="max-w-[70%] px-4 py-2 rounded-2xl"
                   style={isOwn ? {
-                    background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)',
-                    color: '#E5EDFF',
+                    background: '#D8A11F',
+                    color: '#fff',
                     borderBottomRightRadius: '4px'
                   } : {
-                    background: 'rgba(255, 255, 255, 0.08)',
-                    color: '#E5EDFF',
+                    background: '#fff',
+                    color: '#000',
+                    border: '1px solid #E5E7EB',
                     borderBottomLeftRadius: '4px'
                   }}
                 >
@@ -121,8 +122,8 @@ export default function ChatArea({ conversation, onSendMessage, onMarkAsRead, cu
       <div 
         className="p-4 border-t"
         style={{ 
-          background: 'rgba(255, 255, 255, 0.05)',
-          borderColor: 'rgba(255, 255, 255, 0.18)'
+          background: '#fff',
+          borderColor: '#000'
         }}
       >
         <div className="flex gap-2">
@@ -131,15 +132,15 @@ export default function ChatArea({ conversation, onSendMessage, onMarkAsRead, cu
             onChange={(e) => setMessageText(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type a message..."
-            className="glass-input resize-none"
-            style={{ color: '#E5EDFF' }}
+            className="resize-none"
+            style={{ color: '#000', background: '#F9FAFB', border: '1px solid #000' }}
             rows={1}
           />
           <Button
             onClick={handleSend}
             disabled={!messageText.trim()}
             className="rounded-xl px-4"
-            style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}
+            style={{ background: '#D8A11F', color: '#fff' }}
           >
             <Send className="w-5 h-5" />
           </Button>

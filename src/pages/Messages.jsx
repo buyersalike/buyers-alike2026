@@ -177,10 +177,10 @@ export default function Messages() {
 
   if (!user) {
     return (
-      <div className="flex min-h-screen bg-gradient-main">
+      <div className="flex min-h-screen" style={{ background: '#F2F1F5' }}>
         <Sidebar />
         <main className="flex-1 flex items-center justify-center">
-          <p style={{ color: '#B6C4E0' }}>Loading...</p>
+          <p style={{ color: '#000' }}>Loading...</p>
         </main>
       </div>
     );
@@ -189,7 +189,7 @@ export default function Messages() {
   const conversations = getConversations();
 
   return (
-    <div className="flex min-h-screen bg-gradient-main">
+    <div className="flex min-h-screen" style={{ background: '#F2F1F5' }}>
       <Sidebar />
       <main className="flex-1 flex">
         <ConversationList
@@ -233,10 +233,10 @@ export default function Messages() {
         ) : (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <p className="text-lg mb-2" style={{ color: '#B6C4E0' }}>
+              <p className="text-lg mb-2" style={{ color: '#000' }}>
                 Select a conversation to start messaging
               </p>
-              <p className="text-sm" style={{ color: '#7A8BA6' }}>
+              <p className="text-sm" style={{ color: '#666' }}>
                 Or create a group chat for collaborative discussions
               </p>
             </div>
