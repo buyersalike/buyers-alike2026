@@ -136,7 +136,7 @@ export default function VendorAdsSection() {
   if (loading) {
     return (
       <section className="relative py-24 px-4">
-        <div className="max-w-7xl mx-auto text-center" style={{ color: '#B6C4E0' }}>
+        <div className="max-w-7xl mx-auto text-center" style={{ color: '#333' }}>
           <p>Loading our trusted partners...</p>
         </div>
       </section>
@@ -147,10 +147,10 @@ export default function VendorAdsSection() {
   const hasAds = ads.length > 0;
 
   return (
-    <section className="relative py-24 px-4">
+    <section className="relative py-24 px-4" style={{ background: '#F2F1F5' }}>
       {/* Background effects */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#1F3A8A]/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#D8A11F]/10 to-transparent" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto">
@@ -161,10 +161,10 @@ export default function VendorAdsSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#E5EDFF' }}>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#000' }}>
             Our Trusted Partners
           </h2>
-          <p className="text-xl max-w-2xl mx-auto" style={{ color: '#B6C4E0' }}>
+          <p className="text-xl max-w-2xl mx-auto" style={{ color: '#333' }}>
             Discover businesses and opportunities from our verified vendor community
           </p>
         </motion.div>
@@ -178,7 +178,7 @@ export default function VendorAdsSection() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p style={{ color: '#B6C4E0' }}>No active advertisements at the moment.</p>
+            <p style={{ color: '#333' }}>No active advertisements at the moment.</p>
           </div>
         )}
       </div>
