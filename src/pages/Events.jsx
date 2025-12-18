@@ -54,15 +54,15 @@ export default function Events() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-main">
+    <div className="flex min-h-screen">
       <Sidebar />
-      <div className="flex-1 overflow-y-auto p-8">
+      <div className="flex-1 overflow-y-auto p-8" style={{ background: '#F2F1F5' }}>
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-4xl font-bold mb-2" style={{ color: '#E5EDFF' }}>Events</h1>
-              <p className="text-lg" style={{ color: '#B6C4E0' }}>
+              <h1 className="text-4xl font-bold mb-2" style={{ color: '#000' }}>Events</h1>
+              <p className="text-lg" style={{ color: '#000' }}>
                 Discover and join industry events
               </p>
             </div>
@@ -70,7 +70,7 @@ export default function Events() {
               <Button
                 onClick={() => setShowCreateDialog(true)}
                 className="gap-2 px-6 py-3 rounded-xl font-semibold"
-                style={{ background: 'linear-gradient(135deg, #667EEA 0%, #764BA2 100%)', color: '#fff' }}
+                style={{ background: '#D8A11F', color: '#fff' }}
               >
                 <Plus className="w-5 h-5" />
                 Create Event
@@ -86,10 +86,10 @@ export default function Events() {
               className="glass-card p-6 rounded-2xl"
             >
               <div className="flex items-center gap-3 mb-2">
-                <Calendar className="w-5 h-5" style={{ color: '#667EEA' }} />
-                <p className="text-sm font-medium" style={{ color: '#B6C4E0' }}>Total Events</p>
+                <Calendar className="w-5 h-5" style={{ color: '#D8A11F' }} />
+                <p className="text-sm font-medium" style={{ color: '#000' }}>Total Events</p>
               </div>
-              <p className="text-3xl font-bold" style={{ color: '#E5EDFF' }}>{stats.total}</p>
+              <p className="text-3xl font-bold" style={{ color: '#000' }}>{stats.total}</p>
             </motion.div>
 
             <motion.div
@@ -99,10 +99,10 @@ export default function Events() {
               className="glass-card p-6 rounded-2xl"
             >
               <div className="flex items-center gap-3 mb-2">
-                <Users className="w-5 h-5" style={{ color: '#22C55E' }} />
-                <p className="text-sm font-medium" style={{ color: '#B6C4E0' }}>My Events</p>
+                <Users className="w-5 h-5" style={{ color: '#D8A11F' }} />
+                <p className="text-sm font-medium" style={{ color: '#000' }}>My Events</p>
               </div>
-              <p className="text-3xl font-bold" style={{ color: '#E5EDFF' }}>{stats.myEvents}</p>
+              <p className="text-3xl font-bold" style={{ color: '#000' }}>{stats.myEvents}</p>
             </motion.div>
 
             <motion.div
@@ -112,10 +112,10 @@ export default function Events() {
               className="glass-card p-6 rounded-2xl"
             >
               <div className="flex items-center gap-3 mb-2">
-                <Video className="w-5 h-5" style={{ color: '#3B82F6' }} />
-                <p className="text-sm font-medium" style={{ color: '#B6C4E0' }}>Virtual</p>
+                <Video className="w-5 h-5" style={{ color: '#D8A11F' }} />
+                <p className="text-sm font-medium" style={{ color: '#000' }}>Virtual</p>
               </div>
-              <p className="text-3xl font-bold" style={{ color: '#E5EDFF' }}>{stats.virtual}</p>
+              <p className="text-3xl font-bold" style={{ color: '#000' }}>{stats.virtual}</p>
             </motion.div>
 
             <motion.div
@@ -125,62 +125,62 @@ export default function Events() {
               className="glass-card p-6 rounded-2xl"
             >
               <div className="flex items-center gap-3 mb-2">
-                <MapPin className="w-5 h-5" style={{ color: '#F59E0B' }} />
-                <p className="text-sm font-medium" style={{ color: '#B6C4E0' }}>Organizing</p>
+                <MapPin className="w-5 h-5" style={{ color: '#D8A11F' }} />
+                <p className="text-sm font-medium" style={{ color: '#000' }}>Organizing</p>
               </div>
-              <p className="text-3xl font-bold" style={{ color: '#E5EDFF' }}>{stats.organizing}</p>
+              <p className="text-3xl font-bold" style={{ color: '#000' }}>{stats.organizing}</p>
             </motion.div>
           </div>
 
           {/* Search */}
           <div className="glass-card p-4 mb-6 rounded-2xl">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#7A8BA6' }} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#666' }} />
               <Input
                 placeholder="Search events..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="glass-input pl-12 h-12"
-                style={{ color: '#E5EDFF' }}
+                style={{ color: '#000', background: '#fff', border: '1px solid #E5E7EB' }}
               />
             </div>
           </div>
 
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mb-8">
-            <TabsList className="glass-card p-2 rounded-2xl" style={{ background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <TabsList className="glass-card p-2 rounded-2xl" style={{ background: '#fff', border: '1px solid #E5E7EB' }}>
               <TabsTrigger 
                 value="all" 
-                className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#667EEA] data-[state=active]:text-white" 
-                style={{ color: '#B6C4E0' }}
+                className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#D8A11F] data-[state=active]:text-white" 
+                style={{ color: '#000' }}
               >
                 All Events
               </TabsTrigger>
               <TabsTrigger 
                 value="my-events" 
-                className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#22C55E] data-[state=active]:text-white" 
-                style={{ color: '#B6C4E0' }}
+                className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#D8A11F] data-[state=active]:text-white" 
+                style={{ color: '#000' }}
               >
                 My Events
               </TabsTrigger>
               <TabsTrigger 
                 value="organizing" 
-                className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#F59E0B] data-[state=active]:text-white" 
-                style={{ color: '#B6C4E0' }}
+                className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#D8A11F] data-[state=active]:text-white" 
+                style={{ color: '#000' }}
               >
                 Organizing
               </TabsTrigger>
               <TabsTrigger 
                 value="virtual" 
-                className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#3B82F6] data-[state=active]:text-white" 
-                style={{ color: '#B6C4E0' }}
+                className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#D8A11F] data-[state=active]:text-white" 
+                style={{ color: '#000' }}
               >
                 Virtual
               </TabsTrigger>
               <TabsTrigger 
                 value="in-person" 
-                className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#7C3AED] data-[state=active]:text-white" 
-                style={{ color: '#B6C4E0' }}
+                className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#D8A11F] data-[state=active]:text-white" 
+                style={{ color: '#000' }}
               >
                 In-Person
               </TabsTrigger>
@@ -194,8 +194,8 @@ export default function Events() {
               animate={{ opacity: 1, y: 0 }}
               className="glass-card p-16 rounded-2xl text-center"
             >
-              <Calendar className="w-20 h-20 mx-auto mb-4" style={{ color: '#667EEA', opacity: 0.5 }} />
-              <p className="text-lg font-medium" style={{ color: '#B6C4E0' }}>No events found</p>
+              <Calendar className="w-20 h-20 mx-auto mb-4" style={{ color: '#D8A11F', opacity: 0.5 }} />
+              <p className="text-lg font-medium" style={{ color: '#000' }}>No events found</p>
             </motion.div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
