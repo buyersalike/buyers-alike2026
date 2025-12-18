@@ -195,11 +195,11 @@ export default function Recommendations() {
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-3">
               <Sparkles className="w-8 h-8" style={{ color: '#3B82F6' }} />
-              <h1 className="text-3xl md:text-4xl font-bold" style={{ color: '#E5EDFF' }}>
+              <h1 className="text-3xl md:text-4xl font-bold" style={{ color: '#000' }}>
                 AI-Powered Recommendations
               </h1>
             </div>
-            <p style={{ color: '#B6C4E0' }}>
+            <p style={{ color: '#000' }}>
               Based on your profile and goals, we've found potential partners and opportunities.
             </p>
           </div>
@@ -214,8 +214,8 @@ export default function Recommendations() {
                       <Sparkles className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1" style={{ color: '#E5EDFF' }}>{topic.topic}</h3>
-                      <p className="text-sm" style={{ color: '#7A8BA6' }}>{topic.reason}</p>
+                      <h3 className="font-semibold mb-1" style={{ color: '#000' }}>{topic.topic}</h3>
+                      <p className="text-sm" style={{ color: '#000' }}>{topic.reason}</p>
                     </div>
                   </div>
                 </div>
@@ -266,21 +266,21 @@ export default function Recommendations() {
             <>
               {loadingAI ? (
                 <div className="text-center py-12">
-                  <p style={{ color: '#7A8BA6' }}>Loading AI recommendations...</p>
+                  <p style={{ color: '#000' }}>Loading AI recommendations...</p>
                 </div>
               ) : aiRecommendations?.success && aiRecommendations.recommendations.opportunities?.length > 0 && (
                 <div className="space-y-4 mb-8">
                   <div className="flex items-center gap-2 mb-4">
                     <Sparkles className="w-5 h-5" style={{ color: '#7C3AED' }} />
-                    <h3 className="text-lg font-bold" style={{ color: '#E5EDFF' }}>AI-Recommended for You</h3>
+                    <h3 className="text-lg font-bold" style={{ color: '#000' }}>AI-Recommended for You</h3>
                   </div>
                   {aiRecommendations.recommendations.opportunities.map((opp, idx) => (
                     <div key={idx} className="glass-card glass-card-hover p-6">
-                      <h3 className="text-xl font-bold mb-2" style={{ color: '#E5EDFF' }}>{opp.title}</h3>
-                      <p className="mb-3" style={{ color: '#B6C4E0' }}>{opp.description}</p>
+                      <h3 className="text-xl font-bold mb-2" style={{ color: '#000' }}>{opp.title}</h3>
+                      <p className="mb-3" style={{ color: '#000' }}>{opp.description}</p>
                       <div className="flex items-start gap-2 p-3 rounded-lg" style={{ background: 'rgba(124, 58, 237, 0.1)' }}>
                         <Sparkles className="w-4 h-4 mt-0.5" style={{ color: '#7C3AED' }} />
-                        <p className="text-sm" style={{ color: '#B6C4E0' }}>{opp.relevanceReason}</p>
+                        <p className="text-sm" style={{ color: '#000' }}>{opp.relevanceReason}</p>
                       </div>
                     </div>
                   ))}
