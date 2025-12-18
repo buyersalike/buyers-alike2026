@@ -143,7 +143,7 @@ export default function HeroSection() {
                   backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
                 }}
                 transition={{ duration: 5, repeat: Infinity }}
-                className="bg-gradient-to-r from-[#3B82F6] via-[#7C3AED] to-[#3B82F6] bg-clip-text text-transparent"
+                className="bg-gradient-to-r from-[#DBA11F] via-[#F59E0B] to-[#DBA11F] bg-clip-text text-transparent"
                 style={{ backgroundSize: "200% 200%" }}
               >
                 Like-Minded
@@ -162,7 +162,7 @@ export default function HeroSection() {
                 className="relative"
               >
                 {/* Glow effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#3B82F6]/20 via-[#7C3AED]/20 to-[#3B82F6]/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#DBA11F]/20 via-[#F59E0B]/20 to-[#DBA11F]/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 
                 <div className="relative glass-card glass-card-hover p-2 flex flex-col sm:flex-row gap-3 rounded-2xl" style={{
                   background: 'rgba(255, 255, 255, 0.12)',
@@ -172,7 +172,7 @@ export default function HeroSection() {
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 z-10" style={{ color: '#7A8BA6' }} />
                     <Input
                       placeholder="Enter your email to get started..."
-                      className="w-full pl-12 pr-4 py-6 border-0 focus-visible:ring-2 focus-visible:ring-[#3B82F6]/50 text-lg glass-input rounded-xl"
+                      className="w-full pl-12 pr-4 py-6 border-0 focus-visible:ring-2 focus-visible:ring-[#DBA11F]/50 text-lg glass-input rounded-xl"
                       style={{ color: '#E5EDFF', background: 'rgba(255, 255, 255, 0.05)' }}
                       readOnly
                     />
@@ -234,9 +234,9 @@ export default function HeroSection() {
             {/* Enhanced animated stats */}
             <div className="flex flex-wrap gap-6">
               {[
-                { icon: Users, value: "10K+", label: "Active Members", gradient: "from-[#3B82F6] to-[#7C3AED]" },
-                { icon: Building2, value: "5K+", label: "Partners", gradient: "from-[#7C3AED] to-[#F59E0B]" },
-                { icon: Handshake, value: "2K+", label: "Deals Closed", gradient: "from-[#22C55E] to-[#3B82F6]" },
+                { icon: Users, value: "10K+", label: "Active Members", gradient: "from-[#DBA11F] to-[#F59E0B]" },
+                { icon: Building2, value: "5K+", label: "Partners", gradient: "from-[#F59E0B] to-[#DBA11F]" },
+                { icon: Handshake, value: "2K+", label: "Deals Closed", gradient: "from-[#DBA11F] to-[#F59E0B]" },
               ].map((stat, index) => (
                 <motion.div
                   key={stat.label}
@@ -286,7 +286,7 @@ export default function HeroSection() {
                 transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
                 className="absolute inset-0 rounded-3xl pointer-events-none"
                 style={{
-                  background: 'linear-gradient(135deg, #3B82F6 0%, #7C3AED 50%, #3B82F6 100%)',
+                  background: 'linear-gradient(135deg, #DBA11F 0%, #F59E0B 50%, #DBA11F 100%)',
                   padding: '2px',
                   mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
                   maskComposite: 'exclude',
