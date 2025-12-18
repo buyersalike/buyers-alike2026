@@ -334,16 +334,16 @@ export default function Partnerships() {
                   }`}
                   style={
                     activeTab === tab.id
-                      ? { background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }
-                      : { background: 'rgba(255, 255, 255, 0.05)', color: '#B6C4E0', border: '1px solid rgba(255, 255, 255, 0.1)' }
+                      ? { background: '#D8A11F', color: '#fff' }
+                      : { background: 'rgba(255, 255, 255, 0.8)', color: '#000', border: '1px solid rgba(0, 0, 0, 0.1)' }
                   }
                 >
                   {tab.label}
                   {tab.count > 0 && (
                     <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold" style={
                       activeTab === tab.id
-                        ? { background: 'rgba(255, 255, 255, 0.2)', color: '#E5EDFF' }
-                        : { background: 'rgba(255, 255, 255, 0.1)', color: '#7A8BA6' }
+                        ? { background: 'rgba(255, 255, 255, 0.3)', color: '#fff' }
+                        : { background: 'rgba(0, 0, 0, 0.1)', color: '#000' }
                     }>
                       {tab.count}
                     </span>
