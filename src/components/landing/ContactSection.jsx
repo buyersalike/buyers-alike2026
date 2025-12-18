@@ -92,7 +92,8 @@ export default function ContactSection() {
                     placeholder="John Doe"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50 rounded-xl py-6"
+                    className="bg-white border-black placeholder:text-black focus:border-[#D8A11F] rounded-xl py-6"
+                    style={{ color: '#000' }}
                   />
                 </div>
                 <div>
