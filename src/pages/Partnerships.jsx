@@ -308,14 +308,14 @@ export default function Partnerships() {
       <Sidebar />
 
       {/* Main Content */}
-      <main className="flex-1 p-8 overflow-y-auto" style={{ minHeight: 'calc(100vh - 73px)' }}>
+      <main className="flex-1 p-8 overflow-y-auto" style={{ minHeight: 'calc(100vh - 73px)', background: '#F2F1F5' }}>
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#E5EDFF' }}>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#000' }}>
               My Partnerships
             </h1>
-            <p style={{ color: '#B6C4E0' }}>
+            <p style={{ color: '#000' }}>
               Manage your active, pending, and completed partnerships
             </p>
           </div>
@@ -372,7 +372,7 @@ export default function Partnerships() {
               ))
             ) : (
               <div className="col-span-2 text-center py-16">
-                <p className="text-lg" style={{ color: '#7A8BA6' }}>
+                <p className="text-lg" style={{ color: '#000' }}>
                   No partnerships found in this category
                 </p>
               </div>
