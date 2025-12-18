@@ -79,15 +79,15 @@ export default function Forum() {
   return (
     <div className="flex">
       <Sidebar />
-      <main className="flex-1 p-8 overflow-y-auto">
+      <main className="flex-1 p-8 overflow-y-auto" style={{ background: '#F2F1F5' }}>
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex justify-between items-start mb-8">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#E5EDFF' }}>
+              <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#000' }}>
                 Forum
               </h1>
-              <p style={{ color: '#B6C4E0' }}>
+              <p style={{ color: '#000' }}>
                 Connect, discuss, and share insights
               </p>
             </div>
@@ -111,8 +111,8 @@ export default function Forum() {
           {/* Categories */}
           <div className="mb-8">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>Categories</h2>
-              <p className="text-sm" style={{ color: '#7A8BA6' }}>
+              <h2 className="text-2xl font-bold" style={{ color: '#000' }}>Categories</h2>
+              <p className="text-sm" style={{ color: '#000' }}>
                 {categories.length} categories available
               </p>
             </div>
@@ -130,15 +130,15 @@ export default function Forum() {
           {/* Recent Discussions */}
           <div>
             <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
-              <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>Recent Discussions</h2>
+              <h2 className="text-2xl font-bold" style={{ color: '#000' }}>Recent Discussions</h2>
               <div className="relative w-full md:w-96">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#7A8BA6' }} />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#666' }} />
                 <Input
                   placeholder="Search posts..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-11 glass-input rounded-xl"
-                  style={{ color: '#E5EDFF' }}
+                  className="w-full pl-11 rounded-xl"
+                  style={{ color: '#000', background: '#fff', border: '1px solid #000' }}
                 />
               </div>
             </div>
@@ -157,7 +157,7 @@ export default function Forum() {
                 ))
               ) : (
                 <div className="text-center py-12 glass-card">
-                  <p className="text-lg" style={{ color: '#7A8BA6' }}>
+                  <p className="text-lg" style={{ color: '#000' }}>
                     {searchQuery ? 'No posts found matching your search.' : 'No posts yet. Be the first to start a discussion!'}
                   </p>
                 </div>
