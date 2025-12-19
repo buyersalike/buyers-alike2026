@@ -19,6 +19,7 @@ import UsersTable from "@/components/admin/UsersTable";
 import VendorApplicationsTable from "@/components/admin/VendorApplicationsTable";
 import AdCampaignApplicationsTable from "@/components/admin/AdCampaignApplicationsTable";
 import AdCampaignsSummary from "@/components/admin/AdCampaignsSummary";
+import VendorCategoriesTab from "@/components/admin/VendorCategoriesTab";
 import AdCampaignChart from "@/components/admin/AdCampaignChart";
 import CategoryManagementTab from "@/components/admin/CategoryManagementTab";
 import SystemActivityFeed from "@/components/admin/SystemActivityFeed";
@@ -342,6 +343,9 @@ export default function Admin() {
                 <h3 className="text-xl font-bold mb-2" style={{ color: '#E5EDFF' }}>Vendor Applications</h3>
                 <p className="text-sm mb-4" style={{ color: '#7A8BA6' }}>Review and approve vendor applications</p>
                 <VendorApplicationsTable />
+              </div>
+              <div className="mt-8">
+                <VendorCategoriesTab />
               </div>
             </TabsContent>
 

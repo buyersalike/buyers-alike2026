@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Store, Upload, X, FileText } from "lucide-react";
+import { Store, Upload, X, FileText, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
@@ -50,20 +50,27 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
     province: "",
     address: "",
     description: "",
+    facebook: "",
+    twitter: "",
+    linkedin: "",
+    instagram: "",
   });
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [portfolioUrl, setPortfolioUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
   const [user, setUser] = useState(null);
 
   React.useEffect(() => {
     base44.auth.me().then(setUser).catch(() => setUser(null));
   }, []);
 
-  const totalSteps = 4;
+  const totalSteps = 5;
   const stepTitles = [
-    "Business Information",
+    "Business Info",
     "Contact Details",
     "Location",
-    "Documents & Review"
+    "Social Media",
+    "Portfolio & Review"
   ];
 
   const handleFileChange = (e) => {
@@ -73,6 +80,25 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
 
   const handleRemoveFile = (index) => {
     setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
+  };
+
+  const handlePortfolioUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploading(true);
+      try {
+        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        setPortfolioUrl(file_url);
+      } catch (error) {
+        toast({
+          title: "Upload Failed",
+          description: "Failed to upload portfolio. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setUploading(false);
+      }
+    }
   };
 
   const submitMutation = useMutation({
@@ -94,8 +120,13 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
         province: "",
         address: "",
         description: "",
+        facebook: "",
+        twitter: "",
+        linkedin: "",
+        instagram: "",
       });
       setUploadedFiles([]);
+      setPortfolioUrl("");
       setCurrentStep(1);
       onOpenChange(false);
     },
@@ -157,6 +188,14 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
       user_email: user.email,
       category: formData.category,
       province: formData.province,
+      website: formData.website,
+      social_media: {
+        facebook: formData.facebook,
+        twitter: formData.twitter,
+        linkedin: formData.linkedin,
+        instagram: formData.instagram,
+      },
+      portfolio_url: portfolioUrl,
       status: "pending"
     };
 
@@ -360,73 +399,149 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
             </div>
           )}
 
-          {/* Step 4: Documents & Review */}
+          {/* Step 4: Social Media */}
           {currentStep === 4 && (
+            <div className="space-y-4">
+              <div className="p-4 rounded-xl mb-4" style={{ background: 'rgba(234, 88, 12, 0.1)', border: '1px solid rgba(234, 88, 12, 0.3)' }}>
+                <p className="text-sm" style={{ color: '#E5EDFF' }}>
+                  Connect your social media profiles (optional but recommended).
+                </p>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: '#1877F2' }}>
+                    <Facebook className="w-5 h-5" style={{ color: '#fff' }} />
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="facebook" style={{ color: '#B6C4E0' }}>Facebook</Label>
+                    <Input
+                      id="facebook"
+                      value={formData.facebook}
+                      onChange={(e) => setFormData({ ...formData, facebook: e.target.value })}
+                      className="glass-input mt-1"
+                      style={{ color: '#E5EDFF' }}
+                      placeholder="https://facebook.com/yourpage"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: '#1DA1F2' }}>
+                    <Twitter className="w-5 h-5" style={{ color: '#fff' }} />
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="twitter" style={{ color: '#B6C4E0' }}>Twitter</Label>
+                    <Input
+                      id="twitter"
+                      value={formData.twitter}
+                      onChange={(e) => setFormData({ ...formData, twitter: e.target.value })}
+                      className="glass-input mt-1"
+                      style={{ color: '#E5EDFF' }}
+                      placeholder="https://twitter.com/yourhandle"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: '#0A66C2' }}>
+                    <Linkedin className="w-5 h-5" style={{ color: '#fff' }} />
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="linkedin" style={{ color: '#B6C4E0' }}>LinkedIn</Label>
+                    <Input
+                      id="linkedin"
+                      value={formData.linkedin}
+                      onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
+                      className="glass-input mt-1"
+                      style={{ color: '#E5EDFF' }}
+                      placeholder="https://linkedin.com/company/yourcompany"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4)' }}>
+                    <Instagram className="w-5 h-5" style={{ color: '#fff' }} />
+                  </div>
+                  <div className="flex-1">
+                    <Label htmlFor="instagram" style={{ color: '#B6C4E0' }}>Instagram</Label>
+                    <Input
+                      id="instagram"
+                      value={formData.instagram}
+                      onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
+                      className="glass-input mt-1"
+                      style={{ color: '#E5EDFF' }}
+                      placeholder="https://instagram.com/yourbusiness"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 5: Portfolio & Review */}
+          {currentStep === 5 && (
             <div className="space-y-6">
               <div className="p-4 rounded-xl mb-4" style={{ background: 'rgba(234, 88, 12, 0.1)', border: '1px solid rgba(234, 88, 12, 0.3)' }}>
                 <p className="text-sm" style={{ color: '#E5EDFF' }}>
-                  Upload supporting documents and review your application.
+                  Upload your portfolio and review your application before submission.
                 </p>
               </div>
 
               <div>
-                <Label htmlFor="documents" style={{ color: '#B6C4E0' }}>Upload Documents (Optional)</Label>
+                <Label htmlFor="portfolio" style={{ color: '#B6C4E0' }}>Portfolio Upload (Optional)</Label>
                 <p className="text-xs mb-2" style={{ color: '#7A8BA6' }}>
-                  Accepted formats: PDF, JPG, PNG (Max 5MB per file)
+                  Upload a PDF showcasing your work, services, or case studies (Max 10MB)
                 </p>
                 
-                <label
-                  htmlFor="documents"
-                  className="flex flex-col items-center justify-center w-full h-32 rounded-xl border-2 border-dashed cursor-pointer transition-all hover:border-opacity-50 mb-4"
-                  style={{ borderColor: 'rgba(255, 255, 255, 0.18)', background: 'rgba(255, 255, 255, 0.03)' }}
-                >
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <Upload className="w-8 h-8 mb-2" style={{ color: '#EA580C' }} />
-                    <p className="text-sm" style={{ color: '#B6C4E0' }}>
-                      Click to upload or drag and drop
-                    </p>
-                  </div>
-                  <input
-                    id="documents"
-                    type="file"
-                    className="hidden"
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    multiple
-                    onChange={handleFileChange}
-                  />
-                </label>
-
-                {uploadedFiles.length > 0 && (
-                  <div className="space-y-2">
-                    {uploadedFiles.map((file, index) => (
-                      <div 
-                        key={index}
-                        className="flex items-center justify-between p-3 rounded-xl"
-                        style={{ background: 'rgba(234, 88, 12, 0.15)', border: '1px solid rgba(234, 88, 12, 0.3)' }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: '#EA580C' }}>
-                            <FileText className="w-5 h-5" style={{ color: '#fff' }} />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>
-                              {file.name}
-                            </p>
-                            <p className="text-xs" style={{ color: '#7A8BA6' }}>
-                              {(file.size / 1024 / 1024).toFixed(2)} MB
-                            </p>
-                          </div>
-                        </div>
-                        <Button
-                          type="button"
-                          onClick={() => handleRemoveFile(index)}
-                          className="rounded-lg p-2"
-                          style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
+                {!portfolioUrl ? (
+                  <label
+                    htmlFor="portfolio"
+                    className="flex flex-col items-center justify-center w-full h-32 rounded-xl border-2 border-dashed cursor-pointer transition-all hover:border-opacity-50"
+                    style={{ borderColor: 'rgba(255, 255, 255, 0.18)', background: 'rgba(255, 255, 255, 0.03)' }}
+                  >
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <Upload className="w-8 h-8 mb-2" style={{ color: '#EA580C' }} />
+                      <p className="text-sm" style={{ color: '#B6C4E0' }}>
+                        {uploading ? 'Uploading...' : 'Click to upload portfolio'}
+                      </p>
+                    </div>
+                    <input
+                      id="portfolio"
+                      type="file"
+                      className="hidden"
+                      accept=".pdf"
+                      onChange={handlePortfolioUpload}
+                      disabled={uploading}
+                    />
+                  </label>
+                ) : (
+                  <div 
+                    className="flex items-center justify-between p-4 rounded-xl"
+                    style={{ background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.3)' }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: '#22C55E' }}>
+                        <FileText className="w-5 h-5" style={{ color: '#fff' }} />
                       </div>
-                    ))}
+                      <div>
+                        <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>
+                          Portfolio uploaded
+                        </p>
+                        <p className="text-xs" style={{ color: '#7A8BA6' }}>
+                          Ready to submit
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={() => setPortfolioUrl("")}
+                      className="rounded-lg p-2"
+                      style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
                 )}
               </div>
