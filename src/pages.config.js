@@ -15,6 +15,7 @@ import AdCampaigns from './pages/AdCampaigns';
 import Admin from './pages/Admin';
 import Sitemap from './pages/Sitemap';
 import PartnershipManagement from './pages/PartnershipManagement';
+import OpportunityDetail from './pages/OpportunityDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -36,6 +37,7 @@ export const PAGES = {
     "Admin": Admin,
     "Sitemap": Sitemap,
     "PartnershipManagement": PartnershipManagement,
+    "OpportunityDetail": OpportunityDetail,
 }
 
 export const pagesConfig = {
