@@ -17,7 +17,7 @@ import ActivityChart from "@/components/admin/ActivityChart";
 import InterestTrendsChart from "@/components/admin/InterestTrendsChart";
 import UsersTable from "@/components/admin/UsersTable";
 import VendorApplicationsTable from "@/components/admin/VendorApplicationsTable";
-import AdvertiseApplicationsTable from "@/components/admin/AdvertiseApplicationsTable";
+import AdCampaignApplicationsTable from "@/components/admin/AdCampaignApplicationsTable";
 import AdCampaignsSummary from "@/components/admin/AdCampaignsSummary";
 import AdCampaignChart from "@/components/admin/AdCampaignChart";
 import CategoryManagementTab from "@/components/admin/CategoryManagementTab";
@@ -248,6 +248,9 @@ export default function Admin() {
               <TabsTrigger value="vendor" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
                 Vendor
               </TabsTrigger>
+              <TabsTrigger value="ad-campaigns" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
+                Ad Campaigns
+              </TabsTrigger>
               <TabsTrigger value="category" className="rounded-xl px-6 py-3 font-semibold" style={{ color: '#B6C4E0' }}>
                 Category
               </TabsTrigger>
@@ -335,8 +338,19 @@ export default function Admin() {
             </TabsContent>
 
             <TabsContent value="vendor" className="space-y-6">
-              <VendorApplicationsTable />
-              <AdvertiseApplicationsTable />
+              <div className="mb-6">
+                <h3 className="text-xl font-bold mb-2" style={{ color: '#E5EDFF' }}>Vendor Applications</h3>
+                <p className="text-sm mb-4" style={{ color: '#7A8BA6' }}>Review and approve vendor applications</p>
+                <VendorApplicationsTable />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="ad-campaigns" className="space-y-6">
+              <div className="mb-6">
+                <h3 className="text-xl font-bold mb-2" style={{ color: '#E5EDFF' }}>Ad Campaign Applications</h3>
+                <p className="text-sm mb-4" style={{ color: '#7A8BA6' }}>Review and approve ad campaign applications</p>
+              </div>
+              <AdCampaignApplicationsTable />
             </TabsContent>
 
             <TabsContent value="category">
