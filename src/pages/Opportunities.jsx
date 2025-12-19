@@ -272,8 +272,8 @@ export default function Opportunities() {
               </h2>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {realEstateData.opportunities.filter(opp => opp.featured).slice(0, 3).map((opp) => (
-                <OpportunityCard key={opp.id} opportunity={opp} index={0} />
+              {realEstateData.opportunities.slice(0, 6).map((opp, index) => (
+                <OpportunityCard key={opp.id} opportunity={opp} index={index} />
               ))}
             </div>
           </div>
