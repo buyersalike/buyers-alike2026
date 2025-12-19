@@ -26,13 +26,19 @@ Deno.serve(async (req) => {
     );
 
     if (!response.ok) {
+      const errorText = await response.text();
       return Response.json(
-        { error: 'Failed to fetch real estate data', status: response.status },
+        { error: 'Failed to fetch real estate data', status: response.status, details: errorText },
         { status: response.status }
       );
     }
 
-    const data = await response.json();
+    const text = await response.text();
+    if (!text) {
+      return Response.json({ error: 'Empty response from API' }, { status: 500 });
+    }
+
+    const data = JSON.parse(text);
 
     // Transform the data into opportunity format
     const opportunities = [];
