@@ -13,22 +13,12 @@ import AdvertiseApplicationDialog from "@/components/vendors/AdvertiseApplicatio
 
 export default function AdCampaigns() {
   const [currentUser, setCurrentUser] = useState(null);
-  const [vendorApp, setVendorApp] = useState(null);
   const [isAdvertiseDialogOpen, setIsAdvertiseDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       const user = await base44.auth.me();
       setCurrentUser(user);
-      
-      const vendorApps = await base44.entities.VendorApplication.filter({
-        user_email: user.email,
-        status: "approved"
-      });
-      
-      if (vendorApps.length > 0) {
-        setVendorApp(vendorApps[0]);
-      }
     };
     fetchUser();
   }, []);
@@ -56,25 +46,6 @@ export default function AdCampaigns() {
 
   const activeCampaigns = campaigns.filter(c => c.status === 'approved' && (!c.expiry_date || new Date(c.expiry_date) > new Date()));
   const expiredCampaigns = campaigns.filter(c => c.status === 'expired' || (c.expiry_date && new Date(c.expiry_date) <= new Date()));
-
-  if (!vendorApp) {
-    return (
-      <div className="flex min-h-screen" style={{ background: '#F2F1F5' }}>
-        <Sidebar />
-        <div className="flex-1 flex items-center justify-center p-8">
-          <div className="p-8 max-w-md text-center rounded-2xl" style={{ background: '#fff', border: '1px solid #000' }}>
-            <BarChart3 className="w-16 h-16 mx-auto mb-4" style={{ color: '#666' }} />
-            <h2 className="text-2xl font-bold mb-2" style={{ color: '#000' }}>
-              Vendor Status Required
-            </h2>
-            <p style={{ color: '#666' }}>
-              You must be an approved vendor to access the Ad Campaign Management dashboard.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen" style={{ background: '#F2F1F5' }}>
