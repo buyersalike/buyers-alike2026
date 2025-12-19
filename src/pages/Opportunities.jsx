@@ -343,36 +343,7 @@ export default function Opportunities() {
               </div>
             )}
 
-            {/* All Opportunities with Scores */}
-            <div>
-              <h2 className="text-xl font-bold mb-4" style={{ color: '#000' }}>
-                All Opportunities (Sorted by Match Score)
-              </h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {aiMatches.opportunities.map((opp) => (
-                  <div key={opp.id} className="p-6 rounded-2xl" style={{ background: '#fff', border: '1px solid #000' }}>
-                    <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-lg font-bold flex-1" style={{ color: '#000' }}>{opp.title}</h3>
-                      <div className="px-2 py-1 rounded-full text-xs font-bold ml-2 flex-shrink-0" style={{ 
-                        background: opp.matchScore >= 80 ? '#22C55E' : opp.matchScore >= 60 ? '#D8A11F' : '#F59E0B',
-                        color: '#fff'
-                      }}>
-                        {opp.matchScore}%
-                      </div>
-                    </div>
-                    <div className="flex gap-2 mb-3 flex-wrap">
-                      <span className="px-2 py-1 rounded-full text-xs" style={{ background: '#D8A11F', color: '#fff' }}>
-                        {opp.category}
-                      </span>
-                      <span className="px-2 py-1 rounded-full text-xs" style={{ background: '#666', color: '#fff' }}>
-                        {opp.industry}
-                      </span>
-                    </div>
-                    <p className="text-sm" style={{ color: '#666' }}>{opp.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+
           </>
         ) : (
           <>
