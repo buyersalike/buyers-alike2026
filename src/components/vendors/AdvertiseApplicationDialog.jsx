@@ -60,23 +60,10 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
     const fetchUserData = async () => {
       const user = await base44.auth.me();
       setCurrentUser(user);
-      
-      // Check if user has an approved vendor application
-      const vendorApps = await base44.entities.VendorApplication.filter({ 
-        user_email: user.email,
-        status: "approved"
-      });
-      
-      if (vendorApps.length > 0) {
-        const vendorApp = vendorApps[0];
-        setUserVendorApp(vendorApp);
-        setIsVendor(true);
-        setFormData(prev => ({
-          ...prev,
-          businessName: vendorApp.business_name || "",
-          email: user.email
-        }));
-      }
+      setFormData(prev => ({
+        ...prev,
+        email: user.email
+      }));
     };
     
     if (open) {
@@ -160,16 +147,11 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    if (!isVendor) {
-      alert("You must be an approved vendor to advertise. Please apply to become a vendor first.");
-      return;
-    }
 
     submitApplicationMutation.mutate({
       business_name: formData.businessName,
       user_email: currentUser.email,
-      vendor_id: userVendorApp.vendor_id,
+      vendor_id: `AD-${Date.now()}`,
       contact_name: formData.contactName,
       email: formData.email,
       phone: formData.phone,
@@ -238,18 +220,7 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
           }}
           className="space-y-6"
         >
-          {/* Vendor Status Alert */}
-          {!isVendor && (
-            <div className="p-4 rounded-xl flex items-start gap-3" style={{ background: '#FEE2E2', border: '1px solid #EF4444' }}>
-              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#EF4444' }} />
-              <div>
-                <p className="font-semibold mb-1" style={{ color: '#EF4444' }}>Vendor Status Required</p>
-                <p className="text-sm" style={{ color: '#991B1B' }}>
-                  You must be an approved vendor to advertise. Please apply to become a vendor first.
-                </p>
-              </div>
-            </div>
-          )}
+
 
           {/* Step 1: Business Information */}
           {currentStep === 1 && (
@@ -272,16 +243,7 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
                   />
                 </div>
 
-                <div>
-                  <Label htmlFor="vendorId" style={{ color: '#000' }}>Vendor ID</Label>
-                  <Input
-                    id="vendorId"
-                    value={userVendorApp?.vendor_id || "Not available"}
-                    disabled
-                    className="mt-1 opacity-70 rounded-xl"
-                    style={{ color: isVendor ? '#22C55E' : '#666', background: '#F9FAFB', border: '1px solid #000' }}
-                  />
-                </div>
+
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
@@ -571,18 +533,17 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
               <Button
                 type="button"
                 onClick={handleNext}
-                disabled={!isVendor}
                 className="rounded-lg px-8"
-                style={{ background: '#D8A11F', color: '#fff', opacity: !isVendor ? 0.5 : 1 }}
+                style={{ background: '#D8A11F', color: '#fff' }}
               >
                 Next Step
               </Button>
             ) : (
               <Button
                 type="submit"
-                disabled={!isVendor || submitApplicationMutation.isPending || uploading}
+                disabled={submitApplicationMutation.isPending || uploading}
                 className="rounded-lg px-8"
-                style={{ background: '#D8A11F', color: '#fff', opacity: !isVendor ? 0.5 : 1 }}
+                style={{ background: '#D8A11F', color: '#fff' }}
               >
                 {submitApplicationMutation.isPending ? "Submitting..." : "Launch Campaign"}
               </Button>
