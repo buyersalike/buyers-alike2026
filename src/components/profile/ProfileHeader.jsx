@@ -39,7 +39,48 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
     return null;
   };
 
-  const handleFileSelect = (file, type) => {
+  const resizeImage = (file, maxWidth, maxHeight) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          // Calculate new dimensions while maintaining aspect ratio
+          if (width > maxWidth || height > maxHeight) {
+            const ratio = Math.min(maxWidth / width, maxHeight / height);
+            width = width * ratio;
+            height = height * ratio;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          // Enable image smoothing for better quality
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Convert to blob with high quality
+          canvas.toBlob(
+            (blob) => {
+              resolve(new File([blob], file.name, { type: 'image/jpeg' }));
+            },
+            'image/jpeg',
+            0.95 // High quality
+          );
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFileSelect = async (file, type) => {
     const validationError = validateFile(file);
     if (validationError) {
       setError(validationError);
@@ -47,17 +88,24 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
     }
     
     setError(null);
+    
+    // Resize image based on type
+    const maxWidth = type === 'cover' ? 1920 : 800;
+    const maxHeight = type === 'cover' ? 600 : 800;
+    
+    const resizedFile = await resizeImage(file, maxWidth, maxHeight);
+    
     const reader = new FileReader();
     reader.onloadend = () => {
       if (type === 'cover') {
-        setCoverFile(file);
+        setCoverFile(resizedFile);
         setCoverPreview(reader.result);
       } else {
-        setAvatarFile(file);
+        setAvatarFile(resizedFile);
         setAvatarPreview(reader.result);
       }
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(resizedFile);
   };
 
   const handleDrag = (e, type) => {
@@ -149,7 +197,8 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
               ? `url(${user.cover_image_url})` 
               : 'linear-gradient(135deg, #667EEA 0%, #764BA2 50%, #F093FB 100%)',
             backgroundSize: 'cover',
-            backgroundPosition: 'center'
+            backgroundPosition: 'center',
+            imageRendering: '-webkit-optimize-contrast'
           }}
         >
           <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, transparent 0%, rgba(10, 22, 40, 0.8) 100%)' }} />
@@ -180,7 +229,12 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
                 }}
               >
                 {user.avatar_url ? (
-                  <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
+                  <img 
+                    src={user.avatar_url} 
+                    alt={user.full_name} 
+                    className="w-full h-full object-cover" 
+                    style={{ imageRendering: '-webkit-optimize-contrast' }}
+                  />
                 ) : (
                   <User className="w-24 h-24" style={{ color: '#E5EDFF' }} />
                 )}
@@ -273,7 +327,12 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
               
               {coverPreview ? (
                 <div className="relative rounded-lg overflow-hidden" style={{ border: '2px solid rgba(59, 130, 246, 0.3)' }}>
-                  <img src={coverPreview} alt="Cover preview" className="w-full h-40 object-cover" />
+                  <img 
+                    src={coverPreview} 
+                    alt="Cover preview" 
+                    className="w-full h-40 object-cover" 
+                    style={{ imageRendering: '-webkit-optimize-contrast' }}
+                  />
                   <button
                     onClick={() => removePreview('cover')}
                     className="absolute top-2 right-2 p-1.5 rounded-full transition-colors"
@@ -322,7 +381,12 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
               
               {avatarPreview ? (
                 <div className="relative w-32 h-32 rounded-lg overflow-hidden mx-auto" style={{ border: '2px solid rgba(59, 130, 246, 0.3)' }}>
-                  <img src={avatarPreview} alt="Avatar preview" className="w-full h-full object-cover" />
+                  <img 
+                    src={avatarPreview} 
+                    alt="Avatar preview" 
+                    className="w-full h-full object-cover" 
+                    style={{ imageRendering: '-webkit-optimize-contrast' }}
+                  />
                   <button
                     onClick={() => removePreview('avatar')}
                     className="absolute top-2 right-2 p-1.5 rounded-full transition-colors"
