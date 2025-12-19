@@ -6,39 +6,128 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Camera, Mail, MapPin, Calendar, Briefcase } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { User, Camera, Mail, MapPin, Calendar, Briefcase, Upload, X, AlertCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
 
 export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [coverFile, setCoverFile] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
+  const [coverPreview, setCoverPreview] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [error, setError] = useState(null);
+  const [dragActive, setDragActive] = useState({ cover: false, avatar: false });
   const queryClient = useQueryClient();
+
+  const validateFile = (file) => {
+    if (!file) return null;
+    
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return 'Please upload a valid image file (JPEG, PNG, or WebP)';
+    }
+    
+    if (file.size > MAX_FILE_SIZE) {
+      return 'File size must be less than 5MB';
+    }
+    
+    return null;
+  };
+
+  const handleFileSelect = (file, type) => {
+    const validationError = validateFile(file);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    
+    setError(null);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (type === 'cover') {
+        setCoverFile(file);
+        setCoverPreview(reader.result);
+      } else {
+        setAvatarFile(file);
+        setAvatarPreview(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDrag = (e, type) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(prev => ({ ...prev, [type]: true }));
+    } else if (e.type === "dragleave") {
+      setDragActive(prev => ({ ...prev, [type]: false }));
+    }
+  };
+
+  const handleDrop = (e, type) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(prev => ({ ...prev, [type]: false }));
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileSelect(e.dataTransfer.files[0], type);
+    }
+  };
+
+  const removePreview = (type) => {
+    if (type === 'cover') {
+      setCoverFile(null);
+      setCoverPreview(null);
+    } else {
+      setAvatarFile(null);
+      setAvatarPreview(null);
+    }
+  };
 
   const handleMediaUpload = async () => {
     if (!coverFile && !avatarFile) return;
     
     setUploading(true);
+    setUploadProgress(0);
+    setError(null);
+    
     try {
       const updates = {};
       
       if (coverFile) {
+        setUploadProgress(25);
         const { file_url } = await base44.integrations.Core.UploadFile({ file: coverFile });
         updates.cover_image_url = file_url;
+        setUploadProgress(50);
       }
       
       if (avatarFile) {
+        setUploadProgress(coverFile ? 75 : 50);
         const { file_url } = await base44.integrations.Core.UploadFile({ file: avatarFile });
         updates.avatar_url = file_url;
+        setUploadProgress(coverFile ? 90 : 75);
       }
 
       await base44.auth.updateMe(updates);
+      setUploadProgress(100);
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      setShowEditDialog(false);
-      setCoverFile(null);
-      setAvatarFile(null);
+      
+      setTimeout(() => {
+        setShowEditDialog(false);
+        setCoverFile(null);
+        setAvatarFile(null);
+        setCoverPreview(null);
+        setAvatarPreview(null);
+        setUploadProgress(0);
+      }, 500);
     } catch (error) {
+      setError('Upload failed. Please try again.');
       console.error('Upload failed:', error);
     } finally {
       setUploading(false);
@@ -161,33 +250,137 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
 
       {/* Edit Media Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent style={{ background: '#0F2744', border: '1px solid rgba(255, 255, 255, 0.18)' }}>
+        <DialogContent className="max-w-2xl" style={{ background: '#0F2744', border: '1px solid rgba(255, 255, 255, 0.18)' }}>
           <DialogHeader>
             <DialogTitle style={{ color: '#E5EDFF' }}>Edit Media</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+          
+          <div className="space-y-6 py-4">
+            {/* Error Message */}
+            {error && (
+              <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+                <AlertCircle className="w-4 h-4" style={{ color: '#EF4444' }} />
+                <span className="text-sm" style={{ color: '#EF4444' }}>{error}</span>
+              </div>
+            )}
+
+            {/* Cover Image Upload */}
             <div>
-              <Label style={{ color: '#B6C4E0' }}>Cover Image</Label>
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setCoverFile(e.target.files?.[0])}
-                className="glass-input mt-2"
-              />
+              <Label className="mb-2 block" style={{ color: '#B6C4E0' }}>
+                Cover Image
+                <span className="text-xs ml-2" style={{ color: '#7A8BA6' }}>(Max 5MB, 1200x320 recommended)</span>
+              </Label>
+              
+              {coverPreview ? (
+                <div className="relative rounded-lg overflow-hidden" style={{ border: '2px solid rgba(59, 130, 246, 0.3)' }}>
+                  <img src={coverPreview} alt="Cover preview" className="w-full h-40 object-cover" />
+                  <button
+                    onClick={() => removePreview('cover')}
+                    className="absolute top-2 right-2 p-1.5 rounded-full transition-colors"
+                    style={{ background: 'rgba(0, 0, 0, 0.6)' }}
+                  >
+                    <X className="w-4 h-4" style={{ color: '#fff' }} />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  onDragEnter={(e) => handleDrag(e, 'cover')}
+                  onDragLeave={(e) => handleDrag(e, 'cover')}
+                  onDragOver={(e) => handleDrag(e, 'cover')}
+                  onDrop={(e) => handleDrop(e, 'cover')}
+                  className="relative rounded-lg h-40 flex flex-col items-center justify-center cursor-pointer transition-all"
+                  style={{ 
+                    background: dragActive.cover ? 'rgba(59, 130, 246, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+                    border: `2px dashed ${dragActive.cover ? '#3B82F6' : 'rgba(255, 255, 255, 0.18)'}` 
+                  }}
+                  onClick={() => document.getElementById('cover-input').click()}
+                >
+                  <Upload className="w-8 h-8 mb-2" style={{ color: dragActive.cover ? '#3B82F6' : '#7A8BA6' }} />
+                  <p className="text-sm font-medium" style={{ color: dragActive.cover ? '#3B82F6' : '#B6C4E0' }}>
+                    {dragActive.cover ? 'Drop your image here' : 'Click to upload or drag and drop'}
+                  </p>
+                  <p className="text-xs mt-1" style={{ color: '#7A8BA6' }}>
+                    JPEG, PNG or WebP (max 5MB)
+                  </p>
+                  <Input
+                    id="cover-input"
+                    type="file"
+                    accept="image/jpeg,image/png,image/jpg,image/webp"
+                    onChange={(e) => handleFileSelect(e.target.files?.[0], 'cover')}
+                    className="hidden"
+                  />
+                </div>
+              )}
             </div>
+
+            {/* Profile Picture Upload */}
             <div>
-              <Label style={{ color: '#B6C4E0' }}>Profile Picture</Label>
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setAvatarFile(e.target.files?.[0])}
-                className="glass-input mt-2"
-              />
+              <Label className="mb-2 block" style={{ color: '#B6C4E0' }}>
+                Profile Picture
+                <span className="text-xs ml-2" style={{ color: '#7A8BA6' }}>(Max 5MB, square image recommended)</span>
+              </Label>
+              
+              {avatarPreview ? (
+                <div className="relative w-32 h-32 rounded-lg overflow-hidden mx-auto" style={{ border: '2px solid rgba(59, 130, 246, 0.3)' }}>
+                  <img src={avatarPreview} alt="Avatar preview" className="w-full h-full object-cover" />
+                  <button
+                    onClick={() => removePreview('avatar')}
+                    className="absolute top-2 right-2 p-1.5 rounded-full transition-colors"
+                    style={{ background: 'rgba(0, 0, 0, 0.6)' }}
+                  >
+                    <X className="w-4 h-4" style={{ color: '#fff' }} />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  onDragEnter={(e) => handleDrag(e, 'avatar')}
+                  onDragLeave={(e) => handleDrag(e, 'avatar')}
+                  onDragOver={(e) => handleDrag(e, 'avatar')}
+                  onDrop={(e) => handleDrop(e, 'avatar')}
+                  className="relative rounded-lg h-32 w-32 mx-auto flex flex-col items-center justify-center cursor-pointer transition-all"
+                  style={{ 
+                    background: dragActive.avatar ? 'rgba(59, 130, 246, 0.1)' : 'rgba(255, 255, 255, 0.05)',
+                    border: `2px dashed ${dragActive.avatar ? '#3B82F6' : 'rgba(255, 255, 255, 0.18)'}` 
+                  }}
+                  onClick={() => document.getElementById('avatar-input').click()}
+                >
+                  <Camera className="w-6 h-6 mb-1" style={{ color: dragActive.avatar ? '#3B82F6' : '#7A8BA6' }} />
+                  <p className="text-xs font-medium text-center px-2" style={{ color: dragActive.avatar ? '#3B82F6' : '#B6C4E0' }}>
+                    {dragActive.avatar ? 'Drop here' : 'Upload'}
+                  </p>
+                  <Input
+                    id="avatar-input"
+                    type="file"
+                    accept="image/jpeg,image/png,image/jpg,image/webp"
+                    onChange={(e) => handleFileSelect(e.target.files?.[0], 'avatar')}
+                    className="hidden"
+                  />
+                </div>
+              )}
             </div>
+
+            {/* Upload Progress */}
+            {uploading && (
+              <div className="space-y-2">
+                <Progress value={uploadProgress} className="h-2" />
+                <p className="text-sm text-center" style={{ color: '#B6C4E0' }}>
+                  Uploading... {uploadProgress}%
+                </p>
+              </div>
+            )}
           </div>
+
           <div className="flex gap-3">
             <Button
-              onClick={() => setShowEditDialog(false)}
+              onClick={() => {
+                setShowEditDialog(false);
+                setCoverFile(null);
+                setAvatarFile(null);
+                setCoverPreview(null);
+                setAvatarPreview(null);
+                setError(null);
+              }}
+              disabled={uploading}
               style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#B6C4E0' }}
             >
               Cancel
@@ -195,9 +388,10 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
             <Button
               onClick={handleMediaUpload}
               disabled={uploading || (!coverFile && !avatarFile)}
+              className="flex-1"
               style={{ background: '#3B82F6', color: '#fff' }}
             >
-              {uploading ? 'Uploading...' : 'Save Changes'}
+              {uploading ? `Uploading... ${uploadProgress}%` : 'Save Changes'}
             </Button>
           </div>
         </DialogContent>
