@@ -1,9 +1,38 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Heart, UserPlus } from "lucide-react";
 
-export default function ConnectionCard({ connection, index }) {
+export default function ConnectionCard({ connection, index, currentUserEmail }) {
+  const queryClient = useQueryClient();
+
+  const sendConnectionRequestMutation = useMutation({
+    mutationFn: async () => {
+      const newConnection = await base44.entities.Connection.create({
+        user1_email: currentUserEmail,
+        user2_email: connection.email,
+        status: 'pending'
+      });
+
+      // Send notification
+      await base44.functions.invoke('sendNotification', {
+        recipientEmail: connection.email,
+        type: 'connection_request',
+        title: '👋 New Connection Request',
+        message: `${connection.name} wants to connect with you`,
+        link: `/Profile?email=${currentUserEmail}`,
+        sendEmail: true
+      });
+
+      return newConnection;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['connections'] });
+      alert('Connection request sent!');
+    },
+  });
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -53,11 +82,13 @@ export default function ConnectionCard({ connection, index }) {
 
       {/* Connect Button */}
       <Button 
+        onClick={() => sendConnectionRequestMutation.mutate()}
+        disabled={sendConnectionRequestMutation.isPending}
         className="w-full rounded-lg px-4 py-3 text-sm font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2" 
         style={{ background: '#D8A11F', color: '#fff' }}
       >
         <UserPlus className="w-4 h-4" />
-        Connect
+        {sendConnectionRequestMutation.isPending ? 'Sending...' : 'Connect'}
       </Button>
     </motion.div>
   );

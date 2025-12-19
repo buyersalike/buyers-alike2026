@@ -13,7 +13,27 @@ export default function CommentThread({ comment, postId, currentUser, allComment
   const queryClient = useQueryClient();
 
   const createReplyMutation = useMutation({
-    mutationFn: (data) => base44.entities.ForumComment.create(data),
+    mutationFn: async (data) => {
+      const newComment = await base44.entities.ForumComment.create(data);
+      
+      // Notify the original comment author
+      if (comment.author_email !== currentUser.email) {
+        try {
+          await base44.functions.invoke('sendNotification', {
+            recipientEmail: comment.author_email,
+            type: 'post_comment',
+            title: '💬 New Reply to Your Comment',
+            message: `${currentUser.full_name || currentUser.email.split('@')[0]} replied to your comment`,
+            link: `/PostDetail?id=${postId}`,
+            sendEmail: true
+          });
+        } catch (error) {
+          console.error('Failed to send notification:', error);
+        }
+      }
+      
+      return newComment;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['forumComments'] });
       setReplyContent("");
