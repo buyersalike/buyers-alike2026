@@ -53,11 +53,14 @@ export default function Vendors() {
         category: vendor.category,
         address: `${vendor.province}, Canada`,
         province: vendor.province,
+        featured: vendor.featured || false,
         logo: `https://ui-avatars.com/api/?name=${encodeURIComponent(vendor.business_name)}&background=EA580C&color=fff&size=200`
       }));
     },
   });
 
+  const featuredVendors = vendorsData.filter(vendor => vendor.featured);
+  
   const filteredVendors = vendorsData.filter((vendor) => {
     const matchesSearch = vendor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          vendor.address.toLowerCase().includes(searchQuery.toLowerCase());
@@ -103,9 +106,26 @@ export default function Vendors() {
           />
 
           {/* Featured Vendors Section */}
+          {featuredVendors.length > 0 && (
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-2 h-8 rounded-full" style={{ background: '#D8A11F' }} />
+                <h2 className="text-2xl font-bold" style={{ color: '#000' }}>
+                  Featured Vendors
+                </h2>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                {featuredVendors.map((vendor, index) => (
+                  <VendorCard key={vendor.id} vendor={vendor} index={index} featured />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* All Vendors Section */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4" style={{ color: '#000' }}>
-              Featured Vendors
+              All Vendors
             </h2>
 
             {/* Search and Filters */}
