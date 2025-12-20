@@ -19,7 +19,8 @@ export default function InterestManagementTab() {
     interest_name: "", 
     description: "", 
     user_email: "",
-    status: "pending" 
+    status: "pending",
+    message: "" 
   });
 
   const queryClient = useQueryClient();
@@ -42,7 +43,7 @@ export default function InterestManagementTab() {
       queryClient.invalidateQueries({ queryKey: ['allInterests'] });
       setIsEditDialogOpen(false);
       setSelectedInterest(null);
-      setEditFormData({ interest_name: "", description: "", user_email: "", status: "pending" });
+      setEditFormData({ interest_name: "", description: "", user_email: "", status: "pending", message: "" });
     },
   });
 
@@ -51,7 +52,7 @@ export default function InterestManagementTab() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['allInterests'] });
       setIsCreateDialogOpen(false);
-      setEditFormData({ interest_name: "", description: "", user_email: "", status: "pending" });
+      setEditFormData({ interest_name: "", description: "", user_email: "", status: "pending", message: "" });
     },
   });
 
@@ -74,7 +75,8 @@ export default function InterestManagementTab() {
       interest_name: interest.interest_name || "",
       description: interest.description || "",
       user_email: interest.user_email || "",
-      status: interest.status || "pending"
+      status: interest.status || "pending",
+      message: interest.message || ""
     });
     setIsEditDialogOpen(true);
   };
@@ -240,7 +242,7 @@ export default function InterestManagementTab() {
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-sm" style={{ color: '#666' }}>
-                        N/A
+                        {interest.message || 'N/A'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -410,6 +412,19 @@ export default function InterestManagementTab() {
                 </SelectContent>
               </Select>
             </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
+                Message
+              </label>
+              <Textarea
+                value={editFormData.message}
+                onChange={(e) => setEditFormData({ ...editFormData, message: e.target.value })}
+                placeholder="Admin message or notes"
+                rows={3}
+                className="resize-none"
+                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
+              />
+            </div>
           </div>
           <DialogFooter className="gap-2">
             <Button
@@ -499,6 +514,19 @@ export default function InterestManagementTab() {
                   <SelectItem value="rejected">Rejected</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
+                Message
+              </label>
+              <Textarea
+                value={editFormData.message}
+                onChange={(e) => setEditFormData({ ...editFormData, message: e.target.value })}
+                placeholder="Admin message or notes"
+                rows={3}
+                className="resize-none"
+                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
+              />
             </div>
           </div>
           <DialogFooter className="gap-2">
