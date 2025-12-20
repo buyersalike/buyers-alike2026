@@ -247,36 +247,42 @@ export default function VendorApplicationsTable() {
               </div>
 
               {/* Tagline */}
-              {selectedApplication.tagline && (
-                <div className="p-4 rounded-xl" style={{ background: 'rgba(216, 161, 31, 0.1)' }}>
-                  <p className="text-sm font-medium mb-2" style={{ color: '#7A8BA6' }}>Tagline / USP</p>
+              <div className="p-4 rounded-xl" style={{ background: selectedApplication.tagline ? 'rgba(216, 161, 31, 0.1)' : 'rgba(255, 255, 255, 0.02)' }}>
+                <p className="text-sm font-medium mb-2" style={{ color: '#7A8BA6' }}>Tagline / USP</p>
+                {selectedApplication.tagline ? (
                   <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>"{selectedApplication.tagline}"</p>
-                </div>
-              )}
+                ) : (
+                  <p className="text-sm italic" style={{ color: '#7A8BA6' }}>Not provided</p>
+                )}
+              </div>
 
               {/* Description */}
-              {selectedApplication.description && (
-                <div>
-                  <p className="text-sm font-medium mb-2" style={{ color: '#7A8BA6' }}>Business Description</p>
+              <div>
+                <p className="text-sm font-medium mb-2" style={{ color: '#7A8BA6' }}>Business Description</p>
+                {selectedApplication.description ? (
                   <p className="leading-relaxed" style={{ color: '#E5EDFF' }}>{selectedApplication.description}</p>
-                </div>
-              )}
+                ) : (
+                  <p className="text-sm italic" style={{ color: '#7A8BA6' }}>Not provided</p>
+                )}
+              </div>
 
               {/* Unique Value */}
-              {selectedApplication.unique_value && (
-                <div className="p-4 rounded-xl" style={{ background: 'rgba(59, 130, 246, 0.1)' }}>
-                  <p className="text-sm font-medium mb-2 flex items-center gap-2" style={{ color: '#7A8BA6' }}>
-                    <CheckCircle className="w-4 h-4" />
-                    Why Choose This Vendor?
-                  </p>
+              <div className="p-4 rounded-xl" style={{ background: selectedApplication.unique_value ? 'rgba(59, 130, 246, 0.1)' : 'rgba(255, 255, 255, 0.02)' }}>
+                <p className="text-sm font-medium mb-2 flex items-center gap-2" style={{ color: '#7A8BA6' }}>
+                  <CheckCircle className="w-4 h-4" />
+                  Why Choose This Vendor?
+                </p>
+                {selectedApplication.unique_value ? (
                   <p className="leading-relaxed" style={{ color: '#E5EDFF' }}>{selectedApplication.unique_value}</p>
-                </div>
-              )}
+                ) : (
+                  <p className="text-sm italic" style={{ color: '#7A8BA6' }}>Not provided</p>
+                )}
+              </div>
 
               {/* Specialties */}
-              {selectedApplication.specialties && selectedApplication.specialties.length > 0 && (
-                <div>
-                  <p className="text-sm font-medium mb-3" style={{ color: '#7A8BA6' }}>Service Specialties</p>
+              <div>
+                <p className="text-sm font-medium mb-3" style={{ color: '#7A8BA6' }}>Service Specialties</p>
+                {selectedApplication.specialties && selectedApplication.specialties.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {selectedApplication.specialties.map((specialty, idx) => (
                       <div key={idx} className="px-3 py-2 rounded-lg" style={{ background: 'rgba(216, 161, 31, 0.2)', color: '#D8A11F' }}>
@@ -284,16 +290,18 @@ export default function VendorApplicationsTable() {
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <p className="text-sm italic" style={{ color: '#7A8BA6' }}>Not provided</p>
+                )}
+              </div>
 
               {/* Client Types */}
-              {selectedApplication.client_types && selectedApplication.client_types.length > 0 && (
-                <div>
-                  <p className="text-sm font-medium mb-3 flex items-center gap-2" style={{ color: '#7A8BA6' }}>
-                    <Users className="w-4 h-4" />
-                    Client Types Served
-                  </p>
+              <div>
+                <p className="text-sm font-medium mb-3 flex items-center gap-2" style={{ color: '#7A8BA6' }}>
+                  <Users className="w-4 h-4" />
+                  Client Types Served
+                </p>
+                {selectedApplication.client_types && selectedApplication.client_types.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {selectedApplication.client_types.map((type, idx) => (
                       <div key={idx} className="px-3 py-2 rounded-lg" style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#3B82F6' }}>
@@ -301,16 +309,18 @@ export default function VendorApplicationsTable() {
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <p className="text-sm italic" style={{ color: '#7A8BA6' }}>Not provided</p>
+                )}
+              </div>
 
               {/* Certifications */}
-              {selectedApplication.certifications && selectedApplication.certifications.length > 0 && (
-                <div>
-                  <p className="text-sm font-medium mb-3 flex items-center gap-2" style={{ color: '#7A8BA6' }}>
-                    <Award className="w-4 h-4" />
-                    Certifications & Awards
-                  </p>
+              <div>
+                <p className="text-sm font-medium mb-3 flex items-center gap-2" style={{ color: '#7A8BA6' }}>
+                  <Award className="w-4 h-4" />
+                  Certifications & Awards
+                </p>
+                {selectedApplication.certifications && selectedApplication.certifications.length > 0 ? (
                   <div className="grid md:grid-cols-2 gap-2">
                     {selectedApplication.certifications.map((cert, idx) => (
                       <div key={idx} className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'rgba(34, 197, 94, 0.1)' }}>
@@ -319,55 +329,59 @@ export default function VendorApplicationsTable() {
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <p className="text-sm italic" style={{ color: '#7A8BA6' }}>Not provided</p>
+                )}
+              </div>
 
               {/* Website & Portfolio */}
-              {(selectedApplication.website || selectedApplication.portfolio_url) && (
-                <div className="p-4 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
-                  <p className="text-sm font-medium mb-3 flex items-center gap-2" style={{ color: '#7A8BA6' }}>
-                    <Globe className="w-4 h-4" />
-                    Online Presence
-                  </p>
-                  <div className="space-y-2">
-                    {selectedApplication.website && (
-                      <div>
-                        <p className="text-xs mb-1" style={{ color: '#7A8BA6' }}>Website</p>
-                        <a 
-                          href={selectedApplication.website} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 hover:underline"
-                          style={{ color: '#3B82F6' }}
-                        >
-                          {selectedApplication.website}
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      </div>
+              <div className="p-4 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
+                <p className="text-sm font-medium mb-3 flex items-center gap-2" style={{ color: '#7A8BA6' }}>
+                  <Globe className="w-4 h-4" />
+                  Online Presence
+                </p>
+                <div className="space-y-2">
+                  <div>
+                    <p className="text-xs mb-1" style={{ color: '#7A8BA6' }}>Website</p>
+                    {selectedApplication.website ? (
+                      <a 
+                        href={selectedApplication.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 hover:underline"
+                        style={{ color: '#3B82F6' }}
+                      >
+                        {selectedApplication.website}
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    ) : (
+                      <p className="text-sm italic" style={{ color: '#7A8BA6' }}>Not provided</p>
                     )}
-                    {selectedApplication.portfolio_url && (
-                      <div>
-                        <p className="text-xs mb-1" style={{ color: '#7A8BA6' }}>Portfolio</p>
-                        <a 
-                          href={selectedApplication.portfolio_url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 hover:underline"
-                          style={{ color: '#3B82F6' }}
-                        >
-                          View Portfolio Document
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      </div>
+                  </div>
+                  <div>
+                    <p className="text-xs mb-1" style={{ color: '#7A8BA6' }}>Portfolio</p>
+                    {selectedApplication.portfolio_url ? (
+                      <a 
+                        href={selectedApplication.portfolio_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 hover:underline"
+                        style={{ color: '#3B82F6' }}
+                      >
+                        View Portfolio Document
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    ) : (
+                      <p className="text-sm italic" style={{ color: '#7A8BA6' }}>Not provided</p>
                     )}
                   </div>
                 </div>
-              )}
+              </div>
 
               {/* Social Media */}
-              {selectedApplication.social_media && Object.values(selectedApplication.social_media).some(v => v) && (
-                <div>
-                  <p className="text-sm font-medium mb-3" style={{ color: '#7A8BA6' }}>Social Media</p>
+              <div>
+                <p className="text-sm font-medium mb-3" style={{ color: '#7A8BA6' }}>Social Media</p>
+                {selectedApplication.social_media && Object.values(selectedApplication.social_media).some(v => v) ? (
                   <div className="flex flex-wrap gap-3">
                     {selectedApplication.social_media.facebook && (
                       <a href={selectedApplication.social_media.facebook} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg flex items-center gap-2" style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#3B82F6' }}>
@@ -390,8 +404,10 @@ export default function VendorApplicationsTable() {
                       </a>
                     )}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <p className="text-sm italic" style={{ color: '#7A8BA6' }}>Not provided</p>
+                )}
+              </div>
 
               {/* Application Metadata */}
               <div className="pt-4 border-t" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
