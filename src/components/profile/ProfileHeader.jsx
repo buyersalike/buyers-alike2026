@@ -256,32 +256,32 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
             >
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div>
-                  <h1 className="text-4xl font-bold mb-3" style={{ color: '#E5EDFF', textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)' }}>
-                    {user.full_name || user.email.split('@')[0]}
+                  <h1 className="text-4xl font-bold mb-3" style={{ color: '#fff', textShadow: '0 2px 10px rgba(0, 0, 0, 0.5)' }}>
+                   {user.full_name || user.email.split('@')[0]}
                   </h1>
-                  
+
                   {user.bio && (
-                    <p className="text-lg mb-4 max-w-2xl" style={{ color: '#B6C4E0' }}>
-                      {user.bio}
-                    </p>
+                   <p className="text-lg mb-4 max-w-2xl" style={{ color: '#fff', textShadow: '0 1px 4px rgba(0, 0, 0, 0.3)' }}>
+                     {user.bio}
+                   </p>
                   )}
                   
                   <div className="flex items-center gap-4 flex-wrap">
                     {user.title && (
-                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: 'rgba(102, 126, 234, 0.15)', border: '1px solid rgba(102, 126, 234, 0.3)' }}>
-                        <Briefcase className="w-4 h-4" style={{ color: '#667EEA' }} />
-                        <span className="text-sm font-medium" style={{ color: '#E5EDFF' }}>{user.title}</span>
+                      <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{ background: 'rgba(255, 255, 255, 0.25)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.35)' }}>
+                        <Briefcase className="w-4 h-4" style={{ color: '#fff' }} />
+                        <span className="text-sm font-semibold" style={{ color: '#fff' }}>{user.title}</span>
                       </div>
                     )}
                     {user.location && (
-                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: 'rgba(124, 58, 237, 0.15)', border: '1px solid rgba(124, 58, 237, 0.3)' }}>
-                        <MapPin className="w-4 h-4" style={{ color: '#7C3AED' }} />
-                        <span className="text-sm font-medium" style={{ color: '#E5EDFF' }}>{user.location}</span>
+                      <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{ background: 'rgba(255, 255, 255, 0.25)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.35)' }}>
+                        <MapPin className="w-4 h-4" style={{ color: '#fff' }} />
+                        <span className="text-sm font-semibold" style={{ color: '#fff' }}>{user.location}</span>
                       </div>
                     )}
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: 'rgba(59, 130, 246, 0.15)', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
-                      <Calendar className="w-4 h-4" style={{ color: '#3B82F6' }} />
-                      <span className="text-sm font-medium" style={{ color: '#E5EDFF' }}>Joined {formatDistanceToNow(new Date(user.created_date), { addSuffix: true })}</span>
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-lg" style={{ background: 'rgba(255, 255, 255, 0.25)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.35)' }}>
+                      <Calendar className="w-4 h-4" style={{ color: '#fff' }} />
+                      <span className="text-sm font-semibold" style={{ color: '#fff' }}>Joined {formatDistanceToNow(new Date(user.created_date), { addSuffix: true })}</span>
                     </div>
                   </div>
                 </div>
