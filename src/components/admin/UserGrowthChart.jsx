@@ -28,29 +28,30 @@ export default function UserGrowthChart({ users }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass-card p-6 rounded-2xl"
+      className="p-6 rounded-2xl"
+      style={{ background: '#fff', border: '2px solid #000' }}
     >
-      <h3 className="text-xl font-bold mb-4" style={{ color: '#E5EDFF' }}>
+      <h3 className="text-xl font-bold mb-4" style={{ color: '#000' }}>
         User Growth Over Time
       </h3>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={cumulativeData}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
           <XAxis 
             dataKey="month" 
-            stroke="#7A8BA6"
-            tick={{ fill: '#7A8BA6' }}
+            stroke="#000"
+            tick={{ fill: '#000' }}
           />
           <YAxis 
-            stroke="#7A8BA6"
-            tick={{ fill: '#7A8BA6' }}
+            stroke="#000"
+            tick={{ fill: '#000' }}
           />
           <Tooltip
             contentStyle={{
-              background: '#0F2744',
-              border: '1px solid rgba(255, 255, 255, 0.18)',
+              background: '#fff',
+              border: '2px solid #000',
               borderRadius: '8px',
-              color: '#E5EDFF'
+              color: '#000'
             }}
           />
           <Line 

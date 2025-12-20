@@ -7,7 +7,7 @@ export default function InterestsSummary({ metrics }) {
     <div>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-2 h-8 rounded-full" style={{ background: 'linear-gradient(180deg, #10B981 0%, #06B6D4 100%)' }} />
-        <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>
+        <h2 className="text-2xl font-bold" style={{ color: '#000' }}>
           Interests Summary
         </h2>
       </div>

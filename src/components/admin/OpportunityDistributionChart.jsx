@@ -25,9 +25,10 @@ export default function OpportunityDistributionChart({ opportunities }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 }}
-      className="glass-card p-6 rounded-2xl"
+      className="p-6 rounded-2xl"
+      style={{ background: '#fff', border: '2px solid #000' }}
     >
-      <h3 className="text-xl font-bold mb-4" style={{ color: '#E5EDFF' }}>
+      <h3 className="text-xl font-bold mb-4" style={{ color: '#000' }}>
         Opportunities by Category
       </h3>
       <ResponsiveContainer width="100%" height={300}>
@@ -48,10 +49,10 @@ export default function OpportunityDistributionChart({ opportunities }) {
           </Pie>
           <Tooltip
             contentStyle={{
-              background: '#0F2744',
-              border: '1px solid rgba(255, 255, 255, 0.18)',
+              background: '#fff',
+              border: '2px solid #000',
               borderRadius: '8px',
-              color: '#E5EDFF'
+              color: '#000'
             }}
           />
         </PieChart>

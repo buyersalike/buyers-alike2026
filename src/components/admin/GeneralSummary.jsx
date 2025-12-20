@@ -7,7 +7,7 @@ export default function GeneralSummary({ metrics }) {
     <div>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-2 h-8 rounded-full" style={{ background: 'linear-gradient(180deg, #3B82F6 0%, #10B981 100%)' }} />
-        <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>
+        <h2 className="text-2xl font-bold" style={{ color: '#000' }}>
           General Summary
         </h2>
       </div>

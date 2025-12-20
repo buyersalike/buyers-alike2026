@@ -7,7 +7,7 @@ export default function OpportunitiesSummary({ metrics }) {
     <div>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-2 h-8 rounded-full" style={{ background: 'linear-gradient(180deg, #F59E0B 0%, #EF4444 100%)' }} />
-        <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>
+        <h2 className="text-2xl font-bold" style={{ color: '#000' }}>
           Opportunities Summary
         </h2>
       </div>

@@ -7,7 +7,7 @@ export default function ConnectionSummary({ metrics }) {
     <div>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-2 h-8 rounded-full" style={{ background: 'linear-gradient(180deg, #7C3AED 0%, #EC4899 100%)' }} />
-        <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>
+        <h2 className="text-2xl font-bold" style={{ color: '#000' }}>
           Connection Summary
         </h2>
       </div>

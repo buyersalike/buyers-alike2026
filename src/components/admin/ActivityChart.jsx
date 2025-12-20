@@ -26,32 +26,33 @@ export default function ActivityChart({ activities }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="glass-card p-6 rounded-2xl"
+      className="p-6 rounded-2xl"
+      style={{ background: '#fff', border: '2px solid #000' }}
     >
-      <h3 className="text-xl font-bold mb-4" style={{ color: '#E5EDFF' }}>
+      <h3 className="text-xl font-bold mb-4" style={{ color: '#000' }}>
         Top Activities
       </h3>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
           <XAxis 
             dataKey="type" 
-            stroke="#7A8BA6"
-            tick={{ fill: '#7A8BA6', fontSize: 12 }}
+            stroke="#000"
+            tick={{ fill: '#000', fontSize: 12 }}
             angle={-45}
             textAnchor="end"
             height={100}
           />
           <YAxis 
-            stroke="#7A8BA6"
-            tick={{ fill: '#7A8BA6' }}
+            stroke="#000"
+            tick={{ fill: '#000' }}
           />
           <Tooltip
             contentStyle={{
-              background: '#0F2744',
-              border: '1px solid rgba(255, 255, 255, 0.18)',
+              background: '#fff',
+              border: '2px solid #000',
               borderRadius: '8px',
-              color: '#E5EDFF'
+              color: '#000'
             }}
           />
           <Bar dataKey="count" fill="#7C3AED" radius={[8, 8, 0, 0]} />
