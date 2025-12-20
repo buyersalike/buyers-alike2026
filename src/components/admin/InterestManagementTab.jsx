@@ -133,36 +133,36 @@ export default function InterestManagementTab() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
         className="rounded-2xl overflow-hidden"
-        style={{ background: '#1a1a1a', border: '2px solid #000' }}
+        style={{ background: 'transparent', border: '2px solid #000', borderRadius: '16px' }}
       >
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead style={{ background: '#0a0a0a', borderBottom: '1px solid #333' }}>
+            <thead style={{ background: '#F2F1F5', borderBottom: '1px solid #000' }}>
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#fff' }}>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
                   Image
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#fff' }}>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
                   Name
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#fff' }}>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
                   Description
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#fff' }}>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#fff' }}>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
                   Message
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#fff' }}>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y" style={{ borderColor: '#333' }}>
+            <tbody className="divide-y" style={{ borderColor: '#ddd' }}>
               {filteredInterests.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center" style={{ color: '#999' }}>
+                  <td colSpan="6" className="px-6 py-8 text-center" style={{ color: '#666' }}>
                     No interests found
                   </td>
                 </tr>
@@ -173,7 +173,7 @@ export default function InterestManagementTab() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="hover:bg-gray-900 transition-colors"
+                    className="hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-6 py-4">
                       {interest.image_url ? (
@@ -181,21 +181,21 @@ export default function InterestManagementTab() {
                           src={interest.image_url}
                           alt={interest.name}
                           className="w-12 h-12 rounded-lg object-cover"
-                          style={{ border: '1px solid #333' }}
+                          style={{ border: '1px solid #ddd' }}
                         />
                       ) : (
-                        <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: '#2a2a2a', border: '1px solid #333' }}>
+                        <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: '#F2F1F5', border: '1px solid #ddd' }}>
                           <span className="text-xs" style={{ color: '#666' }}>N/A</span>
                         </div>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="font-medium" style={{ color: '#fff' }}>
+                      <span className="font-medium" style={{ color: '#000' }}>
                         {interest.name || 'Untitled'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm" style={{ color: '#ccc' }}>
+                      <span className="text-sm" style={{ color: '#000' }}>
                         {interest.description || interest.name || 'N/A'}
                       </span>
                     </td>
@@ -208,7 +208,7 @@ export default function InterestManagementTab() {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm" style={{ color: '#999' }}>
+                      <span className="text-sm" style={{ color: '#666' }}>
                         N/A
                       </span>
                     </td>
@@ -352,7 +352,6 @@ export default function InterestManagementTab() {
           </div>
           <DialogFooter className="gap-2">
             <Button
-              type="button"
               onClick={() => setIsEditDialogOpen(false)}
               variant="outline"
               style={{ border: '1px solid #000', color: '#000', background: '#fff' }}
@@ -361,7 +360,6 @@ export default function InterestManagementTab() {
               Cancel
             </Button>
             <Button
-              type="button"
               onClick={handleUpdate}
               disabled={!editFormData.name.trim() || updateInterestMutation.isPending}
               style={{ background: '#D8A11F', color: '#fff' }}
