@@ -83,13 +83,13 @@ export default function CategoryManagementTab() {
     <div>
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>
+        <h2 className="text-2xl font-bold" style={{ color: '#000' }}>
           Opportunity Categories
         </h2>
         <Button
           onClick={() => setIsCreateDialogOpen(true)}
-          className="rounded-xl"
-          style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}
+          className="rounded-xl hover:opacity-80"
+          style={{ background: '#D8A11F', color: '#fff' }}
         >
           <Plus className="w-4 h-4 mr-2" />
           Create New Category
@@ -97,21 +97,21 @@ export default function CategoryManagementTab() {
       </div>
 
       {/* Table */}
-      <div className="glass-card rounded-2xl overflow-hidden">
+      <div className="rounded-2xl overflow-hidden" style={{ background: '#fff', border: '2px solid #000' }}>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#E5EDFF' }}>
+              <tr style={{ borderBottom: '2px solid #000' }}>
+                <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#000' }}>
                   Name
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#E5EDFF' }}>
+                <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#000' }}>
                   Description
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#E5EDFF' }}>
+                <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#000' }}>
                   Slug
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#E5EDFF' }}>
+                <th className="px-6 py-4 text-left text-sm font-semibold" style={{ color: '#000' }}>
                   Actions
                 </th>
               </tr>
@@ -123,16 +123,16 @@ export default function CategoryManagementTab() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}
-                  className="hover:bg-white/5 transition-colors"
+                  style={{ borderBottom: '1px solid #ddd' }}
+                  className="hover:bg-gray-50 transition-colors"
                 >
-                  <td className="px-6 py-4" style={{ color: '#E5EDFF' }}>
+                  <td className="px-6 py-4" style={{ color: '#000' }}>
                     {category.name}
                   </td>
-                  <td className="px-6 py-4" style={{ color: '#B6C4E0' }}>
+                  <td className="px-6 py-4" style={{ color: '#000' }}>
                     {category.description}
                   </td>
-                  <td className="px-6 py-4" style={{ color: '#7A8BA6' }}>
+                  <td className="px-6 py-4" style={{ color: '#000' }}>
                     {category.slug}
                   </td>
                   <td className="px-6 py-4">
@@ -140,7 +140,7 @@ export default function CategoryManagementTab() {
                       <Button
                         onClick={() => handleEdit(category)}
                         size="sm"
-                        className="rounded-lg"
+                        className="rounded-lg hover:opacity-80"
                         style={{ background: '#3B82F6', color: '#fff' }}
                       >
                         <Pencil className="w-4 h-4 mr-1" />
@@ -149,7 +149,7 @@ export default function CategoryManagementTab() {
                       <Button
                         onClick={() => handleDelete(category.id)}
                         size="sm"
-                        className="rounded-lg"
+                        className="rounded-lg hover:opacity-80"
                         style={{ background: '#EF4444', color: '#fff' }}
                       >
                         <Trash2 className="w-4 h-4 mr-1" />
@@ -164,7 +164,7 @@ export default function CategoryManagementTab() {
 
           {categories.length === 0 && (
             <div className="p-12 text-center">
-              <p style={{ color: '#7A8BA6' }}>No categories found. Create your first category to get started.</p>
+              <p style={{ color: '#666' }}>No categories found. Create your first category to get started.</p>
             </div>
           )}
         </div>
