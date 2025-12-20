@@ -345,6 +345,7 @@ export default function ForumCategoriesManagementTab() {
           </div>
           <DialogFooter className="gap-2">
             <Button
+              type="button"
               onClick={() => setIsCreateDialogOpen(false)}
               variant="outline"
               style={{ border: '1px solid #000', color: '#000', background: '#fff' }}
@@ -353,6 +354,7 @@ export default function ForumCategoriesManagementTab() {
               Cancel
             </Button>
             <Button
+              type="button"
               onClick={handleCreate}
               disabled={!formData.name.trim() || createMutation.isPending}
               style={{ background: '#D8A11F', color: '#fff' }}
@@ -425,6 +427,7 @@ export default function ForumCategoriesManagementTab() {
           </div>
           <DialogFooter className="gap-2">
             <Button
+              type="button"
               onClick={() => setIsEditDialogOpen(false)}
               variant="outline"
               style={{ border: '1px solid #000', color: '#000', background: '#fff' }}
@@ -433,6 +436,7 @@ export default function ForumCategoriesManagementTab() {
               Cancel
             </Button>
             <Button
+              type="button"
               onClick={handleUpdate}
               disabled={!formData.name.trim() || updateMutation.isPending}
               style={{ background: '#D8A11F', color: '#fff' }}
