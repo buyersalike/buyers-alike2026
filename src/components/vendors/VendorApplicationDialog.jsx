@@ -191,6 +191,7 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
       user_email: user.email,
       category: formData.category,
       province: formData.province,
+      description: formData.description,
       website: formData.website,
       social_media: {
         facebook: formData.facebook,
