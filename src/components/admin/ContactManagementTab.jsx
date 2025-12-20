@@ -77,7 +77,7 @@ export default function ContactManagementTab() {
       >
         <div className="flex items-center gap-3 mb-6">
           <div className="w-2 h-8 rounded-full" style={{ background: 'linear-gradient(180deg, #3B82F6 0%, #7C3AED 100%)' }} />
-          <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>
+          <h2 className="text-2xl font-bold" style={{ color: '#000' }}>
             Contact Form Submissions
           </h2>
         </div>
@@ -88,16 +88,17 @@ export default function ContactManagementTab() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className="glass-card p-4 rounded-2xl"
+        className="p-4 rounded-2xl"
+        style={{ background: '#fff', border: '1px solid #ddd' }}
       >
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#7A8BA6' }} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#666' }} />
           <Input
             placeholder="Search submissions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 glass-input"
-            style={{ color: '#E5EDFF' }}
+            className="pl-10"
+            style={{ background: '#fff', border: '1px solid #ddd', color: '#000' }}
           />
         </div>
       </motion.div>
@@ -107,39 +108,40 @@ export default function ContactManagementTab() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="glass-card rounded-2xl overflow-hidden"
+        className="rounded-2xl overflow-hidden"
+        style={{ background: '#fff', border: '2px solid #000' }}
       >
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead style={{ background: 'rgba(59, 130, 246, 0.1)' }}>
+            <thead style={{ background: '#F2F1F5' }}>
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#B6C4E0' }}>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
                   Date
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#B6C4E0' }}>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
                   Name
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#B6C4E0' }}>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
                   Email
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#B6C4E0' }}>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
                   Subject
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#B6C4E0' }}>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
                   Message
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#B6C4E0' }}>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#B6C4E0' }}>
+                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+            <tbody className="divide-y" style={{ borderColor: '#ddd' }}>
               {filteredSubmissions.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="px-6 py-8 text-center" style={{ color: '#7A8BA6' }}>
+                  <td colSpan="7" className="px-6 py-8 text-center" style={{ color: '#666' }}>
                     No submissions found
                   </td>
                 </tr>
@@ -150,35 +152,35 @@ export default function ContactManagementTab() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="hover:bg-white/5 transition-colors"
+                    className="hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm" style={{ color: '#B6C4E0' }}>
+                      <span className="text-sm" style={{ color: '#000' }}>
                         {format(new Date(submission.created_date), 'M/d/yyyy, h:mm:ss a')}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="font-medium" style={{ color: '#E5EDFF' }}>
+                      <span className="font-medium" style={{ color: '#000' }}>
                         {submission.name}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm" style={{ color: '#B6C4E0' }}>
+                      <span className="text-sm" style={{ color: '#000' }}>
                         {submission.email}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm" style={{ color: '#E5EDFF' }}>
+                      <span className="text-sm" style={{ color: '#000' }}>
                         {submission.subject}
                       </span>
                     </td>
                     <td className="px-6 py-4 max-w-xs">
-                      <span className="text-sm line-clamp-2" style={{ color: '#B6C4E0' }}>
+                      <span className="text-sm line-clamp-2" style={{ color: '#000' }}>
                         {submission.message}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <Badge className={`${getStatusColor(submission.status)} border text-xs font-medium`}>
+                      <Badge className="bg-blue-100 text-blue-800 border-blue-200 border text-xs font-medium">
                         {submission.status}
                       </Badge>
                     </td>
@@ -188,7 +190,7 @@ export default function ContactManagementTab() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleView(submission)}
-                          className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10"
+                          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                         >
                           <Eye className="w-4 h-4" />
                         </Button>
@@ -196,7 +198,7 @@ export default function ContactManagementTab() {
                           size="sm"
                           variant="ghost"
                           onClick={() => deleteMutation.mutate(submission.id)}
-                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -288,21 +290,22 @@ export default function ContactManagementTab() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="glass-card p-6 rounded-2xl"
+        className="p-6 rounded-2xl"
+        style={{ background: '#fff', border: '1px solid #ddd' }}
       >
         <div className="flex items-center justify-between text-sm">
-          <span style={{ color: '#B6C4E0' }}>
+          <span style={{ color: '#000' }}>
             Showing {filteredSubmissions.length} of {submissions.length} submissions
           </span>
           <div className="flex gap-4">
-            <span style={{ color: '#7A8BA6' }}>
+            <span style={{ color: '#000' }}>
               New: <span style={{ color: '#22C55E' }}>{submissions.filter(s => s.status === 'new').length}</span>
             </span>
-            <span style={{ color: '#7A8BA6' }}>
+            <span style={{ color: '#000' }}>
               Read: <span style={{ color: '#3B82F6' }}>{submissions.filter(s => s.status === 'read').length}</span>
             </span>
-            <span style={{ color: '#7A8BA6' }}>
-              Responded: <span style={{ color: '#7A8BA6' }}>{submissions.filter(s => s.status === 'responded').length}</span>
+            <span style={{ color: '#000' }}>
+              Responded: <span style={{ color: '#666' }}>{submissions.filter(s => s.status === 'responded').length}</span>
             </span>
           </div>
         </div>
