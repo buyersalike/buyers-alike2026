@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Search, Plus, Edit, Trash2, MessageSquare, Sparkles, TrendingUp, Users, Briefcase, Building2, Lightbulb, Zap } from "lucide-react";
+import { Search, Plus, Edit, Trash2, MessageSquare, Sparkles, TrendingUp, Users, Briefcase, Building2, Lightbulb, Zap, Target, Rocket, Award, HeartHandshake, TrendingDown, BarChart3, Globe, Settings } from "lucide-react";
 import { motion } from "framer-motion";
 
 // Icon mapping for forum categories
@@ -18,6 +18,14 @@ const ICON_MAP = {
   'Building2': Building2,
   'Lightbulb': Lightbulb,
   'Zap': Zap,
+  'Target': Target,
+  'Rocket': Rocket,
+  'Award': Award,
+  'HeartHandshake': HeartHandshake,
+  'TrendingDown': TrendingDown,
+  'BarChart3': BarChart3,
+  'Globe': Globe,
+  'Settings': Settings,
 };
 
 const AVAILABLE_ICONS = [
@@ -29,6 +37,14 @@ const AVAILABLE_ICONS = [
   { name: 'Building2', icon: Building2 },
   { name: 'Lightbulb', icon: Lightbulb },
   { name: 'Zap', icon: Zap },
+  { name: 'Target', icon: Target },
+  { name: 'Rocket', icon: Rocket },
+  { name: 'Award', icon: Award },
+  { name: 'HeartHandshake', icon: HeartHandshake },
+  { name: 'TrendingDown', icon: TrendingDown },
+  { name: 'BarChart3', icon: BarChart3 },
+  { name: 'Globe', icon: Globe },
+  { name: 'Settings', icon: Settings },
 ];
 
 export default function ForumCategoriesManagementTab() {
@@ -245,19 +261,17 @@ export default function ForumCategoriesManagementTab() {
         <DialogContent 
           className="border-0 sm:max-w-md" 
           style={{ 
-            background: 'rgba(15, 23, 42, 0.95)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            color: '#E5EDFF' 
+            background: '#F2F1F5',
+            border: '2px solid #000',
+            color: '#000' 
           }}
         >
           <DialogHeader>
-            <DialogTitle className="text-lg" style={{ color: '#E5EDFF' }}>Create New Forum Category</DialogTitle>
+            <DialogTitle className="text-lg" style={{ color: '#000' }}>Create New Forum Category</DialogTitle>
           </DialogHeader>
           <div className="space-y-5 py-4">
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#B6C4E0' }}>
+              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
                 Icon
               </label>
               <div className="grid grid-cols-4 gap-2">
@@ -267,29 +281,28 @@ export default function ForumCategoriesManagementTab() {
                     onClick={() => setFormData({ ...formData, icon: name })}
                     className={`p-3 rounded-lg border-2 transition-all ${
                       formData.icon === name
-                        ? 'border-blue-500 bg-blue-500/20'
-                        : 'border-white/10 hover:border-white/20'
+                        ? 'border-black bg-gray-200'
+                        : 'border-black hover:bg-gray-100'
                     }`}
                   >
-                    <Icon className="w-5 h-5 mx-auto" style={{ color: formData.icon === name ? '#3B82F6' : '#B6C4E0' }} />
+                    <Icon className="w-5 h-5 mx-auto" style={{ color: formData.icon === name ? '#3B82F6' : '#000' }} />
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#B6C4E0' }}>
+              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
                 Name
               </label>
               <Input
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Category name"
-                className="glass-input"
-                style={{ color: '#E5EDFF' }}
+                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#B6C4E0' }}>
+              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
                 Description
               </label>
               <Textarea
@@ -297,8 +310,8 @@ export default function ForumCategoriesManagementTab() {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Category description"
                 rows={4}
-                className="glass-input resize-none"
-                style={{ color: '#E5EDFF' }}
+                className="resize-none"
+                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
               />
             </div>
           </div>
@@ -306,14 +319,13 @@ export default function ForumCategoriesManagementTab() {
             <Button
               onClick={() => setIsCreateDialogOpen(false)}
               variant="outline"
-              className="glass-input"
-              style={{ color: '#B6C4E0' }}
+              style={{ border: '1px solid #000', color: '#000', background: '#fff' }}
             >
               Cancel
             </Button>
             <Button
               onClick={handleCreate}
-              style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}
+              style={{ background: '#D8A11F', color: '#fff' }}
             >
               Create
             </Button>
@@ -326,19 +338,17 @@ export default function ForumCategoriesManagementTab() {
         <DialogContent 
           className="border-0 sm:max-w-md" 
           style={{ 
-            background: 'rgba(15, 23, 42, 0.95)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            color: '#E5EDFF' 
+            background: '#F2F1F5',
+            border: '2px solid #000',
+            color: '#000' 
           }}
         >
           <DialogHeader>
-            <DialogTitle className="text-lg" style={{ color: '#E5EDFF' }}>Edit Forum Category</DialogTitle>
+            <DialogTitle className="text-lg" style={{ color: '#000' }}>Edit Forum Category</DialogTitle>
           </DialogHeader>
           <div className="space-y-5 py-4">
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#B6C4E0' }}>
+              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
                 Icon
               </label>
               <div className="grid grid-cols-4 gap-2">
@@ -348,29 +358,28 @@ export default function ForumCategoriesManagementTab() {
                     onClick={() => setFormData({ ...formData, icon: name })}
                     className={`p-3 rounded-lg border-2 transition-all ${
                       formData.icon === name
-                        ? 'border-blue-500 bg-blue-500/20'
-                        : 'border-white/10 hover:border-white/20'
+                        ? 'border-black bg-gray-200'
+                        : 'border-black hover:bg-gray-100'
                     }`}
                   >
-                    <Icon className="w-5 h-5 mx-auto" style={{ color: formData.icon === name ? '#3B82F6' : '#B6C4E0' }} />
+                    <Icon className="w-5 h-5 mx-auto" style={{ color: formData.icon === name ? '#3B82F6' : '#000' }} />
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#B6C4E0' }}>
+              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
                 Name
               </label>
               <Input
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Category name"
-                className="glass-input"
-                style={{ color: '#E5EDFF' }}
+                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#B6C4E0' }}>
+              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
                 Description
               </label>
               <Textarea
@@ -378,8 +387,8 @@ export default function ForumCategoriesManagementTab() {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Category description"
                 rows={4}
-                className="glass-input resize-none"
-                style={{ color: '#E5EDFF' }}
+                className="resize-none"
+                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
               />
             </div>
           </div>
@@ -387,14 +396,13 @@ export default function ForumCategoriesManagementTab() {
             <Button
               onClick={() => setIsEditDialogOpen(false)}
               variant="outline"
-              className="glass-input"
-              style={{ color: '#B6C4E0' }}
+              style={{ border: '1px solid #000', color: '#000', background: '#fff' }}
             >
               Cancel
             </Button>
             <Button
               onClick={handleUpdate}
-              style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}
+              style={{ background: '#D8A11F', color: '#fff' }}
             >
               Update
             </Button>
