@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle, Clock, Eye, Search, Star } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Eye, Search, Star, Award, Briefcase, Users, Globe, ExternalLink } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -199,44 +199,215 @@ export default function VendorApplicationsTable() {
 
       {/* View Details Dialog */}
       <Dialog open={!!selectedApplication} onOpenChange={() => setSelectedApplication(null)}>
-        <DialogContent className="glass-card max-w-2xl" style={{ background: 'rgba(255, 255, 255, 0.08)' }}>
+        <DialogContent className="glass-card max-w-4xl max-h-[90vh] overflow-y-auto" style={{ background: 'rgba(255, 255, 255, 0.08)' }}>
           <DialogHeader>
-            <DialogTitle style={{ color: '#E5EDFF' }}>Application Details</DialogTitle>
+            <DialogTitle className="text-2xl" style={{ color: '#E5EDFF' }}>Application Details</DialogTitle>
             <DialogDescription style={{ color: '#7A8BA6' }}>
-              Review vendor application information
+              Review complete vendor application information
             </DialogDescription>
           </DialogHeader>
           {selectedApplication && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>Business Name</p>
-                  <p style={{ color: '#E5EDFF' }}>{selectedApplication.business_name}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>Email</p>
-                  <p style={{ color: '#E5EDFF' }}>{selectedApplication.user_email}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>Category</p>
-                  <p style={{ color: '#E5EDFF' }}>{selectedApplication.category}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>Province</p>
-                  <p style={{ color: '#E5EDFF' }}>{selectedApplication.province}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>Status</p>
-                  <Badge className={`${statusColors[selectedApplication.status]?.bg} ${statusColors[selectedApplication.status]?.text}`}>
-                    {selectedApplication.status}
-                  </Badge>
-                </div>
-                <div>
-                  <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>Vendor ID</p>
-                  <p style={{ color: '#E5EDFF' }}>{selectedApplication.vendor_id || 'Not assigned'}</p>
+            <div className="space-y-6 mt-4">
+              {/* Basic Information */}
+              <div className="p-4 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
+                <h3 className="text-lg font-bold mb-4 flex items-center gap-2" style={{ color: '#E5EDFF' }}>
+                  <Briefcase className="w-5 h-5" />
+                  Basic Information
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Business Name</p>
+                    <p className="font-semibold" style={{ color: '#E5EDFF' }}>{selectedApplication.business_name}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Email</p>
+                    <p style={{ color: '#E5EDFF' }}>{selectedApplication.user_email}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Category</p>
+                    <p style={{ color: '#E5EDFF' }}>{selectedApplication.category}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Province</p>
+                    <p style={{ color: '#E5EDFF' }}>{selectedApplication.province}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Status</p>
+                    <Badge className={`${statusColors[selectedApplication.status]?.bg} ${statusColors[selectedApplication.status]?.text}`}>
+                      {selectedApplication.status}
+                    </Badge>
+                  </div>
+                  {selectedApplication.years_experience && (
+                    <div>
+                      <p className="text-sm font-medium mb-1" style={{ color: '#7A8BA6' }}>Years in Business</p>
+                      <p style={{ color: '#E5EDFF' }}>{selectedApplication.years_experience} years</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
+              {/* Tagline */}
+              {selectedApplication.tagline && (
+                <div className="p-4 rounded-xl" style={{ background: 'rgba(216, 161, 31, 0.1)' }}>
+                  <p className="text-sm font-medium mb-2" style={{ color: '#7A8BA6' }}>Tagline / USP</p>
+                  <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>"{selectedApplication.tagline}"</p>
+                </div>
+              )}
+
+              {/* Description */}
+              {selectedApplication.description && (
+                <div>
+                  <p className="text-sm font-medium mb-2" style={{ color: '#7A8BA6' }}>Business Description</p>
+                  <p className="leading-relaxed" style={{ color: '#E5EDFF' }}>{selectedApplication.description}</p>
+                </div>
+              )}
+
+              {/* Unique Value */}
+              {selectedApplication.unique_value && (
+                <div className="p-4 rounded-xl" style={{ background: 'rgba(59, 130, 246, 0.1)' }}>
+                  <p className="text-sm font-medium mb-2 flex items-center gap-2" style={{ color: '#7A8BA6' }}>
+                    <CheckCircle className="w-4 h-4" />
+                    Why Choose This Vendor?
+                  </p>
+                  <p className="leading-relaxed" style={{ color: '#E5EDFF' }}>{selectedApplication.unique_value}</p>
+                </div>
+              )}
+
+              {/* Specialties */}
+              {selectedApplication.specialties && selectedApplication.specialties.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium mb-3" style={{ color: '#7A8BA6' }}>Service Specialties</p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedApplication.specialties.map((specialty, idx) => (
+                      <div key={idx} className="px-3 py-2 rounded-lg" style={{ background: 'rgba(216, 161, 31, 0.2)', color: '#D8A11F' }}>
+                        {specialty}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Client Types */}
+              {selectedApplication.client_types && selectedApplication.client_types.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium mb-3 flex items-center gap-2" style={{ color: '#7A8BA6' }}>
+                    <Users className="w-4 h-4" />
+                    Client Types Served
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedApplication.client_types.map((type, idx) => (
+                      <div key={idx} className="px-3 py-2 rounded-lg" style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#3B82F6' }}>
+                        {type}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Certifications */}
+              {selectedApplication.certifications && selectedApplication.certifications.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium mb-3 flex items-center gap-2" style={{ color: '#7A8BA6' }}>
+                    <Award className="w-4 h-4" />
+                    Certifications & Awards
+                  </p>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    {selectedApplication.certifications.map((cert, idx) => (
+                      <div key={idx} className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'rgba(34, 197, 94, 0.1)' }}>
+                        <Award className="w-4 h-4 flex-shrink-0" style={{ color: '#22C55E' }} />
+                        <span style={{ color: '#E5EDFF' }}>{cert}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Website & Portfolio */}
+              {(selectedApplication.website || selectedApplication.portfolio_url) && (
+                <div className="p-4 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
+                  <p className="text-sm font-medium mb-3 flex items-center gap-2" style={{ color: '#7A8BA6' }}>
+                    <Globe className="w-4 h-4" />
+                    Online Presence
+                  </p>
+                  <div className="space-y-2">
+                    {selectedApplication.website && (
+                      <div>
+                        <p className="text-xs mb-1" style={{ color: '#7A8BA6' }}>Website</p>
+                        <a 
+                          href={selectedApplication.website} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 hover:underline"
+                          style={{ color: '#3B82F6' }}
+                        >
+                          {selectedApplication.website}
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    )}
+                    {selectedApplication.portfolio_url && (
+                      <div>
+                        <p className="text-xs mb-1" style={{ color: '#7A8BA6' }}>Portfolio</p>
+                        <a 
+                          href={selectedApplication.portfolio_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 hover:underline"
+                          style={{ color: '#3B82F6' }}
+                        >
+                          View Portfolio Document
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Social Media */}
+              {selectedApplication.social_media && Object.values(selectedApplication.social_media).some(v => v) && (
+                <div>
+                  <p className="text-sm font-medium mb-3" style={{ color: '#7A8BA6' }}>Social Media</p>
+                  <div className="flex flex-wrap gap-3">
+                    {selectedApplication.social_media.facebook && (
+                      <a href={selectedApplication.social_media.facebook} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg flex items-center gap-2" style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#3B82F6' }}>
+                        Facebook <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                    {selectedApplication.social_media.twitter && (
+                      <a href={selectedApplication.social_media.twitter} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg flex items-center gap-2" style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#3B82F6' }}>
+                        Twitter <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                    {selectedApplication.social_media.linkedin && (
+                      <a href={selectedApplication.social_media.linkedin} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg flex items-center gap-2" style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#3B82F6' }}>
+                        LinkedIn <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                    {selectedApplication.social_media.instagram && (
+                      <a href={selectedApplication.social_media.instagram} target="_blank" rel="noopener noreferrer" className="px-4 py-2 rounded-lg flex items-center gap-2" style={{ background: 'rgba(59, 130, 246, 0.2)', color: '#3B82F6' }}>
+                        Instagram <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Application Metadata */}
+              <div className="pt-4 border-t" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p style={{ color: '#7A8BA6' }}>Application Date</p>
+                    <p style={{ color: '#E5EDFF' }}>{new Date(selectedApplication.created_date).toLocaleDateString()}</p>
+                  </div>
+                  <div>
+                    <p style={{ color: '#7A8BA6' }}>Vendor ID</p>
+                    <p style={{ color: '#E5EDFF' }}>{selectedApplication.vendor_id || 'Not assigned'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
               {selectedApplication.status === 'pending' && (
                 <div className="flex gap-3 pt-4">
                   <Button
