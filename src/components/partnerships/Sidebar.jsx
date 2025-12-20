@@ -18,7 +18,8 @@ import {
   Shield,
   LogOut,
   Calendar,
-  Mail
+  Mail,
+  FolderKanban
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Link, useLocation } from "react-router-dom";
@@ -31,6 +32,7 @@ const mainMenuItems = [
   { icon: Sparkles, label: "Recommendations", href: "Recommendations" },
   { icon: Briefcase, label: "Opportunities", href: "Opportunities" },
   { icon: Handshake, label: "Partnerships", href: "Partnerships" },
+  { icon: FolderKanban, label: "Projects", href: "Projects" },
   { icon: Store, label: "Vendors", href: "Vendors" },
   { icon: Mail, label: "Messages", href: "Messages" },
   { icon: MessageSquare, label: "Forum", href: "Forum" },

@@ -17,6 +17,8 @@ import Sitemap from './pages/Sitemap';
 import PartnershipManagement from './pages/PartnershipManagement';
 import OpportunityDetail from './pages/OpportunityDetail';
 import Connections from './pages/Connections';
+import Projects from './pages/Projects';
+import ProjectDetail from './pages/ProjectDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -40,6 +42,8 @@ export const PAGES = {
     "PartnershipManagement": PartnershipManagement,
     "OpportunityDetail": OpportunityDetail,
     "Connections": Connections,
+    "Projects": Projects,
+    "ProjectDetail": ProjectDetail,
 }
 
 export const pagesConfig = {
