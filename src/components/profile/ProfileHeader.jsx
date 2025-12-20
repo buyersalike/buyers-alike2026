@@ -268,20 +268,20 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
                   
                   <div className="flex items-center gap-4 flex-wrap">
                     {user.title && (
-                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: 'rgba(102, 126, 234, 0.15)', border: '1px solid rgba(102, 126, 234, 0.3)' }}>
+                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: 'rgba(102, 126, 234, 0.25)', border: '1px solid rgba(102, 126, 234, 0.5)' }}>
                         <Briefcase className="w-4 h-4" style={{ color: '#667EEA' }} />
-                        <span className="text-sm font-medium" style={{ color: '#E5EDFF' }}>{user.title}</span>
+                        <span className="text-sm font-medium" style={{ color: '#fff' }}>{user.title}</span>
                       </div>
                     )}
                     {user.location && (
-                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: 'rgba(124, 58, 237, 0.15)', border: '1px solid rgba(124, 58, 237, 0.3)' }}>
-                        <MapPin className="w-4 h-4" style={{ color: '#7C3AED' }} />
-                        <span className="text-sm font-medium" style={{ color: '#E5EDFF' }}>{user.location}</span>
+                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: 'rgba(124, 58, 237, 0.25)', border: '1px solid rgba(124, 58, 237, 0.5)' }}>
+                        <MapPin className="w-4 h-4" style={{ color: '#A78BFA' }} />
+                        <span className="text-sm font-medium" style={{ color: '#fff' }}>{user.location}</span>
                       </div>
                     )}
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: 'rgba(59, 130, 246, 0.15)', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
-                      <Calendar className="w-4 h-4" style={{ color: '#3B82F6' }} />
-                      <span className="text-sm font-medium" style={{ color: '#E5EDFF' }}>Joined {formatDistanceToNow(new Date(user.created_date), { addSuffix: true })}</span>
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: 'rgba(59, 130, 246, 0.25)', border: '1px solid rgba(59, 130, 246, 0.5)' }}>
+                      <Calendar className="w-4 h-4" style={{ color: '#60A5FA' }} />
+                      <span className="text-sm font-medium" style={{ color: '#fff' }}>Joined {formatDistanceToNow(new Date(user.created_date), { addSuffix: true })}</span>
                     </div>
                   </div>
                 </div>
