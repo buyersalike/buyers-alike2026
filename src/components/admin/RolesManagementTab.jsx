@@ -23,10 +23,10 @@ export default function RolesManagementTab() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold mb-2" style={{ color: '#E5EDFF' }}>
+        <h2 className="text-2xl font-bold mb-2" style={{ color: '#000' }}>
           Roles & Permissions
         </h2>
-        <p style={{ color: '#7A8BA6' }}>
+        <p style={{ color: '#000' }}>
           Overview of all platform roles and their access levels
         </p>
       </div>
@@ -50,7 +50,8 @@ export default function RolesManagementTab() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="glass-card p-6 rounded-2xl"
+              className="p-6 rounded-2xl"
+              style={{ background: '#fff', border: '2px solid #000' }}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -64,22 +65,22 @@ export default function RolesManagementTab() {
                     <Icon className="w-6 h-6" style={{ color: colors.color }} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg" style={{ color: '#E5EDFF' }}>
+                    <h3 className="font-bold text-lg" style={{ color: '#000' }}>
                       {permissions.label}
                     </h3>
-                    <p className="text-xs" style={{ color: '#7A8BA6' }}>
+                    <p className="text-xs" style={{ color: '#666' }}>
                       {enabledCount} permissions
                     </p>
                   </div>
                 </div>
               </div>
 
-              <p className="text-sm mb-4" style={{ color: '#B6C4E0' }}>
+              <p className="text-sm mb-4" style={{ color: '#000' }}>
                 {permissions.description}
               </p>
 
               <div className="space-y-2">
-                <p className="text-xs font-semibold mb-2" style={{ color: '#7A8BA6' }}>
+                <p className="text-xs font-semibold mb-2" style={{ color: '#000' }}>
                   KEY PERMISSIONS
                 </p>
                 <div className="space-y-1.5">
@@ -94,13 +95,13 @@ export default function RolesManagementTab() {
                       >
                         {value && <span style={{ color: '#22C55E', fontSize: '10px' }}>✓</span>}
                       </div>
-                      <span className="text-xs" style={{ color: value ? '#B6C4E0' : '#7A8BA6' }}>
+                      <span className="text-xs" style={{ color: '#000' }}>
                         {key.replace('can', '').replace(/([A-Z])/g, ' $1').trim()}
                       </span>
                     </div>
                   ))}
                   {permissionsList.length > 5 && (
-                    <p className="text-xs mt-2" style={{ color: '#7A8BA6' }}>
+                    <p className="text-xs mt-2" style={{ color: '#666' }}>
                       +{permissionsList.length - 5} more permissions
                     </p>
                   )}
@@ -112,20 +113,20 @@ export default function RolesManagementTab() {
       </div>
 
       {/* Permissions Matrix */}
-      <div className="glass-card p-6 rounded-2xl mt-8">
-        <h3 className="text-xl font-bold mb-4" style={{ color: '#E5EDFF' }}>
+      <div className="p-6 rounded-2xl mt-8" style={{ background: '#fff', border: '2px solid #000' }}>
+        <h3 className="text-xl font-bold mb-4" style={{ color: '#000' }}>
           Permissions Matrix
         </h3>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                <th className="text-left py-3 px-4" style={{ color: '#B6C4E0' }}>Permission</th>
+              <tr style={{ borderBottom: '2px solid #000' }}>
+                <th className="text-left py-3 px-4" style={{ color: '#000', fontWeight: 600 }}>Permission</th>
                 {Object.keys(ROLES).map(roleKey => {
                   const role = ROLES[roleKey];
                   const permissions = PERMISSIONS[role];
                   return (
-                    <th key={role} className="text-center py-3 px-2" style={{ color: '#B6C4E0' }}>
+                    <th key={role} className="text-center py-3 px-2" style={{ color: '#000', fontWeight: 600 }}>
                       {permissions.label}
                     </th>
                   );
@@ -139,11 +140,11 @@ export default function RolesManagementTab() {
                   <tr
                     key={permissionKey}
                     style={{
-                      borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-                      background: idx % 2 === 0 ? 'rgba(255, 255, 255, 0.02)' : 'transparent'
+                      borderBottom: '1px solid #ddd',
+                      background: idx % 2 === 0 ? '#F2F1F5' : 'transparent'
                     }}
                   >
-                    <td className="py-3 px-4 text-sm" style={{ color: '#B6C4E0' }}>
+                    <td className="py-3 px-4 text-sm" style={{ color: '#000' }}>
                       {permissionKey.replace('can', '').replace(/([A-Z])/g, ' $1').trim()}
                     </td>
                     {Object.keys(ROLES).map(roleKey => {
