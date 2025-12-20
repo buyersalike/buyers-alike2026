@@ -42,10 +42,12 @@ export default function ActivityChart({ activities }) {
             angle={-45}
             textAnchor="end"
             height={100}
+            label={{ value: 'Activity Type', position: 'insideBottom', offset: -10, fill: '#000', fontSize: 14, fontWeight: 600 }}
           />
           <YAxis 
             stroke="#000"
             tick={{ fill: '#000' }}
+            label={{ value: 'Count', angle: -90, position: 'insideLeft', fill: '#000', fontSize: 14, fontWeight: 600 }}
           />
           <Tooltip
             contentStyle={{
