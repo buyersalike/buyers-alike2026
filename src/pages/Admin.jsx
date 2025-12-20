@@ -26,6 +26,7 @@ import SystemActivityFeed from "@/components/admin/SystemActivityFeed";
 import ForumCategoriesManagementTab from "@/components/admin/ForumCategoriesManagementTab";
 import ContactManagementTab from "@/components/admin/ContactManagementTab";
 import ProfessionManagementTab from "@/components/admin/ProfessionManagementTab";
+import InterestManagementTab from "@/components/admin/InterestManagementTab";
 
 export default function Admin() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -342,9 +343,7 @@ export default function Admin() {
             )}
 
             <TabsContent value="interest">
-              <div className="p-8 rounded-2xl text-center" style={{ background: '#fff', border: '2px solid #000' }}>
-                <p style={{ color: '#666' }}>Interest management coming soon...</p>
-              </div>
+              <InterestManagementTab />
             </TabsContent>
 
             {hasPermission(currentUser.role, 'canManageVendors') && (
