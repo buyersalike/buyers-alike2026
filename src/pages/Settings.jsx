@@ -34,7 +34,9 @@ export default function Settings() {
       post_likes: false,
       opportunity_match: true,
     },
-    email_notifications: true
+    email_notifications: true,
+    preferred_communication: "email",
+    investment_history: []
   });
 
   const [passwordData, setPasswordData] = useState({
@@ -74,7 +76,9 @@ export default function Settings() {
           post_likes: false,
           opportunity_match: true,
         },
-        email_notifications: user.email_notifications !== false
+        email_notifications: user.email_notifications !== false,
+        preferred_communication: user.preferred_communication || "email",
+        investment_history: user.investment_history || []
       });
     });
   }, []);
@@ -298,11 +302,54 @@ export default function Settings() {
             </div>
           </div>
 
-          {/* Notification Preferences */}
+          {/* Communication Preferences */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
+            className="glass-card p-8 rounded-2xl mb-8"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)' }}>
+                <svg className="w-6 h-6" style={{ color: '#E5EDFF' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>Communication Preferences</h2>
+                <p className="text-sm" style={{ color: '#7A8BA6' }}>Choose how you'd like to be contacted</p>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: '#B6C4E0' }}>
+                Preferred Communication Channel
+              </label>
+              <Select 
+                value={formData.preferred_communication} 
+                onValueChange={(value) => setFormData({...formData, preferred_communication: value})}
+              >
+                <SelectTrigger className="glass-input" style={{ color: '#E5EDFF' }}>
+                  <SelectValue placeholder="Select channel" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="email">Email</SelectItem>
+                  <SelectItem value="phone">Phone</SelectItem>
+                  <SelectItem value="in_app">In-App Messages Only</SelectItem>
+                  <SelectItem value="any">Any Channel</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs mt-2" style={{ color: '#7A8BA6' }}>
+                This helps others know how you prefer to be contacted for business opportunities
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Notification Preferences */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
             className="glass-card p-8 rounded-2xl mb-8"
           >
             <div className="flex items-center gap-3 mb-6">
@@ -383,7 +430,7 @@ export default function Settings() {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.25 }}
             className="glass-card p-6"
           >
             <h2 className="text-xl font-bold mb-6" style={{ color: '#E5EDFF' }}>
