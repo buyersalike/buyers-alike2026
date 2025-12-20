@@ -10,6 +10,24 @@ export default function OpportunityDetail() {
   const navigate = useNavigate();
   const opportunity = location.state?.opportunity;
 
+  const typeColors = {
+    "Real Estate": "#3B82F6",
+    "Franchise": "#8B5CF6",
+    "Business": "#10B981",
+    "Partnership": "#F59E0B",
+    "Investment": "#EF4444",
+  };
+
+  // Mock additional images for real estate
+  const additionalImages = opportunity?.type === "Real Estate" ? [
+    opportunity.image,
+    "https://images.unsplash.com/photo-1560184897-ae75f418493e?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1556912173-3bb406ef7e77?w=800&h=600&fit=crop",
+  ] : opportunity?.image ? [opportunity.image] : [];
+
+  const [selectedImage, setSelectedImage] = useState(additionalImages[0]);
+
   if (!opportunity) {
     return (
       <div className="flex">
@@ -25,24 +43,6 @@ export default function OpportunityDetail() {
       </div>
     );
   }
-
-  const typeColors = {
-    "Real Estate": "#3B82F6",
-    "Franchise": "#8B5CF6",
-    "Business": "#10B981",
-    "Partnership": "#F59E0B",
-    "Investment": "#EF4444",
-  };
-
-  // Mock additional images for real estate
-  const additionalImages = opportunity.type === "Real Estate" ? [
-    opportunity.image,
-    "https://images.unsplash.com/photo-1560184897-ae75f418493e?w=800&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1556912173-3bb406ef7e77?w=800&h=600&fit=crop",
-  ] : [opportunity.image];
-
-  const [selectedImage, setSelectedImage] = useState(additionalImages[0]);
 
   return (
     <div className="flex">
