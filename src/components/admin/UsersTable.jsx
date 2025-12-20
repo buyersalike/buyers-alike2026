@@ -67,12 +67,13 @@ export default function UsersTable({ users }) {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass-card p-8 rounded-2xl"
+        className="p-8 rounded-2xl"
+        style={{ background: '#fff', border: '2px solid #000' }}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold" style={{ color: '#E5EDFF' }}>Users</h2>
+          <h2 className="text-2xl font-bold" style={{ color: '#000' }}>Users</h2>
           <div className="relative w-96">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#7A8BA6' }} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#666' }} />
             <Input
               placeholder="Search by username, business name, email, phone number, state, country, address..."
               value={searchTerm}
@@ -80,8 +81,8 @@ export default function UsersTable({ users }) {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="pl-10 glass-input"
-              style={{ color: '#E5EDFF' }}
+              className="pl-10"
+              style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
             />
           </div>
         </div>
@@ -90,20 +91,20 @@ export default function UsersTable({ users }) {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#B6C4E0' }}>Photo</th>
-                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#B6C4E0' }}>Username</th>
-                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#B6C4E0' }}>Business Name</th>
-                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#B6C4E0' }}>First Name</th>
-                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#B6C4E0' }}>Last Name</th>
-                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#B6C4E0' }}>Email</th>
-                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#B6C4E0' }}>Phone Number</th>
-                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#B6C4E0' }}>Country</th>
-                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#B6C4E0' }}>State</th>
-                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#B6C4E0' }}>Address</th>
-                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#B6C4E0' }}>Biography</th>
-                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#B6C4E0' }}>Role</th>
-                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#B6C4E0' }}>Actions</th>
+              <tr style={{ borderBottom: '2px solid #000' }}>
+                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#000' }}>Photo</th>
+                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#000' }}>Username</th>
+                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#000' }}>Business Name</th>
+                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#000' }}>First Name</th>
+                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#000' }}>Last Name</th>
+                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#000' }}>Email</th>
+                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#000' }}>Phone Number</th>
+                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#000' }}>Country</th>
+                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#000' }}>State</th>
+                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#000' }}>Address</th>
+                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#000' }}>Biography</th>
+                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#000' }}>Role</th>
+                <th className="text-left py-4 px-3 text-sm font-semibold" style={{ color: '#000' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -113,42 +114,42 @@ export default function UsersTable({ users }) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: index * 0.05 }}
-                  className="group hover:bg-white/5 transition-colors"
-                  style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}
+                  className="group hover:bg-gray-50 transition-colors"
+                  style={{ borderBottom: '1px solid #ddd' }}
                 >
                   <td className="py-4 px-3">
                     <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #7C3AED 100%)' }}>
                       <User className="w-5 h-5" style={{ color: '#fff' }} />
                     </div>
                   </td>
-                  <td className="py-4 px-3 text-sm font-medium" style={{ color: '#E5EDFF' }}>
+                  <td className="py-4 px-3 text-sm font-medium" style={{ color: '#000' }}>
                     {user.username || 'N/A'}
                   </td>
-                  <td className="py-4 px-3 text-sm" style={{ color: '#B6C4E0' }}>
+                  <td className="py-4 px-3 text-sm" style={{ color: '#000' }}>
                     {user.business_name || 'N/A'}
                   </td>
-                  <td className="py-4 px-3 text-sm" style={{ color: '#B6C4E0' }}>
+                  <td className="py-4 px-3 text-sm" style={{ color: '#000' }}>
                     {user.first_name || 'N/A'}
                   </td>
-                  <td className="py-4 px-3 text-sm" style={{ color: '#B6C4E0' }}>
+                  <td className="py-4 px-3 text-sm" style={{ color: '#000' }}>
                     {user.last_name || 'N/A'}
                   </td>
-                  <td className="py-4 px-3 text-sm" style={{ color: '#B6C4E0' }}>
+                  <td className="py-4 px-3 text-sm" style={{ color: '#000' }}>
                     {user.email}
                   </td>
-                  <td className="py-4 px-3 text-sm" style={{ color: '#B6C4E0' }}>
+                  <td className="py-4 px-3 text-sm" style={{ color: '#000' }}>
                     {user.phone_number || 'N/A'}
                   </td>
-                  <td className="py-4 px-3 text-sm" style={{ color: '#B6C4E0' }}>
+                  <td className="py-4 px-3 text-sm" style={{ color: '#000' }}>
                     {user.country || 'N/A'}
                   </td>
-                  <td className="py-4 px-3 text-sm" style={{ color: '#B6C4E0' }}>
+                  <td className="py-4 px-3 text-sm" style={{ color: '#000' }}>
                     {user.state || 'N/A'}
                   </td>
-                  <td className="py-4 px-3 text-sm max-w-xs truncate" style={{ color: '#B6C4E0' }}>
+                  <td className="py-4 px-3 text-sm max-w-xs truncate" style={{ color: '#000' }}>
                     {user.address || 'N/A'}
                   </td>
-                  <td className="py-4 px-3 text-sm max-w-xs truncate" style={{ color: '#B6C4E0' }}>
+                  <td className="py-4 px-3 text-sm max-w-xs truncate" style={{ color: '#000' }}>
                     {user.overview || 'N/A'}
                   </td>
                   <td className="py-4 px-3">
@@ -200,8 +201,8 @@ export default function UsersTable({ users }) {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between mt-6 pt-6" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
-          <p className="text-sm" style={{ color: '#7A8BA6' }}>
+        <div className="flex items-center justify-between mt-6 pt-6" style={{ borderTop: '1px solid #000' }}>
+          <p className="text-sm" style={{ color: '#666' }}>
             Page {currentPage} of {totalPages} ({filteredUsers.length} users)
           </p>
           <div className="flex gap-2">
@@ -210,22 +211,22 @@ export default function UsersTable({ users }) {
               size="sm"
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
-              className="glass-input font-medium"
-              style={{ color: '#E5EDFF', borderColor: 'rgba(255, 255, 255, 0.2)' }}
+              className="font-medium"
+              style={{ color: '#000', borderColor: '#000' }}
             >
-              <ChevronLeft className="w-4 h-4 mr-1" style={{ color: '#E5EDFF' }} />
-              <span style={{ color: '#E5EDFF' }}>Previous</span>
+              <ChevronLeft className="w-4 h-4 mr-1" />
+              <span>Previous</span>
             </Button>
             <Button
               variant="outline"
               size="sm"
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(currentPage + 1)}
-              className="glass-input font-medium"
-              style={{ color: '#E5EDFF', borderColor: 'rgba(255, 255, 255, 0.2)' }}
+              className="font-medium"
+              style={{ color: '#000', borderColor: '#000' }}
             >
-              <span style={{ color: '#E5EDFF' }}>Next</span>
-              <ChevronRight className="w-4 h-4 ml-1" style={{ color: '#E5EDFF' }} />
+              <span>Next</span>
+              <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
         </div>
