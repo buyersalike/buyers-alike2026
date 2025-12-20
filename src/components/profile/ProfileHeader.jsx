@@ -190,19 +190,25 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
         className="relative"
       >
         {/* Cover Image with Gradient Overlay */}
-        <div 
-          className="h-80 w-full relative overflow-hidden"
-          style={{ 
-            background: user.cover_image_url 
-              ? `url(${user.cover_image_url})` 
-              : 'linear-gradient(135deg, #667EEA 0%, #764BA2 50%, #F093FB 100%)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            imageRendering: '-webkit-optimize-contrast'
-          }}
-        >
+        <div className="h-80 w-full relative overflow-hidden">
+          {user.cover_image_url ? (
+            <img 
+              src={user.cover_image_url}
+              alt="Cover"
+              width={1920}
+              height={320}
+              loading="eager"
+              className="w-full h-full object-cover"
+              style={{ imageRendering: '-webkit-optimize-contrast' }}
+            />
+          ) : (
+            <div 
+              className="w-full h-full"
+              style={{ background: 'linear-gradient(135deg, #667EEA 0%, #764BA2 50%, #F093FB 100%)' }}
+            />
+          )}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, transparent 0%, rgba(10, 22, 40, 0.8) 100%)' }} />
-          
+
           {/* Decorative Elements */}
           <div className="absolute top-10 right-10 w-32 h-32 rounded-full opacity-20" 
             style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)' }} />
@@ -231,7 +237,10 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
                 {user.avatar_url ? (
                   <img 
                     src={user.avatar_url} 
-                    alt={user.full_name} 
+                    alt={user.full_name}
+                    width={192}
+                    height={192}
+                    loading="eager"
                     className="w-full h-full object-cover" 
                     style={{ imageRendering: '-webkit-optimize-contrast' }}
                   />
