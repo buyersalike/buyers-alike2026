@@ -26,7 +26,7 @@ import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import NotificationBell from "@/components/notifications/NotificationBell";
-import { canAccessAdmin } from "@/components/utils/permissions";
+import { canAccessAdmin, hasPermission } from "@/components/utils/permissions";
 
 const mainMenuItems = [
   { icon: Sparkles, label: "Recommendations", href: "Recommendations" },
@@ -97,6 +97,11 @@ export default function Sidebar() {
         {/* Main Menu Items */}
         <div className="space-y-2 mb-8">
           {mainMenuItems.map((item) => {
+            // Check permissions for special menu items
+            if (item.label === "Ad Campaigns" && currentUser && !hasPermission(currentUser.role, 'canManageAdvertisements')) {
+              return null;
+            }
+
             const isActive = currentPath.includes(item.href);
             return (
               <Link key={item.label} to={createPageUrl(item.href)}>

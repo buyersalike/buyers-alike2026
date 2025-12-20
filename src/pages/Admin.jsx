@@ -5,7 +5,7 @@ import Sidebar from "@/components/partnerships/Sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import { canAccessAdmin } from "@/components/utils/permissions";
+import { canAccessAdmin, hasPermission } from "@/components/utils/permissions";
 import RolesManagementTab from "@/components/admin/RolesManagementTab";
 import GeneralSummary from "@/components/admin/GeneralSummary";
 import OpportunitiesSummary from "@/components/admin/OpportunitiesSummary";
