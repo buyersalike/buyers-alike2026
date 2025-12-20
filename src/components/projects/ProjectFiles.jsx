@@ -56,11 +56,11 @@ export default function ProjectFiles({ project, currentUser }) {
   return (
     <div className="space-y-6">
       {/* Upload Button */}
-      <div className="glass-card p-6 rounded-2xl">
+      <div className="p-6 rounded-2xl" style={{ background: '#fff', border: '1px solid #000' }}>
         <label htmlFor="file-upload" className="cursor-pointer">
-          <div className="flex items-center justify-center gap-3 py-8 border-2 border-dashed rounded-xl transition-colors hover:border-blue-500" style={{ borderColor: 'rgba(255, 255, 255, 0.2)' }}>
-            <Upload className="w-6 h-6" style={{ color: '#3B82F6' }} />
-            <span style={{ color: '#E5EDFF' }}>
+          <div className="flex items-center justify-center gap-3 py-8 border-2 border-dashed rounded-xl transition-colors hover:border-[#D8A11F]" style={{ borderColor: '#000' }}>
+            <Upload className="w-6 h-6" style={{ color: '#D8A11F' }} />
+            <span style={{ color: '#000' }}>
               {uploading ? 'Uploading...' : 'Click to upload file'}
             </span>
           </div>
@@ -77,23 +77,23 @@ export default function ProjectFiles({ project, currentUser }) {
       {/* Files List */}
       <div className="space-y-3">
         {files.length === 0 ? (
-          <div className="glass-card p-12 rounded-2xl text-center" style={{ color: '#7A8BA6' }}>
+          <div className="p-12 rounded-2xl text-center" style={{ background: '#fff', border: '1px solid #000', color: '#666' }}>
             <File className="w-12 h-12 mx-auto mb-3 opacity-50" />
             <p>No files uploaded yet</p>
           </div>
         ) : (
           files.map((file) => (
-            <div key={file.id} className="glass-card p-4 rounded-xl flex items-center justify-between">
+            <div key={file.id} className="p-4 rounded-xl flex items-center justify-between" style={{ background: '#fff', border: '1px solid #000' }}>
               <div className="flex items-center gap-3">
                 <div
                   className="w-10 h-10 rounded-lg flex items-center justify-center"
-                  style={{ background: 'rgba(59, 130, 246, 0.15)' }}
+                  style={{ background: 'rgba(216, 161, 31, 0.15)' }}
                 >
-                  <File className="w-5 h-5" style={{ color: '#3B82F6' }} />
+                  <File className="w-5 h-5" style={{ color: '#D8A11F' }} />
                 </div>
                 <div>
-                  <p className="font-medium" style={{ color: '#E5EDFF' }}>{file.name}</p>
-                  <p className="text-xs" style={{ color: '#7A8BA6' }}>
+                  <p className="font-medium" style={{ color: '#000' }}>{file.name}</p>
+                  <p className="text-xs" style={{ color: '#666' }}>
                     {formatFileSize(file.size)} • Uploaded {formatDistanceToNow(new Date(file.created_date), { addSuffix: true })}
                   </p>
                 </div>
@@ -104,7 +104,7 @@ export default function ProjectFiles({ project, currentUser }) {
                   variant="ghost"
                   size="icon"
                   className="rounded-lg"
-                  style={{ color: '#3B82F6' }}
+                  style={{ color: '#D8A11F' }}
                 >
                   <Download className="w-4 h-4" />
                 </Button>

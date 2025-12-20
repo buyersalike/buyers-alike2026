@@ -59,11 +59,11 @@ export default function ProjectMessages({ project, currentUser }) {
   };
 
   return (
-    <div className="glass-card rounded-2xl flex flex-col h-[600px]">
+    <div className="rounded-2xl flex flex-col h-[600px]" style={{ background: '#fff', border: '1px solid #000' }}>
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {messages.length === 0 ? (
-          <div className="text-center py-12" style={{ color: '#7A8BA6' }}>
+          <div className="text-center py-12" style={{ color: '#666' }}>
             <p>No messages yet. Start the conversation!</p>
           </div>
         ) : (
@@ -75,20 +75,20 @@ export default function ProjectMessages({ project, currentUser }) {
                   className="max-w-[70%] p-4 rounded-lg"
                   style={{
                     background: isOwn 
-                      ? 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)'
-                      : 'rgba(255, 255, 255, 0.08)',
-                    border: `1px solid ${isOwn ? 'rgba(59, 130, 246, 0.3)' : 'rgba(255, 255, 255, 0.1)'}`
+                      ? '#D8A11F'
+                      : '#F2F1F5',
+                    border: `1px solid ${isOwn ? '#D8A11F' : '#000'}`
                   }}
                 >
                   {!isOwn && (
-                    <p className="text-xs font-semibold mb-1" style={{ color: '#3B82F6' }}>
+                    <p className="text-xs font-semibold mb-1" style={{ color: '#D8A11F' }}>
                       {msg.sender_name}
                     </p>
                   )}
-                  <p className="text-sm whitespace-pre-wrap" style={{ color: '#E5EDFF' }}>
+                  <p className="text-sm whitespace-pre-wrap" style={{ color: isOwn ? '#fff' : '#000' }}>
                     {msg.content}
                   </p>
-                  <p className="text-xs mt-2" style={{ color: '#7A8BA6' }}>
+                  <p className="text-xs mt-2" style={{ color: isOwn ? 'rgba(255,255,255,0.7)' : '#666' }}>
                     {formatDistanceToNow(new Date(msg.created_date), { addSuffix: true })}
                   </p>
                 </div>
@@ -100,7 +100,7 @@ export default function ProjectMessages({ project, currentUser }) {
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+      <div className="p-4 border-t" style={{ borderColor: '#000' }}>
         <div className="flex gap-3">
           <Textarea
             value={message}
@@ -112,14 +112,14 @@ export default function ProjectMessages({ project, currentUser }) {
               }
             }}
             placeholder="Type a message..."
-            className="glass-input flex-1 h-20 resize-none"
-            style={{ color: '#E5EDFF' }}
+            className="flex-1 h-20 resize-none"
+            style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
           />
           <Button
             onClick={handleSend}
             disabled={!message.trim() || sendMessageMutation.isPending}
             className="rounded-lg"
-            style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#fff' }}
+            style={{ background: '#D8A11F', color: '#fff' }}
           >
             <Send className="w-5 h-5" />
           </Button>

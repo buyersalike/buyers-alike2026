@@ -96,7 +96,7 @@ export default function ProjectTasks({ project, currentUser }) {
         <Button
           onClick={() => setShowForm(true)}
           className="w-full rounded-xl gap-2"
-          style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#fff' }}
+          style={{ background: '#D8A11F', color: '#fff' }}
         >
           <Plus className="w-5 h-5" />
           Add Task
@@ -105,15 +105,14 @@ export default function ProjectTasks({ project, currentUser }) {
 
       {/* Create Task Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="glass-card p-6 rounded-2xl space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 rounded-2xl space-y-4" style={{ background: '#fff', border: '1px solid #000' }}>
           <div>
             <Input
               required
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="Task title"
-              className="glass-input"
-              style={{ color: '#E5EDFF' }}
+              style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
             />
           </div>
           <div>
@@ -121,13 +120,13 @@ export default function ProjectTasks({ project, currentUser }) {
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Task description"
-              className="glass-input h-20"
-              style={{ color: '#E5EDFF' }}
+              className="h-20"
+              style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
             />
           </div>
           <div className="grid md:grid-cols-3 gap-4">
             <Select value={formData.assigned_to} onValueChange={(value) => setFormData({ ...formData, assigned_to: value })}>
-              <SelectTrigger className="glass-input" style={{ color: '#E5EDFF' }}>
+              <SelectTrigger style={{ background: '#fff', border: '1px solid #000', color: '#000' }}>
                 <SelectValue placeholder="Assign to..." />
               </SelectTrigger>
               <SelectContent>
@@ -139,7 +138,7 @@ export default function ProjectTasks({ project, currentUser }) {
               </SelectContent>
             </Select>
             <Select value={formData.priority} onValueChange={(value) => setFormData({ ...formData, priority: value })}>
-              <SelectTrigger className="glass-input" style={{ color: '#E5EDFF' }}>
+              <SelectTrigger style={{ background: '#fff', border: '1px solid #000', color: '#000' }}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -152,8 +151,7 @@ export default function ProjectTasks({ project, currentUser }) {
               type="date"
               value={formData.due_date}
               onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
-              className="glass-input"
-              style={{ color: '#E5EDFF' }}
+              style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
             />
           </div>
           <div className="flex gap-3">
@@ -161,7 +159,7 @@ export default function ProjectTasks({ project, currentUser }) {
               type="button"
               onClick={() => setShowForm(false)}
               className="flex-1"
-              style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#B6C4E0' }}
+              style={{ background: '#fff', color: '#000', border: '1px solid #000' }}
             >
               Cancel
             </Button>
@@ -169,7 +167,7 @@ export default function ProjectTasks({ project, currentUser }) {
               type="submit"
               disabled={createTaskMutation.isPending}
               className="flex-1"
-              style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#fff' }}
+              style={{ background: '#D8A11F', color: '#fff' }}
             >
               Create Task
             </Button>
@@ -180,7 +178,7 @@ export default function ProjectTasks({ project, currentUser }) {
       {/* Tasks List */}
       <div className="space-y-3">
         {tasks.length === 0 ? (
-          <div className="glass-card p-12 rounded-2xl text-center" style={{ color: '#7A8BA6' }}>
+          <div className="p-12 rounded-2xl text-center" style={{ background: '#fff', border: '1px solid #000', color: '#666' }}>
             <CheckCircle2 className="w-12 h-12 mx-auto mb-3 opacity-50" />
             <p>No tasks yet</p>
           </div>
@@ -190,8 +188,10 @@ export default function ProjectTasks({ project, currentUser }) {
             return (
               <div
                 key={task.id}
-                className="glass-card p-4 rounded-xl"
+                className="p-4 rounded-xl"
                 style={{
+                  background: '#fff',
+                  border: '1px solid #000',
                   opacity: task.status === "completed" ? 0.7 : 1,
                   borderLeft: `4px solid ${priorityColors[task.priority]}`
                 }}
@@ -211,18 +211,18 @@ export default function ProjectTasks({ project, currentUser }) {
                     <h4
                       className="font-semibold mb-1"
                       style={{
-                        color: '#E5EDFF',
+                        color: '#000',
                         textDecoration: task.status === "completed" ? 'line-through' : 'none'
                       }}
                     >
                       {task.title}
                     </h4>
                     {task.description && (
-                      <p className="text-sm mb-2" style={{ color: '#B6C4E0' }}>
+                      <p className="text-sm mb-2" style={{ color: '#666' }}>
                         {task.description}
                       </p>
                     )}
-                    <div className="flex items-center gap-4 text-xs" style={{ color: '#7A8BA6' }}>
+                    <div className="flex items-center gap-4 text-xs" style={{ color: '#666' }}>
                       {assignedUser && (
                         <span>Assigned to: {assignedUser.full_name}</span>
                       )}

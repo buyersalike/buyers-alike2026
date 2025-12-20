@@ -30,10 +30,10 @@ export default function ProjectDetail() {
 
   if (!currentUser || !project) {
     return (
-      <div className="flex min-h-screen bg-gradient-main">
+      <div className="flex min-h-screen" style={{ background: '#F2F1F5' }}>
         <Sidebar />
         <div className="flex-1 flex items-center justify-center">
-          <p style={{ color: '#E5EDFF' }}>Loading...</p>
+          <p style={{ color: '#000' }}>Loading...</p>
         </div>
       </div>
     );
@@ -45,12 +45,12 @@ export default function ProjectDetail() {
 
   if (!hasAccess) {
     return (
-      <div className="flex min-h-screen bg-gradient-main">
+      <div className="flex min-h-screen" style={{ background: '#F2F1F5' }}>
         <Sidebar />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-xl mb-4" style={{ color: '#E5EDFF' }}>Access Denied</p>
-            <Button onClick={() => navigate(createPageUrl('Projects'))}>
+            <p className="text-xl mb-4" style={{ color: '#000' }}>Access Denied</p>
+            <Button onClick={() => navigate(createPageUrl('Projects'))} style={{ background: '#D8A11F', color: '#fff' }}>
               Go Back
             </Button>
           </div>
@@ -60,7 +60,7 @@ export default function ProjectDetail() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gradient-main">
+    <div className="flex min-h-screen" style={{ background: '#F2F1F5' }}>
       <Sidebar />
       <main className="flex-1 p-8 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
@@ -70,22 +70,22 @@ export default function ProjectDetail() {
               onClick={() => navigate(createPageUrl('Projects'))}
               variant="ghost"
               className="mb-4 gap-2"
-              style={{ color: '#B6C4E0' }}
+              style={{ color: '#000' }}
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Projects
             </Button>
-            <div className="glass-card p-6 rounded-2xl">
-              <h1 className="text-3xl font-bold mb-2" style={{ color: '#E5EDFF' }}>
+            <div className="p-6 rounded-2xl" style={{ background: '#fff', border: '1px solid #000' }}>
+              <h1 className="text-3xl font-bold mb-2" style={{ color: '#000' }}>
                 {project.name}
               </h1>
               {project.description && (
-                <p style={{ color: '#B6C4E0' }}>{project.description}</p>
+                <p style={{ color: '#000' }}>{project.description}</p>
               )}
               <div className="flex items-center gap-4 mt-4">
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4" style={{ color: '#7A8BA6' }} />
-                  <span className="text-sm" style={{ color: '#7A8BA6' }}>
+                  <Users className="w-4 h-4" style={{ color: '#666' }} />
+                  <span className="text-sm" style={{ color: '#000' }}>
                     {(project.collaborators?.length || 0) + 1} members
                   </span>
                 </div>
@@ -101,21 +101,21 @@ export default function ProjectDetail() {
 
           {/* Tabs */}
           <Tabs defaultValue="messages" className="space-y-6">
-            <TabsList className="glass-card p-1">
-              <TabsTrigger value="messages" className="gap-2">
+            <TabsList className="p-1 rounded-xl" style={{ background: '#fff', border: '1px solid #000' }}>
+              <TabsTrigger value="messages" className="gap-2 data-[state=active]:bg-[#D8A11F] data-[state=active]:text-white" style={{ color: '#000' }}>
                 <MessageSquare className="w-4 h-4" />
                 Messages
               </TabsTrigger>
-              <TabsTrigger value="tasks" className="gap-2">
+              <TabsTrigger value="tasks" className="gap-2 data-[state=active]:bg-[#D8A11F] data-[state=active]:text-white" style={{ color: '#000' }}>
                 <CheckSquare className="w-4 h-4" />
                 Tasks
               </TabsTrigger>
-              <TabsTrigger value="files" className="gap-2">
+              <TabsTrigger value="files" className="gap-2 data-[state=active]:bg-[#D8A11F] data-[state=active]:text-white" style={{ color: '#000' }}>
                 <Upload className="w-4 h-4" />
                 Files
               </TabsTrigger>
               {isOwner && (
-                <TabsTrigger value="settings" className="gap-2">
+                <TabsTrigger value="settings" className="gap-2 data-[state=active]:bg-[#D8A11F] data-[state=active]:text-white" style={{ color: '#000' }}>
                   <Settings className="w-4 h-4" />
                   Settings
                 </TabsTrigger>

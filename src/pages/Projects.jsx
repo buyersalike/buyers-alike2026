@@ -47,34 +47,34 @@ export default function Projects() {
 
   if (!currentUser) {
     return (
-      <div className="flex min-h-screen bg-gradient-main">
+      <div className="flex min-h-screen" style={{ background: '#F2F1F5' }}>
         <Sidebar />
         <div className="flex-1 flex items-center justify-center">
-          <p style={{ color: '#E5EDFF' }}>Loading...</p>
+          <p style={{ color: '#000' }}>Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-gradient-main">
+    <div className="flex min-h-screen" style={{ background: '#F2F1F5' }}>
       <Sidebar />
       <main className="flex-1 p-8 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-3xl font-bold mb-2" style={{ color: '#E5EDFF' }}>
+              <h1 className="text-3xl font-bold mb-2" style={{ color: '#000' }}>
                 Project Spaces
               </h1>
-              <p style={{ color: '#B6C4E0' }}>
+              <p style={{ color: '#000' }}>
                 Collaborate on opportunities and partnerships
               </p>
             </div>
             <Button
               onClick={() => setShowCreateDialog(true)}
               className="rounded-xl gap-2"
-              style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#fff' }}
+              style={{ background: '#D8A11F', color: '#fff' }}
             >
               <Plus className="w-5 h-5" />
               New Project
@@ -82,15 +82,15 @@ export default function Projects() {
           </div>
 
           {/* Search */}
-          <div className="glass-card p-6 mb-6">
+          <div className="p-6 mb-6 rounded-2xl" style={{ background: '#fff', border: '1px solid #000' }}>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#7A8BA6' }} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#666' }} />
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search projects..."
-                className="glass-input pl-10"
-                style={{ color: '#E5EDFF' }}
+                className="pl-10"
+                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
               />
             </div>
           </div>
@@ -98,14 +98,14 @@ export default function Projects() {
           {/* Projects Grid */}
           {filteredProjects.length === 0 ? (
             <div className="text-center py-16">
-              <FolderKanban className="w-16 h-16 mx-auto mb-4 opacity-50" style={{ color: '#7A8BA6' }} />
-              <p className="text-lg mb-2" style={{ color: '#7A8BA6' }}>
+              <FolderKanban className="w-16 h-16 mx-auto mb-4 opacity-50" style={{ color: '#666' }} />
+              <p className="text-lg mb-2" style={{ color: '#000' }}>
                 {searchQuery ? 'No projects match your search' : 'No projects yet'}
               </p>
               <Button
                 onClick={() => setShowCreateDialog(true)}
                 className="rounded-lg gap-2 mt-4"
-                style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#fff' }}
+                style={{ background: '#D8A11F', color: '#fff' }}
               >
                 <Plus className="w-4 h-4" />
                 Create Your First Project
@@ -124,7 +124,8 @@ export default function Projects() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
                     onClick={() => navigate(createPageUrl('ProjectDetail'), { state: { projectId: project.id } })}
-                    className="glass-card glass-card-hover p-6 rounded-2xl cursor-pointer"
+                    className="p-6 rounded-2xl cursor-pointer hover:shadow-lg transition-all"
+                    style={{ background: '#fff', border: '1px solid #000' }}
                   >
                     {/* Cover or Icon */}
                     <div className="mb-4">
@@ -147,7 +148,7 @@ export default function Projects() {
                     {/* Project Info */}
                     <div className="mb-4">
                       <div className="flex items-start justify-between mb-2">
-                        <h3 className="text-lg font-bold" style={{ color: '#E5EDFF' }}>
+                        <h3 className="text-lg font-bold" style={{ color: '#000' }}>
                           {project.name}
                         </h3>
                         <div
@@ -162,23 +163,23 @@ export default function Projects() {
                         </div>
                       </div>
                       {project.description && (
-                        <p className="text-sm line-clamp-2 mb-3" style={{ color: '#B6C4E0' }}>
+                        <p className="text-sm line-clamp-2 mb-3" style={{ color: '#666' }}>
                           {project.description}
                         </p>
                       )}
                     </div>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between pt-3" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                    <div className="flex items-center justify-between pt-3" style={{ borderTop: '1px solid #000' }}>
                       <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4" style={{ color: '#7A8BA6' }} />
-                        <span className="text-sm" style={{ color: '#7A8BA6' }}>
+                        <Users className="w-4 h-4" style={{ color: '#666' }} />
+                        <span className="text-sm" style={{ color: '#000' }}>
                           {(project.collaborators?.length || 0) + 1} members
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4" style={{ color: '#7A8BA6' }} />
-                        <span className="text-xs" style={{ color: '#7A8BA6' }}>
+                        <Clock className="w-4 h-4" style={{ color: '#666' }} />
+                        <span className="text-xs" style={{ color: '#000' }}>
                           {new Date(project.created_date).toLocaleDateString()}
                         </span>
                       </div>

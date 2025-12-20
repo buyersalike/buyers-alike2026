@@ -70,8 +70,8 @@ export default function ProjectSettings({ project, currentUser }) {
   return (
     <div className="space-y-6">
       {/* Collaborators */}
-      <div className="glass-card p-6 rounded-2xl">
-        <h3 className="text-xl font-bold mb-4" style={{ color: '#E5EDFF' }}>
+      <div className="p-6 rounded-2xl" style={{ background: '#fff', border: '1px solid #000' }}>
+        <h3 className="text-xl font-bold mb-4" style={{ color: '#000' }}>
           Collaborators
         </h3>
         <div className="flex gap-3 mb-4">
@@ -79,13 +79,13 @@ export default function ProjectSettings({ project, currentUser }) {
             value={newCollaboratorEmail}
             onChange={(e) => setNewCollaboratorEmail(e.target.value)}
             placeholder="Enter email address"
-            className="glass-input flex-1"
-            style={{ color: '#E5EDFF' }}
+            className="flex-1"
+            style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
           />
           <Button
             onClick={addCollaborator}
             className="rounded-lg gap-2"
-            style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#fff' }}
+            style={{ background: '#D8A11F', color: '#fff' }}
           >
             <UserPlus className="w-4 h-4" />
             Add
@@ -93,22 +93,22 @@ export default function ProjectSettings({ project, currentUser }) {
         </div>
         <div className="space-y-2">
           {/* Owner */}
-          <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
+          <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#F2F1F5' }}>
             <div>
-              <p className="font-medium" style={{ color: '#E5EDFF' }}>
+              <p className="font-medium" style={{ color: '#000' }}>
                 {allUsers.find(u => u.email === project.owner_email)?.full_name || project.owner_email}
               </p>
-              <p className="text-xs" style={{ color: '#7A8BA6' }}>Owner</p>
+              <p className="text-xs" style={{ color: '#666' }}>Owner</p>
             </div>
           </div>
           {/* Collaborators */}
           {(project.collaborators || []).map((email) => (
-            <div key={email} className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
+            <div key={email} className="flex items-center justify-between p-3 rounded-lg" style={{ background: '#F2F1F5' }}>
               <div>
-                <p className="font-medium" style={{ color: '#E5EDFF' }}>
+                <p className="font-medium" style={{ color: '#000' }}>
                   {allUsers.find(u => u.email === email)?.full_name || email}
                 </p>
-                <p className="text-xs" style={{ color: '#7A8BA6' }}>Collaborator</p>
+                <p className="text-xs" style={{ color: '#666' }}>Collaborator</p>
               </div>
               <Button
                 onClick={() => removeCollaborator(email)}
@@ -125,12 +125,12 @@ export default function ProjectSettings({ project, currentUser }) {
       </div>
 
       {/* Project Status */}
-      <div className="glass-card p-6 rounded-2xl">
-        <h3 className="text-xl font-bold mb-4" style={{ color: '#E5EDFF' }}>
+      <div className="p-6 rounded-2xl" style={{ background: '#fff', border: '1px solid #000' }}>
+        <h3 className="text-xl font-bold mb-4" style={{ color: '#000' }}>
           Project Status
         </h3>
         <Select value={project.status} onValueChange={updateStatus}>
-          <SelectTrigger className="glass-input" style={{ color: '#E5EDFF' }}>
+          <SelectTrigger style={{ background: '#fff', border: '1px solid #000', color: '#000' }}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -143,11 +143,11 @@ export default function ProjectSettings({ project, currentUser }) {
       </div>
 
       {/* Danger Zone */}
-      <div className="glass-card p-6 rounded-2xl" style={{ borderColor: '#EF4444' }}>
+      <div className="p-6 rounded-2xl" style={{ background: '#fff', border: '2px solid #EF4444' }}>
         <h3 className="text-xl font-bold mb-4" style={{ color: '#EF4444' }}>
           Danger Zone
         </h3>
-        <p className="text-sm mb-4" style={{ color: '#B6C4E0' }}>
+        <p className="text-sm mb-4" style={{ color: '#666' }}>
           Once you delete this project, there is no going back. All messages, tasks, and files will be permanently deleted.
         </p>
         <Button
