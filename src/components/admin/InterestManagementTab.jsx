@@ -3,14 +3,17 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Check, X, Eye } from "lucide-react";
+import { Search, Check, X, Eye, Pencil } from "lucide-react";
 import { motion } from "framer-motion";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function InterestManagementTab() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedInterest, setSelectedInterest] = useState(null);
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState({ name: "", description: "" });
 
   const queryClient = useQueryClient();
 
@@ -26,6 +29,16 @@ export default function InterestManagementTab() {
     },
   });
 
+  const updateInterestMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.asServiceRole.entities.Interest.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allInterests'] });
+      setIsEditDialogOpen(false);
+      setSelectedInterest(null);
+      setEditFormData({ name: "", description: "" });
+    },
+  });
+
   const handleViewDetails = (interest) => {
     setSelectedInterest(interest);
     setIsDetailDialogOpen(true);
@@ -37,6 +50,20 @@ export default function InterestManagementTab() {
 
   const handleReject = (id) => {
     updateStatusMutation.mutate({ id, status: 'rejected' });
+  };
+
+  const handleEdit = (interest) => {
+    setSelectedInterest(interest);
+    setEditFormData({
+      name: interest.name || "",
+      description: interest.description || ""
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdate = () => {
+    if (!editFormData.name || !selectedInterest) return;
+    updateInterestMutation.mutate({ id: selectedInterest.id, data: editFormData });
   };
 
   const filteredInterests = interests.filter(interest =>
@@ -195,6 +222,14 @@ export default function InterestManagementTab() {
                         >
                           <Eye className="w-4 h-4" />
                         </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => handleEdit(interest)}
+                          style={{ background: '#D8A11F', color: '#fff' }}
+                          className="hover:opacity-80"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Button>
                         {interest.status !== 'approved' && (
                           <Button
                             size="sm"
@@ -273,6 +308,68 @@ export default function InterestManagementTab() {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent 
+          className="border-0 sm:max-w-md" 
+          style={{ 
+            background: '#F2F1F5',
+            border: '2px solid #000',
+            color: '#000' 
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-lg" style={{ color: '#000' }}>Edit Interest</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-5 py-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
+                Name
+              </label>
+              <Input
+                value={editFormData.name}
+                onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                placeholder="Interest name"
+                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
+                Description
+              </label>
+              <Textarea
+                value={editFormData.description}
+                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+                placeholder="Interest description"
+                rows={4}
+                className="resize-none"
+                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button
+              type="button"
+              onClick={() => setIsEditDialogOpen(false)}
+              variant="outline"
+              style={{ border: '1px solid #000', color: '#000', background: '#fff' }}
+              disabled={updateInterestMutation.isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleUpdate}
+              disabled={!editFormData.name.trim() || updateInterestMutation.isPending}
+              style={{ background: '#D8A11F', color: '#fff' }}
+              className="hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {updateInterestMutation.isPending ? 'Updating...' : 'Update'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
