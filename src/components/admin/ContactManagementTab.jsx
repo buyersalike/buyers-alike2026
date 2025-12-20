@@ -16,11 +16,7 @@ export default function ContactManagementTab() {
 
   const { data: submissions = [], isLoading } = useQuery({
     queryKey: ['contactSubmissions'],
-    queryFn: async () => {
-      const data = await base44.asServiceRole.entities.ContactSubmission.list('-created_date');
-      console.log('Contact submissions fetched:', data);
-      return data;
-    },
+    queryFn: () => base44.asServiceRole.entities.ContactSubmission.list('-created_date'),
   });
 
   const updateStatusMutation = useMutation({
