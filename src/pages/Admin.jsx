@@ -29,6 +29,7 @@ import ProfessionManagementTab from "@/components/admin/ProfessionManagementTab"
 import InterestManagementTab from "@/components/admin/InterestManagementTab";
 import PartnershipGroupsTab from "@/components/admin/PartnershipGroupsTab";
 import PartnershipIntentsTab from "@/components/admin/PartnershipIntentsTab";
+import OpportunitiesManagementTab from "@/components/admin/OpportunitiesManagementTab";
 
 export default function Admin() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -359,9 +360,7 @@ export default function Admin() {
 
             {hasPermission(currentUser.role, 'canManageOpportunities') && (
               <TabsContent value="opportunity">
-                <div className="p-8 rounded-2xl text-center" style={{ background: '#fff', border: '2px solid #000' }}>
-                  <p style={{ color: '#666' }}>Opportunity management coming soon...</p>
-                </div>
+                <OpportunitiesManagementTab />
               </TabsContent>
             )}
 
