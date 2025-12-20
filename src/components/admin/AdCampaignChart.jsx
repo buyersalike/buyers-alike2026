@@ -33,17 +33,18 @@ export default function AdCampaignChart({ campaigns, metrics }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="glass-card p-6 rounded-2xl"
+      className="p-6 rounded-2xl"
+      style={{ background: '#fff', border: '2px solid #000' }}
     >
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #F59E0B 100%)' }}>
           <TrendingUp className="w-5 h-5" style={{ color: '#fff' }} />
         </div>
         <div>
-          <h3 className="text-lg font-bold" style={{ color: '#E5EDFF' }}>
+          <h3 className="text-lg font-bold" style={{ color: '#000' }}>
             Campaign Performance
           </h3>
-          <p className="text-sm" style={{ color: '#7A8BA6' }}>
+          <p className="text-sm" style={{ color: '#666' }}>
             Monthly campaigns and engagement
           </p>
         </div>
@@ -51,16 +52,15 @@ export default function AdCampaignChart({ campaigns, metrics }) {
 
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={monthlyData}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
-          <XAxis dataKey="month" stroke="#7A8BA6" />
-          <YAxis stroke="#7A8BA6" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#ddd" />
+          <XAxis dataKey="month" stroke="#000" tick={{ fill: '#000' }} />
+          <YAxis stroke="#000" tick={{ fill: '#000' }} />
           <Tooltip 
             contentStyle={{ 
-              background: 'rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
+              background: '#fff',
+              border: '2px solid #000',
               borderRadius: '8px',
-              color: '#E5EDFF'
+              color: '#000'
             }}
           />
           <Legend />
