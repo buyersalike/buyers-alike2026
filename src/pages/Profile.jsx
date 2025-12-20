@@ -9,6 +9,7 @@ import InterestTab from "@/components/profile/InterestTab";
 import ConnectionTab from "@/components/profile/ConnectionTab";
 import OpportunityTab from "@/components/profile/OpportunityTab";
 import ActivityTab from "@/components/profile/ActivityTab";
+import VendorProfileSection from "@/components/profile/VendorProfileSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Profile() {
@@ -61,6 +62,7 @@ export default function Profile() {
         <ProfileHeader user={profileUser} isOwnProfile={isOwnProfile} currentUser={currentUser} />
 
         <div className="max-w-6xl mx-auto px-8 py-8">
+          {isOwnProfile && <VendorProfileSection userEmail={profileUser.email} />}
           <Tabs defaultValue="about" className="w-full">
             <TabsList className="glass-card mb-8 p-2 rounded-2xl" style={{ background: 'rgba(255, 255, 255, 0.08)', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
               <TabsTrigger 
