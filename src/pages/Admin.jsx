@@ -212,7 +212,7 @@ export default function Admin() {
           {/* Tabs */}
           <Tabs defaultValue="dashboard" className="w-full">
             <TabsList 
-              className="p-3 rounded-3xl mb-8 flex-wrap justify-start gap-1 h-auto items-center"
+              className="w-full p-3 rounded-3xl mb-8 flex-wrap justify-start gap-1 h-auto items-center"
               style={{ 
                 background: '#fff',
                 border: '2px solid #000',
