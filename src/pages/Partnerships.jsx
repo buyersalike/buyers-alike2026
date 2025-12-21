@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Sidebar from "@/components/partnerships/Sidebar";
 import FilterBar from "@/components/partnerships/FilterBar";
 import PartnershipCard from "@/components/partnerships/PartnershipCard";
+import AdvancedFilters from "@/components/partnerships/AdvancedFilters";
 import { Button } from "@/components/ui/button";
 import SEO from "@/components/seo/SEO";
 import { pageMetadata } from "@/components/seo/seoMetadata";
@@ -275,14 +276,99 @@ export default function Partnerships() {
   const metadata = pageMetadata.Partnerships;
   const [viewMode, setViewMode] = useState("grid");
   const [activeTab, setActiveTab] = useState("active");
-
-  // Filter partnerships based on active tab
-  const filteredPartnerships = partnershipsData.filter(p => {
-    if (activeTab === "declined") {
-      return p.status === "declined" || p.status === "withdrawn" || p.status === "canceled";
-    }
-    return p.status === activeTab;
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    industry: "all",
+    companySize: "all",
+    location: "",
+    investmentMin: "",
+    investmentMax: "",
+    sortBy: "match_score"
   });
+
+  // Filter and sort partnerships
+  const filteredPartnerships = useMemo(() => {
+    let results = partnershipsData.filter(p => {
+      // Tab filter
+      if (activeTab === "declined") {
+        if (p.status !== "declined" && p.status !== "withdrawn" && p.status !== "canceled") {
+          return false;
+        }
+      } else if (p.status !== activeTab) {
+        return false;
+      }
+
+      // Industry filter
+      if (filters.industry !== "all" && p.industry !== filters.industry) {
+        return false;
+      }
+
+      // Company size filter
+      if (filters.companySize !== "all") {
+        const size = p.companySize;
+        const filterSize = filters.companySize;
+        if (filterSize === "1-10" && !size.includes("5") && !size.includes("10")) return false;
+        if (filterSize === "11-25" && !size.includes("25") && !size.includes("10")) return false;
+        if (filterSize === "26-50" && !size.includes("50") && !size.includes("25")) return false;
+        if (filterSize === "51-100" && !size.includes("100") && !size.includes("50")) return false;
+        if (filterSize === "101-250" && !size.includes("250") && !size.includes("100")) return false;
+        if (filterSize === "251+" && !size.includes("250") && !size.includes("500")) return false;
+      }
+
+      // Location filter
+      if (filters.location && !p.location.toLowerCase().includes(filters.location.toLowerCase())) {
+        return false;
+      }
+
+      // Investment range filter
+      if (filters.investmentMin || filters.investmentMax) {
+        const dealStr = p.dealSize;
+        const dealMatch = dealStr.match(/\$?(\d+(?:\.\d+)?)(K|M)?\s*-?\s*\$?(\d+(?:\.\d+)?)(K|M)?/i);
+        if (dealMatch) {
+          const parseAmount = (num, unit) => {
+            const multiplier = unit === 'K' ? 1000 : unit === 'M' ? 1000000 : 1;
+            return parseFloat(num) * multiplier;
+          };
+          const dealMin = parseAmount(dealMatch[1], dealMatch[2]);
+          const dealMax = dealMatch[3] ? parseAmount(dealMatch[3], dealMatch[4]) : dealMin;
+          
+          if (filters.investmentMin && dealMax < parseFloat(filters.investmentMin)) return false;
+          if (filters.investmentMax && dealMin > parseFloat(filters.investmentMax)) return false;
+        }
+      }
+
+      return true;
+    });
+
+    // Sort
+    if (filters.sortBy === "match_score") {
+      results.sort((a, b) => b.matchScore - a.matchScore);
+    } else if (filters.sortBy === "recent") {
+      const dateValue = (p) => {
+        if (p.postedDate.includes("days")) return parseInt(p.postedDate);
+        if (p.postedDate.includes("week")) return parseInt(p.postedDate) * 7;
+        if (p.postedDate.includes("month")) return parseInt(p.postedDate) * 30;
+        return 999;
+      };
+      results.sort((a, b) => dateValue(a) - dateValue(b));
+    } else if (filters.sortBy === "deal_size_high" || filters.sortBy === "deal_size_low") {
+      const getValue = (p) => {
+        const match = p.dealSize.match(/\$?(\d+(?:\.\d+)?)(K|M)?/);
+        if (!match) return 0;
+        const multiplier = match[2] === 'K' ? 1000 : match[2] === 'M' ? 1000000 : 1;
+        return parseFloat(match[1]) * multiplier;
+      };
+      results.sort((a, b) => filters.sortBy === "deal_size_high" ? getValue(b) - getValue(a) : getValue(a) - getValue(b));
+    } else if (filters.sortBy === "company_size") {
+      const getValue = (p) => {
+        const match = p.companySize.match(/(\d+)/);
+        return match ? parseInt(match[1]) : 0;
+      };
+      results.sort((a, b) => getValue(b) - getValue(a));
+    }
+
+    return results;
+  }, [partnershipsData, activeTab, filters]);
 
   // Update tab counts
   const tabsWithCounts = tabs.map(tab => {
@@ -351,6 +437,16 @@ export default function Partnerships() {
                 </Button>
               ))}
             </div>
+          </div>
+
+          {/* Advanced Filters */}
+          <div className="mb-6">
+            <AdvancedFilters
+              filters={filters}
+              setFilters={setFilters}
+              isOpen={filtersOpen}
+              setIsOpen={setFiltersOpen}
+            />
           </div>
 
           {/* Filter Bar */}
