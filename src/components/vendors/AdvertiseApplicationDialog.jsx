@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Megaphone, Upload, X, AlertCircle } from "lucide-react";
+import { Megaphone, Upload, X, AlertCircle, Sparkles, Loader2, Target, TrendingUp, Lightbulb } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { motion, AnimatePresence } from "framer-motion";
 
 const advertisingPackages = [
   "Featured Listing - $299/month",
@@ -39,6 +40,9 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
   });
   const [uploadedFile, setUploadedFile] = useState(null);
   const [flyerUrl, setFlyerUrl] = useState("");
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [aiSuggestions, setAiSuggestions] = useState(null);
+  const [showAiAssistant, setShowAiAssistant] = useState(false);
 
   const totalSteps = 4;
   const stepTitles = [
@@ -143,6 +147,56 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
         ? prev.campaignGoals.filter(g => g !== goal)
         : [...prev.campaignGoals, goal]
     }));
+  };
+
+  const handleAiGenerate = async () => {
+    if (!formData.objectives || !formData.budget) {
+      alert("Please fill in campaign objectives and budget first");
+      return;
+    }
+
+    setAiGenerating(true);
+    try {
+      const response = await base44.functions.invoke('generateAdCampaignDetails', {
+        goals: formData.campaignGoals.join(', '),
+        target_audience: formData.targetAudience,
+        budget: formData.budget,
+        duration_months: formData.durationMonths,
+        business_type: formData.businessName
+      });
+
+      if (response.data.success) {
+        setAiSuggestions(response.data);
+        
+        // Optionally auto-fill campaign description if objectives is empty
+        if (!formData.objectives) {
+          setFormData(prev => ({
+            ...prev,
+            objectives: response.data.campaign_description
+          }));
+        }
+
+        // Auto-suggest package if recommendation available
+        if (response.data.recommended_package) {
+          const packageMapping = {
+            'basic': 'Featured Listing - $299/month',
+            'premium': 'Premium Placement - $499/month',
+            'enterprise': 'Sponsored Content - $799/month'
+          };
+          const suggestedPackage = packageMapping[response.data.recommended_package.toLowerCase()];
+          if (suggestedPackage && !formData.package) {
+            setFormData(prev => ({
+              ...prev,
+              package: suggestedPackage
+            }));
+          }
+        }
+      }
+    } catch (error) {
+      console.error('AI generation failed:', error);
+    } finally {
+      setAiGenerating(false);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -288,6 +342,27 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
           {/* Step 2: Campaign Goals */}
           {currentStep === 2 && (
             <div className="space-y-4">
+              {/* AI Assistant Banner */}
+              <div className="p-4 rounded-xl" style={{ background: 'rgba(216, 161, 31, 0.1)', border: '1px solid rgba(216, 161, 31, 0.5)' }}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="w-5 h-5" style={{ color: '#D8A11F' }} />
+                    <div>
+                      <p className="font-semibold" style={{ color: '#000' }}>AI Campaign Assistant</p>
+                      <p className="text-xs" style={{ color: '#666' }}>Get AI-powered recommendations for your campaign</p>
+                    </div>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={() => setShowAiAssistant(!showAiAssistant)}
+                    size="sm"
+                    style={{ background: showAiAssistant ? '#D8A11F' : '#fff', color: showAiAssistant ? '#fff' : '#000', border: '1px solid #D8A11F' }}
+                  >
+                    {showAiAssistant ? 'Hide AI' : 'Use AI'}
+                  </Button>
+                </div>
+              </div>
+
               <div className="p-4 rounded-xl mb-4" style={{ background: '#FEF3C7', border: '1px solid #D8A11F' }}>
                 <p className="text-sm" style={{ color: '#000' }}>
                   What are your primary goals for this advertising campaign?
@@ -335,6 +410,147 @@ export default function AdvertiseApplicationDialog({ open, onOpenChange }) {
                   Define your target audience and budget allocation.
                 </p>
               </div>
+
+              {/* AI Generation Button */}
+              <AnimatePresence>
+                {showAiAssistant && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="p-4 rounded-xl space-y-3"
+                    style={{ background: 'rgba(216, 161, 31, 0.1)', border: '1px solid rgba(216, 161, 31, 0.5)' }}
+                  >
+                    <Button
+                      type="button"
+                      onClick={handleAiGenerate}
+                      disabled={aiGenerating || !formData.objectives || !formData.budget}
+                      className="w-full gap-2"
+                      style={{ background: 'linear-gradient(135deg, #D8A11F 0%, #F59E0B 100%)', color: '#fff' }}
+                    >
+                      {aiGenerating ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Generating AI Insights...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4" />
+                          Generate Campaign Insights
+                        </>
+                      )}
+                    </Button>
+
+                    {aiSuggestions && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-4 space-y-4"
+                      >
+                        {/* Ad Copy Variations */}
+                        {aiSuggestions.ad_copy_variations && (
+                          <div className="p-4 rounded-xl" style={{ background: '#fff', border: '1px solid #D8A11F' }}>
+                            <div className="flex items-center gap-2 mb-3">
+                              <Lightbulb className="w-4 h-4" style={{ color: '#D8A11F' }} />
+                              <p className="font-semibold text-sm" style={{ color: '#000' }}>AI-Generated Ad Copy</p>
+                            </div>
+                            <div className="space-y-3">
+                              <div>
+                                <p className="text-xs font-semibold mb-1" style={{ color: '#666' }}>Emotion-Focused:</p>
+                                <p className="text-sm p-2 rounded-lg" style={{ color: '#000', background: '#F9FAFB' }}>
+                                  {aiSuggestions.ad_copy_variations.emotion_focused}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-xs font-semibold mb-1" style={{ color: '#666' }}>Feature-Focused:</p>
+                                <p className="text-sm p-2 rounded-lg" style={{ color: '#000', background: '#F9FAFB' }}>
+                                  {aiSuggestions.ad_copy_variations.feature_focused}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-xs font-semibold mb-1" style={{ color: '#666' }}>Urgency-Focused:</p>
+                                <p className="text-sm p-2 rounded-lg" style={{ color: '#000', background: '#F9FAFB' }}>
+                                  {aiSuggestions.ad_copy_variations.urgency_focused}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Targeting Parameters */}
+                        {aiSuggestions.targeting_parameters && (
+                          <div className="p-4 rounded-xl" style={{ background: '#fff', border: '1px solid #D8A11F' }}>
+                            <div className="flex items-center gap-2 mb-3">
+                              <Target className="w-4 h-4" style={{ color: '#D8A11F' }} />
+                              <p className="font-semibold text-sm" style={{ color: '#000' }}>Optimal Targeting</p>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-3 text-sm">
+                              <div>
+                                <p className="text-xs font-semibold mb-1" style={{ color: '#666' }}>Age Range:</p>
+                                <p style={{ color: '#000' }}>{aiSuggestions.targeting_parameters.age_range}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs font-semibold mb-1" style={{ color: '#666' }}>Geographic Focus:</p>
+                                <p style={{ color: '#000' }}>{aiSuggestions.targeting_parameters.geographic_focus}</p>
+                              </div>
+                              {aiSuggestions.targeting_parameters.interest_categories?.length > 0 && (
+                                <div className="md:col-span-2">
+                                  <p className="text-xs font-semibold mb-1" style={{ color: '#666' }}>Interest Categories:</p>
+                                  <div className="flex flex-wrap gap-1">
+                                    {aiSuggestions.targeting_parameters.interest_categories.map((cat, i) => (
+                                      <span key={i} className="text-xs px-2 py-1 rounded-lg" style={{ background: '#F9FAFB', color: '#000' }}>
+                                        {cat}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* ROI Estimate */}
+                        {aiSuggestions.roi_estimate && (
+                          <div className="p-4 rounded-xl" style={{ background: '#fff', border: '1px solid #22C55E' }}>
+                            <div className="flex items-center gap-2 mb-3">
+                              <TrendingUp className="w-4 h-4" style={{ color: '#22C55E' }} />
+                              <p className="font-semibold text-sm" style={{ color: '#000' }}>Estimated ROI</p>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-3 text-sm">
+                              <div>
+                                <p className="text-xs font-semibold mb-1" style={{ color: '#666' }}>Est. Reach:</p>
+                                <p className="font-bold" style={{ color: '#22C55E' }}>{aiSuggestions.roi_estimate.estimated_reach}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs font-semibold mb-1" style={{ color: '#666' }}>Est. Conversions:</p>
+                                <p className="font-bold" style={{ color: '#22C55E' }}>{aiSuggestions.roi_estimate.estimated_conversions}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs font-semibold mb-1" style={{ color: '#666' }}>ROI:</p>
+                                <p className="font-bold" style={{ color: '#22C55E' }}>{aiSuggestions.roi_estimate.estimated_roi_percentage}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs font-semibold mb-1" style={{ color: '#666' }}>Break-even:</p>
+                                <p className="font-bold" style={{ color: '#22C55E' }}>{aiSuggestions.roi_estimate.break_even_timeline}</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Package Recommendation */}
+                        {aiSuggestions.recommended_package && (
+                          <div className="p-3 rounded-xl" style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.3)' }}>
+                            <p className="text-sm font-semibold mb-1" style={{ color: '#000' }}>
+                              💡 Recommended: {aiSuggestions.recommended_package.toUpperCase()} Package
+                            </p>
+                            <p className="text-xs" style={{ color: '#666' }}>{aiSuggestions.package_reasoning}</p>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               <div>
                 <Label htmlFor="targetAudience" style={{ color: '#000' }}>Target Audience</Label>
