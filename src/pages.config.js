@@ -20,6 +20,7 @@ import Connections from './pages/Connections';
 import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
 import Onboarding from './pages/Onboarding';
+import AIMatchmaker from './pages/AIMatchmaker';
 import __Layout from './Layout.jsx';
 
 
@@ -46,6 +47,7 @@ export const PAGES = {
     "Projects": Projects,
     "ProjectDetail": ProjectDetail,
     "Onboarding": Onboarding,
+    "AIMatchmaker": AIMatchmaker,
 }
 
 export const pagesConfig = {

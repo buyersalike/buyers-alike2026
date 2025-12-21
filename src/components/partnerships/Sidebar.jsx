@@ -31,7 +31,8 @@ import { canAccessAdmin, hasPermission } from "@/components/utils/permissions";
 const mainMenuItems = [
   { icon: Handshake, label: "Partnerships", href: "Partnerships" },
   { icon: Briefcase, label: "Opportunities", href: "Opportunities" },
-  { icon: Sparkles, label: "Recommendations", href: "Recommendations" },
+  { icon: Sparkles, label: "AI Matchmaker", href: "AIMatchmaker" },
+  { icon: TrendingUp, label: "Recommendations", href: "Recommendations" },
   { icon: Store, label: "Vendors", href: "Vendors" },
   { icon: LayoutGrid, label: "Ad Campaigns", href: "AdCampaigns" },
   { icon: FolderKanban, label: "Projects", href: "Projects" },
