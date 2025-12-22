@@ -166,40 +166,38 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
     },
   });
 
-  const UserCard = ({ user, actionType }) => (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.02, y: -4 }}
-      transition={{ duration: 0.2 }}
-      className="glass-card p-5 rounded-2xl group"
-      style={{ border: '1px solid rgba(255, 255, 255, 0.1)' }}
-    >
-      <div className="flex items-center gap-4 mb-4">
-        <Link to={createPageUrl('Profile') + `?email=${user.email}`} className="flex-shrink-0">
-          <div 
-            className="w-14 h-14 rounded-xl flex items-center justify-center overflow-hidden shadow-md"
-            style={{ background: user.avatar_url ? 'transparent' : 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)' }}
-          >
-            {user.avatar_url ? (
-              <img src={user.avatar_url} alt={user.full_name} className="w-full h-full object-cover" />
-            ) : (
-              <User className="w-7 h-7" style={{ color: '#E5EDFF' }} />
+  const UserCard = ({ user, actionType }) => {
+    const avatarUrl = user.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&size=200&background=D8A11F&color=fff`;
+    
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        whileHover={{ scale: 1.02, y: -4 }}
+        transition={{ duration: 0.2 }}
+        className="glass-card p-5 rounded-2xl group"
+        style={{ border: '1px solid rgba(0, 0, 0, 0.1)', background: '#fff' }}
+      >
+        <div className="flex items-center gap-4 mb-4">
+          <Link to={createPageUrl('Profile') + `?email=${user.email}`} className="flex-shrink-0">
+            <div 
+              className="w-14 h-14 rounded-xl overflow-hidden shadow-md"
+            >
+              <img src={avatarUrl} alt={user.full_name} className="w-full h-full object-cover" />
+            </div>
+          </Link>
+          <div className="flex-1 min-w-0">
+            <Link to={createPageUrl('Profile') + `?email=${user.email}`}>
+              <p className="font-bold text-lg truncate hover:underline" style={{ color: '#000' }}>{user.full_name}</p>
+            </Link>
+            {user.title && (
+              <p className="text-sm truncate" style={{ color: '#333' }}>{user.title}</p>
+            )}
+            {user.location && (
+              <p className="text-xs truncate mt-1" style={{ color: '#666' }}>{user.location}</p>
             )}
           </div>
-        </Link>
-        <div className="flex-1 min-w-0">
-          <Link to={createPageUrl('Profile') + `?email=${user.email}`}>
-            <p className="font-bold text-lg truncate hover:underline" style={{ color: '#E5EDFF' }}>{user.full_name}</p>
-          </Link>
-          {user.title && (
-            <p className="text-sm truncate" style={{ color: '#B6C4E0' }}>{user.title}</p>
-          )}
-          {user.location && (
-            <p className="text-xs truncate mt-1" style={{ color: '#7A8BA6' }}>{user.location}</p>
-          )}
         </div>
-      </div>
 
       {actionType === 'disconnect' && isOwnProfile && (
         <Button
@@ -269,8 +267,9 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
           Connect
         </Button>
       )}
-    </motion.div>
-  );
+      </motion.div>
+    );
+  };
 
   const EmptyState = ({ icon: Icon, message }) => (
     <motion.div 
