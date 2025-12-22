@@ -78,7 +78,7 @@ export default function InterestTab({ user, isOwnProfile }) {
       user_email: user.email,
       interest_name: newInterest.interest_name,
       description: newInterest.description,
-      status: "pending"
+      status: "approved"
     });
   };
 
