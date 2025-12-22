@@ -175,26 +175,35 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
         animate={{ opacity: 1, scale: 1 }}
         whileHover={{ scale: 1.02, y: -4 }}
         transition={{ duration: 0.2 }}
-        className="glass-card p-5 rounded-2xl group"
-        style={{ border: '1px solid rgba(0, 0, 0, 0.1)', background: '#fff' }}
+        className="p-6 rounded-2xl group"
+        style={{ border: '1px solid #ddd', background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
       >
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-start gap-4 mb-4">
           <Link to={createPageUrl('Profile') + `?email=${user.email}`} className="flex-shrink-0">
             <div 
-              className="w-14 h-14 rounded-xl overflow-hidden shadow-md"
+              className="w-20 h-20 rounded-full overflow-hidden shadow-md ring-2 ring-[#D8A11F]"
             >
               <img src={avatarUrl} alt={user.full_name} className="w-full h-full object-cover" />
             </div>
           </Link>
           <div className="flex-1 min-w-0">
             <Link to={createPageUrl('Profile') + `?email=${user.email}`}>
-              <p className="font-bold text-lg truncate hover:underline" style={{ color: '#000' }}>{user.full_name}</p>
+              <p className="font-bold text-xl truncate hover:underline mb-1" style={{ color: '#000' }}>{user.full_name}</p>
             </Link>
-            {user.title && (
-              <p className="text-sm truncate" style={{ color: '#333' }}>{user.title}</p>
+            {user.occupation && (
+              <p className="text-sm truncate mb-1" style={{ color: '#666' }}>
+                <span className="font-semibold">Occupation:</span> {user.occupation}
+              </p>
             )}
-            {user.location && (
-              <p className="text-xs truncate mt-1" style={{ color: '#666' }}>{user.location}</p>
+            {user.business_name && (
+              <p className="text-sm truncate mb-1" style={{ color: '#666' }}>
+                <span className="font-semibold">Business:</span> {user.business_name}
+              </p>
+            )}
+            {user.overview && (
+              <p className="text-xs mt-2 line-clamp-2" style={{ color: '#888' }}>
+                {user.overview}
+              </p>
             )}
           </div>
         </div>
@@ -213,29 +222,29 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
       )}
 
       {actionType === 'accept-reject' && isOwnProfile && (
-        <div className="flex gap-2">
+        <div className="flex gap-3 mt-4">
           <Button
             onClick={() => acceptRequestMutation.mutate({ 
               connectionId: user.connectionId, 
               senderEmail: user.email, 
               senderName: user.full_name 
             })}
-            className="flex-1 rounded-xl font-semibold"
+            className="flex-1 rounded-xl font-bold py-3 transition-all hover:scale-105"
             style={{ background: '#22C55E', color: '#fff' }}
             disabled={acceptRequestMutation.isPending}
           >
-            <Check className="w-4 h-4 mr-2" />
-            Accept
+            <Check className="w-5 h-5 mr-2" />
+            {acceptRequestMutation.isPending ? 'Accepting...' : 'Accept'}
           </Button>
           <Button
             onClick={() => rejectRequestMutation.mutate(user.connectionId)}
             variant="outline"
-            className="flex-1 rounded-xl font-semibold"
-            style={{ borderColor: '#EF4444', color: '#EF4444' }}
+            className="flex-1 rounded-xl font-bold py-3 transition-all hover:scale-105"
+            style={{ borderColor: '#EF4444', color: '#EF4444', borderWidth: '2px' }}
             disabled={rejectRequestMutation.isPending}
           >
-            <X className="w-4 h-4 mr-2" />
-            Reject
+            <X className="w-5 h-5 mr-2" />
+            {rejectRequestMutation.isPending ? 'Rejecting...' : 'Reject'}
           </Button>
         </div>
       )}
@@ -303,8 +312,8 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
           </TabsTrigger>
           <TabsTrigger 
             value="requests" 
-            className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#3B82F6] data-[state=active]:text-white" 
-            style={{ color: '#B6C4E0' }}
+            className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#D8A11F] data-[state=active]:text-white" 
+            style={{ color: '#000' }}
           >
             Connection Requests
             {incomingRequests.length > 0 && (
@@ -315,8 +324,8 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
           </TabsTrigger>
           <TabsTrigger 
             value="requested" 
-            className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#3B82F6] data-[state=active]:text-white" 
-            style={{ color: '#B6C4E0' }}
+            className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#D8A11F] data-[state=active]:text-white" 
+            style={{ color: '#000' }}
           >
             Requested Connections
             {outgoingRequests.length > 0 && (
@@ -327,8 +336,8 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
           </TabsTrigger>
           <TabsTrigger 
             value="find" 
-            className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#3B82F6] data-[state=active]:text-white" 
-            style={{ color: '#B6C4E0' }}
+            className="rounded-xl px-5 py-3 font-semibold text-sm transition-all data-[state=active]:shadow-lg data-[state=active]:bg-[#D8A11F] data-[state=active]:text-white" 
+            style={{ color: '#000' }}
           >
             Find Connections
           </TabsTrigger>
@@ -371,8 +380,8 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
             <EmptyState icon={UserPlus} message="No connection requests" />
           ) : (
             <>
-              <div className="mb-4 px-1">
-                <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>
+              <div className="mb-6 px-1">
+                <p className="text-lg font-bold" style={{ color: '#000' }}>
                   {requestingUsers.length} Pending {requestingUsers.length === 1 ? 'Request' : 'Requests'}
                 </p>
               </div>
