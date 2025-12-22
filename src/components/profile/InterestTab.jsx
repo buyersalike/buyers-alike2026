@@ -306,10 +306,10 @@ export default function InterestTab({ user, isOwnProfile }) {
           </TabsContent>
 
           <TabsContent value="available" className="mt-6">
-            <div className="glass-card p-8 rounded-2xl" style={{ background: 'rgba(102, 126, 234, 0.08)', border: '1px solid rgba(102, 126, 234, 0.2)' }}>
+            <div className="p-8 rounded-2xl" style={{ background: '#F9FAFB', border: '1px solid #E5E7EB' }}>
               <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-2" style={{ color: '#E5EDFF' }}>Suggested Interests</h3>
-                <p className="text-sm" style={{ color: '#B6C4E0' }}>Click on any interest to add it to your profile</p>
+                <h3 className="text-2xl font-bold mb-2" style={{ color: '#000' }}>Suggested Interests</h3>
+                <p className="text-sm" style={{ color: '#666' }}>Click on any interest to add it to your profile</p>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {["Business", "Technology", "Finance", "Real Estate", "Marketing", "Sales", "Operations", "Investments", "Partnerships", "Acquisitions", "Franchising", "Consulting", "Strategy", "Innovation", "Leadership", "Growth"].map((interest, index) => (
@@ -325,9 +325,9 @@ export default function InterestTab({ user, isOwnProfile }) {
                       variant="outline"
                       className="w-full rounded-xl py-6 font-semibold transition-all"
                       style={{ 
-                        borderColor: 'rgba(102, 126, 234, 0.3)', 
-                        color: '#E5EDFF',
-                        background: 'rgba(102, 126, 234, 0.05)'
+                        borderColor: '#D8A11F', 
+                        color: '#000',
+                        background: '#fff'
                       }}
                       onClick={() => {
                         setNewInterest({ interest_name: interest, description: "" });
