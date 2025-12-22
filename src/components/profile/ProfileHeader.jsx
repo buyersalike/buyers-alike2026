@@ -265,7 +265,7 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
             >
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div>
-                  <h1 className="text-4xl font-bold mb-3" style={{ color: '#E5EDFF', textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)' }}>
+                  <h1 className="text-4xl font-bold mb-3" style={{ color: '#D8A11F', textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)' }}>
                     {user.full_name || user.email.split('@')[0]}
                   </h1>
                   
