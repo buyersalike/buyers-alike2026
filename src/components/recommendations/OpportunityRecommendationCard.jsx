@@ -2,8 +2,11 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Heart, CheckCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 export default function OpportunityRecommendationCard({ opportunity, index }) {
+  const navigate = useNavigate();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -57,6 +60,7 @@ export default function OpportunityRecommendationCard({ opportunity, index }) {
 
         {/* Apply Button */}
         <Button 
+          onClick={() => navigate(createPageUrl('OpportunityDetail') + `?id=${opportunity.opportunityId || opportunity.id}`)}
           className="w-full rounded-lg px-4 py-3 text-sm font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2" 
           style={{ background: '#22C55E', color: '#fff' }}
         >
