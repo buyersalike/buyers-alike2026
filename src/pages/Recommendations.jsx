@@ -8,164 +8,7 @@ import OpportunityRecommendationCard from "@/components/recommendations/Opportun
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-const connectionsData = [
-  {
-    id: 1,
-    name: "Jeremiah Bandele",
-    role: "General User",
-    bio: "Coding is everything, maybe not really",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
-    matchPercentage: 23,
-  },
-  {
-    id: 2,
-    name: "ebubechukwu okeke",
-    role: "General User",
-    bio: "No bio available.",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
-    matchPercentage: 23,
-  },
-  {
-    id: 3,
-    name: "realo",
-    role: "General User",
-    bio: "No bio available.",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
-    matchPercentage: 15,
-  },
-  {
-    id: 4,
-    name: "Olajide Oni",
-    role: "General User",
-    bio: "No bio available.",
-    avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=200&h=200&fit=crop",
-    matchPercentage: 15,
-  },
-  {
-    id: 5,
-    name: "isras",
-    role: "General User",
-    bio: "No bio available.",
-    avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop",
-    matchPercentage: 15,
-  },
-  {
-    id: 6,
-    name: "oyetu",
-    role: "General User",
-    bio: "No bio available.",
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
-    matchPercentage: 8,
-  },
-  {
-    id: 7,
-    name: "aremi",
-    role: "General User",
-    bio: "No bio available.",
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
-    matchPercentage: 8,
-  },
-  {
-    id: 8,
-    name: "israe",
-    role: "General User",
-    bio: "No bio available.",
-    avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop",
-    matchPercentage: 8,
-  },
-  {
-    id: 9,
-    name: "Bayo Ade",
-    role: "General User",
-    bio: "Test description",
-    avatar: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=200&h=200&fit=crop",
-    matchPercentage: 8,
-  },
-];
 
-const opportunitiesData = [
-  {
-    id: 1,
-    title: "Yogen Früz Franchise Opportunity",
-    category: "General",
-    description: "Canadian frozen yogurt pioneer with healthy menu options. Flexible store formats and strong international presence.",
-    image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop",
-    createdBy: "Aderemi Adefioye",
-    matchPercentage: 36,
-  },
-  {
-    id: 2,
-    title: "Tim Hortons Franchise Opportunity",
-    category: "General",
-    description: "Canada's most iconic coffee and baked goods chain with over 5,000 locations worldwide. Offering comprehensive training, strong brand...",
-    image: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop",
-    createdBy: "Aderemi Adefioye",
-    matchPercentage: 36,
-  },
-  {
-    id: 3,
-    title: "Anytime Fitness Franchise Opportunity",
-    category: "General",
-    description: "24/7 fitness club with global membership access. Compact facility model with recurring memberships and strong brand.",
-    image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop",
-    createdBy: "Aderemi Adefioye",
-    matchPercentage: 36,
-  },
-  {
-    id: 4,
-    title: "Mary Brown's Chicken Franchise...",
-    category: "General",
-    description: "Canadian chicken franchise with signature recipes and strong Atlantic Canada presence. Expanding nationally with proven systems.",
-    image: "https://images.unsplash.com/photo-1562158147-f89bc2368a26?w=400&h=300&fit=crop",
-    createdBy: "Aderemi Adefioye",
-    matchPercentage: 36,
-  },
-  {
-    id: 5,
-    title: "Merry Maids Franchise Opportunity",
-    category: "General",
-    description: "Residential cleaning services with proven systems and strong brand. Home-based business with recurring revenue model.",
-    image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop",
-    createdBy: "Aderemi Adefioye",
-    matchPercentage: 36,
-  },
-  {
-    id: 6,
-    title: "McDonald's Canada Franchise...",
-    category: "General",
-    description: "World-renowned fast-food franchise with comprehensive training, marketing support, and global brand recognition. Join one of the most...",
-    image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400&h=300&fit=crop",
-    createdBy: "Aderemi Adefioye",
-    matchPercentage: 36,
-  },
-  {
-    id: 7,
-    title: "Country Style Franchise Opportunity",
-    category: "General",
-    description: "Canadian coffee and donut chain with strong brand recognition in Ontario. Proven business model.",
-    image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=300&fit=crop",
-    createdBy: "Aderemi Adefioye",
-    matchPercentage: 36,
-  },
-  {
-    id: 8,
-    title: "Orangetheory Fitness Franchise...",
-    category: "General",
-    description: "Heart-rate based interval training fitness concept with scientifically proven workouts and strong member retention.",
-    image: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=400&h=300&fit=crop",
-    createdBy: "Aderemi Adefioye",
-    matchPercentage: 36,
-  },
-  {
-    id: 9,
-    title: "Chem-Dry Carpet Cleaning Franchis...",
-    category: "General",
-    description: "World's leading carpet cleaning franchise with eco-friendly solutions and proven business systems.",
-    image: "https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=400&h=300&fit=crop",
-    createdBy: "Aderemi Adefioye",
-    matchPercentage: 36,
-  },
-];
 
 export default function Recommendations() {
   const [activeTab, setActiveTab] = useState("connections");
@@ -202,6 +45,58 @@ export default function Recommendations() {
       
       // If no matches, return all opportunities
       return matched.length > 0 ? matched : allOpportunities.slice(0, 9);
+    },
+    enabled: !!currentUser && userInterests !== undefined,
+  });
+
+  // Fetch users matched to current user's interests
+  const { data: matchedUsers = [], isLoading: loadingUsers } = useQuery({
+    queryKey: ['matchedUsers', currentUser?.email],
+    queryFn: async () => {
+      const allUsers = await base44.entities.User.list();
+      
+      // Exclude current user
+      const otherUsers = allUsers.filter(u => u.email !== currentUser.email);
+      
+      if (userInterests.length === 0) return otherUsers.slice(0, 20);
+      
+      // Fetch interests for all users
+      const allInterests = await base44.entities.Interest.filter({ status: 'approved' });
+      
+      // Group interests by user
+      const userInterestsMap = {};
+      allInterests.forEach(interest => {
+        if (!userInterestsMap[interest.user_email]) {
+          userInterestsMap[interest.user_email] = [];
+        }
+        userInterestsMap[interest.user_email].push(interest.interest_name.toLowerCase());
+      });
+      
+      const currentUserInterestNames = userInterests.map(i => i.interest_name.toLowerCase());
+      
+      // Calculate match scores for each user
+      const usersWithScores = otherUsers.map(user => {
+        const theirInterests = userInterestsMap[user.email] || [];
+        const matchCount = theirInterests.filter(interest => 
+          currentUserInterestNames.includes(interest)
+        ).length;
+        
+        const matchPercentage = currentUserInterestNames.length > 0
+          ? Math.round((matchCount / currentUserInterestNames.length) * 100)
+          : 0;
+        
+        return {
+          ...user,
+          matchPercentage,
+          matchCount
+        };
+      });
+      
+      // Sort by match score and return top matches
+      return usersWithScores
+        .filter(u => u.matchCount > 0)
+        .sort((a, b) => b.matchPercentage - a.matchPercentage)
+        .slice(0, 20);
     },
     enabled: !!currentUser && userInterests !== undefined,
   });
@@ -401,11 +296,41 @@ export default function Recommendations() {
                 <h2 className="text-xl font-bold mb-6" style={{ color: '#000' }}>
                   All Potential Connections
                 </h2>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                  {connectionsData.map((connection, index) => (
-                    <ConnectionCard key={connection.id} connection={connection} index={index} />
-                  ))}
-                </div>
+                {loadingUsers ? (
+                  <div className="text-center py-12">
+                    <Loader2 className="w-8 h-8 mx-auto animate-spin mb-4" style={{ color: '#D8A11F' }} />
+                    <p className="text-sm" style={{ color: '#000' }}>Finding matched connections...</p>
+                  </div>
+                ) : matchedUsers.length > 0 ? (
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {matchedUsers.map((user, index) => (
+                      <ConnectionCard 
+                        key={user.id} 
+                        connection={{
+                          id: user.id,
+                          name: user.full_name,
+                          email: user.email,
+                          role: user.role || "General User",
+                          bio: user.bio || "No bio available.",
+                          avatar: user.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&size=200&background=random`,
+                          matchPercentage: user.matchPercentage,
+                        }} 
+                        index={index}
+                        onConnect={connectMutation.mutate}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                    <Users className="w-12 h-12 mx-auto mb-4" style={{ color: '#D8A11F' }} />
+                    <p className="text-lg font-semibold mb-2" style={{ color: '#000' }}>
+                      No matched connections found
+                    </p>
+                    <p className="text-sm" style={{ color: '#666' }}>
+                      Add more interests to find users with similar goals
+                    </p>
+                  </div>
+                )}
               </div>
             </>
           ) : (
