@@ -16,7 +16,6 @@ import PartnershipManagement from './pages/PartnershipManagement';
 import OpportunityDetail from './pages/OpportunityDetail';
 import Connections from './pages/Connections';
 import Onboarding from './pages/Onboarding';
-import AIMatchmaker from './pages/AIMatchmaker';
 import __Layout from './Layout.jsx';
 
 
@@ -39,7 +38,6 @@ export const PAGES = {
     "OpportunityDetail": OpportunityDetail,
     "Connections": Connections,
     "Onboarding": Onboarding,
-    "AIMatchmaker": AIMatchmaker,
 }
 
 export const pagesConfig = {
