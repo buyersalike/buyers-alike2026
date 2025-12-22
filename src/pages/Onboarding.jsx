@@ -25,10 +25,6 @@ export default function Onboarding() {
     base44.auth.me()
       .then(user => {
         setCurrentUser(user);
-        // If user already has interests, skip onboarding
-        if (user.bio || user.title) {
-          navigate(createPageUrl('Partnerships'));
-        }
       })
       .catch(() => {
         base44.auth.redirectToLogin();
