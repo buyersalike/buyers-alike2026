@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Sidebar from "@/components/partnerships/Sidebar";
 import FilterBar from "@/components/partnerships/FilterBar";
 import PartnershipCard from "@/components/partnerships/PartnershipCard";
@@ -6,6 +6,9 @@ import AdvancedFilters from "@/components/partnerships/AdvancedFilters";
 import { Button } from "@/components/ui/button";
 import SEO from "@/components/seo/SEO";
 import { pageMetadata } from "@/components/seo/seoMetadata";
+import { base44 } from "@/api/base44Client";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 // Sample data with status
 const partnershipsData = [
@@ -274,6 +277,7 @@ const tabs = [
 
 export default function Partnerships() {
   const metadata = pageMetadata.Partnerships;
+  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState("grid");
   const [activeTab, setActiveTab] = useState("active");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -285,6 +289,17 @@ export default function Partnerships() {
     investmentMax: "",
     sortBy: "match_score"
   });
+
+  useEffect(() => {
+    base44.auth.me().then(user => {
+      // Redirect new users to onboarding
+      if (!user.bio || !user.title) {
+        navigate(createPageUrl('Onboarding'));
+      }
+    }).catch(() => {
+      base44.auth.redirectToLogin();
+    });
+  }, []);
 
   // Filter and sort partnerships
   const filteredPartnerships = useMemo(() => {
