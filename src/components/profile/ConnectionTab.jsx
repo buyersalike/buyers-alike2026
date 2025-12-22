@@ -17,15 +17,17 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
     base44.auth.me().then(user => setCurrentUser(user)).catch(() => setCurrentUser(null));
   }, []);
 
-  const { data: connections = [] } = useQuery({
+  const { data: connections = [], isLoading: loadingConnections } = useQuery({
     queryKey: ['connections'],
     queryFn: () => base44.entities.Connection.list(),
   });
 
-  const { data: users = [] } = useQuery({
+  const { data: users = [], isLoading: loadingUsers } = useQuery({
     queryKey: ['users'],
     queryFn: () => base44.entities.User.list(),
   });
+
+  const isLoading = loadingConnections || loadingUsers;
 
   const { data: aiRecommendations } = useQuery({
     queryKey: ['ai-recommendations', userEmail],
@@ -338,7 +340,11 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
         </TabsContent>
 
         <TabsContent value="requests" className="mt-6">
-          {requestingUsers.length === 0 ? (
+          {isLoading ? (
+            <div className="flex justify-center items-center py-16">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: '#3B82F6' }}></div>
+            </div>
+          ) : requestingUsers.length === 0 ? (
             <EmptyState icon={UserPlus} message="No connection requests" />
           ) : (
             <>
