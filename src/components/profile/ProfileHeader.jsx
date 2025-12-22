@@ -269,12 +269,6 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
                     {user.full_name || user.email.split('@')[0]}
                   </h1>
                   
-                  {user.bio && (
-                    <p className="text-lg mb-4 max-w-2xl" style={{ color: '#000' }}>
-                      {user.bio}
-                    </p>
-                  )}
-                  
                   <div className="flex items-center gap-4 flex-wrap">
                     {user.title && (
                       <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: 'rgba(102, 126, 234, 0.25)', border: '1px solid rgba(102, 126, 234, 0.5)' }}>
