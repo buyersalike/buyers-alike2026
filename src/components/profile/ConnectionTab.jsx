@@ -1,16 +1,25 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { User, Users, UserPlus, UserMinus, Check, X, Sparkles } from "lucide-react";
+import { User, Users, UserPlus, UserMinus, Check, X, Sparkles, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
+import SendRequestDialog from "@/components/connections/SendRequestDialog";
+import SuggestedConnections from "@/components/connections/SuggestedConnections";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export default function ConnectionTab({ userEmail, isOwnProfile }) {
   const [currentUser, setCurrentUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [viewingRequest, setViewingRequest] = useState(null);
   const queryClient = useQueryClient();
 
   React.useEffect(() => {
@@ -144,18 +153,20 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
   });
 
   const sendRequestMutation = useMutation({
-    mutationFn: async ({ targetEmail, targetName }) => {
+    mutationFn: async ({ targetEmail, targetName, message }) => {
       await base44.entities.Connection.create({
         user1_email: currentUser.email,
         user2_email: targetEmail,
-        status: 'pending'
+        status: 'pending',
+        message: message || undefined
       });
-      // Create notification for the recipient
       await base44.entities.Notification.create({
         recipient_email: targetEmail,
         type: 'connection_request',
         title: 'New Connection Request',
-        message: `${currentUser.full_name} sent you a connection request`,
+        message: message 
+          ? `${currentUser.full_name} sent you a connection request: "${message}"`
+          : `${currentUser.full_name} sent you a connection request`,
         sender_email: currentUser.email,
         sender_name: currentUser.full_name,
         link: createPageUrl('Profile') + `?email=${currentUser.email}`,
@@ -163,10 +174,11 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['connections'] });
+      setSelectedUser(null);
     },
   });
 
-  const UserCard = ({ user, actionType }) => {
+  const UserCard = ({ user, actionType, connectionMessage }) => {
     const avatarUrl = user.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&size=200&background=D8A11F&color=fff`;
     
     return (
@@ -200,7 +212,16 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
                 <span className="font-semibold">Business:</span> {user.business_name}
               </p>
             )}
-            {user.overview && (
+            {connectionMessage && actionType === 'accept-reject' && (
+              <div className="mt-2 p-3 rounded-lg" style={{ background: '#F0F9FF', border: '1px solid #BFDBFE' }}>
+                <p className="text-xs font-semibold mb-1" style={{ color: '#1E40AF' }}>
+                  <MessageSquare className="w-3 h-3 inline mr-1" />
+                  Message:
+                </p>
+                <p className="text-sm" style={{ color: '#1E3A8A' }}>{connectionMessage}</p>
+              </div>
+            )}
+            {user.overview && !connectionMessage && (
               <p className="text-xs mt-2 line-clamp-2" style={{ color: '#888' }}>
                 {user.overview}
               </p>
@@ -264,21 +285,17 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
 
       {actionType === 'connect' && isOwnProfile && currentUser && (
         <Button
-          onClick={() => sendRequestMutation.mutate({ 
-            targetEmail: user.email, 
-            targetName: user.full_name 
-          })}
+          onClick={() => setSelectedUser(user)}
           className="w-full rounded-xl font-semibold"
           style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#fff' }}
-          disabled={sendRequestMutation.isPending}
         >
           <UserPlus className="w-4 h-4 mr-2" />
           Connect
         </Button>
       )}
       </motion.div>
-    );
-  };
+      );
+      };
 
   const EmptyState = ({ icon: Icon, message }) => (
     <motion.div 
@@ -295,8 +312,11 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
   );
 
   return (
-    <div className="p-8 rounded-2xl" style={{ background: '#fff', border: '2px solid #000' }}>
-      <Tabs defaultValue="my-connections" className="w-full">
+    <>
+      {isOwnProfile && <SuggestedConnections userEmail={userEmail} />}
+      
+      <div className="p-8 rounded-2xl" style={{ background: '#fff', border: '2px solid #000' }}>
+        <Tabs defaultValue="my-connections" className="w-full">
         <TabsList className="mb-8 p-2 rounded-2xl" style={{ background: '#F2F1F5', border: '1px solid #000' }}>
           <TabsTrigger 
             value="my-connections" 
@@ -387,16 +407,23 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <AnimatePresence>
-                  {requestingUsers.map((user, index) => (
-                    <motion.div
-                      key={user.email}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                    >
-                      <UserCard user={user} actionType="accept-reject" />
-                    </motion.div>
-                  ))}
+                  {requestingUsers.map((user, index) => {
+                    const connection = incomingRequests.find(c => c.user1_email === user.email);
+                    return (
+                      <motion.div
+                        key={user.email}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        <UserCard 
+                          user={user} 
+                          actionType="accept-reject" 
+                          connectionMessage={connection?.message}
+                        />
+                      </motion.div>
+                    );
+                  })}
                 </AnimatePresence>
               </div>
             </>
@@ -476,6 +503,19 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
           )}
         </TabsContent>
       </Tabs>
-    </div>
-  );
-}
+      </div>
+
+      <SendRequestDialog
+      open={!!selectedUser}
+      onOpenChange={(open) => !open && setSelectedUser(null)}
+      user={selectedUser}
+      onSend={(message) => sendRequestMutation.mutate({ 
+        targetEmail: selectedUser.email, 
+        targetName: selectedUser.full_name,
+        message 
+      })}
+      isPending={sendRequestMutation.isPending}
+      />
+      </>
+      );
+      }

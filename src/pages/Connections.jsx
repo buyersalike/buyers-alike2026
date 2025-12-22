@@ -5,11 +5,18 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Search, Users, FolderOpen, StickyNote, X, Check, UserX } from "lucide-react";
+import { Search, Users, FolderOpen, StickyNote, X, Check, UserX, GitBranch } from "lucide-react";
 import ManageGroupsDialog from "@/components/connections/ManageGroupsDialog";
 import AssignGroupsDialog from "@/components/connections/AssignGroupsDialog";
 import ConnectionNotesDialog from "@/components/connections/ConnectionNotesDialog";
 import { motion } from "framer-motion";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 export default function Connections() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -71,6 +78,35 @@ export default function Connections() {
     if (confirm('Remove this connection?')) {
       removeConnectionMutation.mutate(connection.id);
     }
+  };
+
+  // Calculate mutual connections for a specific connection
+  const getMutualConnections = (connection) => {
+    const otherUserEmail = connection.user1_email === currentUser?.email 
+      ? connection.user2_email 
+      : connection.user1_email;
+
+    // Get my connections
+    const myConnections = connections
+      .filter(c => c.status === 'connected')
+      .map(c => c.user1_email === currentUser?.email ? c.user2_email : c.user1_email);
+
+    // Get their connections
+    const theirConnections = connections
+      .filter(c => 
+        (c.user1_email === otherUserEmail || c.user2_email === otherUserEmail) && 
+        c.status === 'connected'
+      )
+      .map(c => c.user1_email === otherUserEmail ? c.user2_email : c.user1_email);
+
+    // Find mutual connections
+    const mutualEmails = myConnections.filter(email => 
+      theirConnections.includes(email) && 
+      email !== currentUser?.email && 
+      email !== otherUserEmail
+    );
+
+    return allUsers.filter(u => mutualEmails.includes(u.email));
   };
 
   if (!currentUser) {
@@ -170,6 +206,7 @@ export default function Connections() {
                   : connection.user1_email;
                 const otherUser = allUsers.find(u => u.email === otherUserEmail);
                 const connectionGroups = groups.filter(g => connection.groups?.includes(g.id));
+                const mutualConnections = getMutualConnections(connection);
 
                 return (
                   <motion.div
@@ -204,21 +241,76 @@ export default function Connections() {
                       )}
                     </div>
 
-                    {/* Groups */}
-                    {connectionGroups.length > 0 && (
-                      <div className="flex flex-wrap gap-2 justify-center mb-4">
-                        {connectionGroups.map(group => (
-                          <div
-                            key={group.id}
-                            className="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1"
-                            style={{ background: group.color + '20', color: group.color }}
-                          >
-                            <div className="w-2 h-2 rounded-full" style={{ background: group.color }} />
-                            {group.name}
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    {/* Groups & Mutual Connections */}
+                    <div className="flex flex-col gap-2 mb-4">
+                      {connectionGroups.length > 0 && (
+                        <div className="flex flex-wrap gap-2 justify-center">
+                          {connectionGroups.map(group => (
+                            <div
+                              key={group.id}
+                              className="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1"
+                              style={{ background: group.color + '20', color: group.color }}
+                            >
+                              <div className="w-2 h-2 rounded-full" style={{ background: group.color }} />
+                              {group.name}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {mutualConnections.length > 0 && (
+                        <div className="text-center">
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-xs gap-1"
+                                style={{ color: '#3B82F6' }}
+                              >
+                                <GitBranch className="w-3 h-3" />
+                                {mutualConnections.length} mutual connection{mutualConnections.length !== 1 ? 's' : ''}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80 p-4" style={{ background: '#fff', border: '1px solid #ddd' }}>
+                              <div className="space-y-3">
+                                <h4 className="font-semibold text-sm mb-3" style={{ color: '#000' }}>
+                                  Mutual Connections
+                                </h4>
+                                {mutualConnections.slice(0, 5).map(mutual => {
+                                  const mutualAvatar = mutual.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(mutual.full_name)}&size=100&background=3B82F6&color=fff`;
+                                  return (
+                                    <Link 
+                                      key={mutual.email}
+                                      to={createPageUrl('Profile') + `?email=${mutual.email}`}
+                                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                                    >
+                                      <div className="w-10 h-10 rounded-full overflow-hidden shadow-sm ring-1 ring-gray-200">
+                                        <img src={mutualAvatar} alt={mutual.full_name} className="w-full h-full object-cover" />
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <p className="font-medium text-sm truncate" style={{ color: '#000' }}>
+                                          {mutual.full_name}
+                                        </p>
+                                        {mutual.occupation && (
+                                          <p className="text-xs truncate" style={{ color: '#666' }}>
+                                            {mutual.occupation}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </Link>
+                                  );
+                                })}
+                                {mutualConnections.length > 5 && (
+                                  <p className="text-xs text-center pt-2" style={{ color: '#888', borderTop: '1px solid #E5E7EB' }}>
+                                    +{mutualConnections.length - 5} more mutual connections
+                                  </p>
+                                )}
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      )}
+                    </div>
 
                     {/* Actions */}
                     <div className="flex gap-2">
