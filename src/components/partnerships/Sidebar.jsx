@@ -17,7 +17,6 @@ import {
   User,
   Shield,
   LogOut,
-  Calendar,
   Mail,
   FolderKanban
 } from "lucide-react";
@@ -39,7 +38,6 @@ const mainMenuItems = [
   { icon: Mail, label: "Messages", href: "Messages" },
   { icon: MessageSquare, label: "Forum", href: "Forum" },
   { icon: Newspaper, label: "News", href: "News" },
-  { icon: Calendar, label: "Events", href: "Events" },
 ];
 
 const menuItems = [

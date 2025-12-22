@@ -9,8 +9,6 @@ import PostDetail from './pages/PostDetail';
 import News from './pages/News';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
-import Events from './pages/Events';
-import EventDetail from './pages/EventDetail';
 import AdCampaigns from './pages/AdCampaigns';
 import Admin from './pages/Admin';
 import Sitemap from './pages/Sitemap';
@@ -36,8 +34,6 @@ export const PAGES = {
     "News": News,
     "Profile": Profile,
     "Settings": Settings,
-    "Events": Events,
-    "EventDetail": EventDetail,
     "AdCampaigns": AdCampaigns,
     "Admin": Admin,
     "Sitemap": Sitemap,
