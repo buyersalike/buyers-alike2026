@@ -177,13 +177,33 @@ export default function Recommendations() {
     base44.auth.me().then(user => setCurrentUser(user)).catch(() => setCurrentUser(null));
   }, []);
 
-  const { data: aiRecommendations, isLoading: loadingAI } = useQuery({
-    queryKey: ['aiRecommendations'],
-    queryFn: async () => {
-      const response = await base44.functions.invoke('getPersonalizedRecommendations', {});
-      return response.data;
-    },
+  // Fetch user interests
+  const { data: userInterests = [] } = useQuery({
+    queryKey: ['userInterests', currentUser?.email],
+    queryFn: () => base44.entities.Interest.filter({ user_email: currentUser.email, status: 'approved' }),
     enabled: !!currentUser,
+  });
+
+  // Fetch opportunities matched to user interests
+  const { data: matchedOpportunities = [], isLoading: loadingOpportunities } = useQuery({
+    queryKey: ['matchedOpportunities', currentUser?.email],
+    queryFn: async () => {
+      const allOpportunities = await base44.entities.Opportunity.filter({ status: 'verified' });
+      
+      // Filter opportunities that match user's interests
+      if (userInterests.length === 0) return allOpportunities.slice(0, 9);
+      
+      const interestNames = userInterests.map(i => i.interest_name.toLowerCase());
+      
+      const matched = allOpportunities.filter(opp => {
+        const oppInterests = (opp.related_interests || []).map(i => i.toLowerCase());
+        return oppInterests.some(interest => interestNames.includes(interest));
+      });
+      
+      // If no matches, return all opportunities
+      return matched.length > 0 ? matched : allOpportunities.slice(0, 9);
+    },
+    enabled: !!currentUser && userInterests !== undefined,
   });
 
   // Fetch AI-matched connections
@@ -237,24 +257,7 @@ export default function Recommendations() {
             </p>
           </div>
 
-          {/* AI Insights */}
-          {aiRecommendations?.success && aiRecommendations.recommendations.forumTopics?.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
-              {aiRecommendations.recommendations.forumTopics.slice(0, 2).map((topic, idx) => (
-                <div key={idx} className="glass-card p-4" style={{ background: '#192234' }}>
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: '#D8A11F' }}>
-                      <Sparkles className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1" style={{ color: '#fff' }}>{topic.topic}</h3>
-                      <p className="text-sm" style={{ color: '#fff' }}>{topic.reason}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+
 
           {/* Tabs */}
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-6 sm:mb-8">
