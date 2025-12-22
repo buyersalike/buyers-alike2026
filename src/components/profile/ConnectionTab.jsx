@@ -56,18 +56,42 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
   const connectedUsers = myConnections.map(c => {
     const connectedEmail = c.user1_email === userEmail ? c.user2_email : c.user1_email;
     const user = users.find(u => u.email === connectedEmail);
-    return user ? { ...user, connectionId: c.id } : null;
-  }).filter(u => u !== null);
+    if (!user) {
+      // Fallback: show connection with minimal data if user not found
+      return {
+        email: connectedEmail,
+        full_name: connectedEmail.split('@')[0],
+        connectionId: c.id
+      };
+    }
+    return { ...user, connectionId: c.id };
+  });
 
   const requestingUsers = incomingRequests.map(c => {
     const user = users.find(u => u.email === c.user1_email);
-    return user ? { ...user, connectionId: c.id } : null;
-  }).filter(u => u !== null);
+    if (!user) {
+      // Fallback: show connection with minimal data if user not found
+      return {
+        email: c.user1_email,
+        full_name: c.user1_email.split('@')[0],
+        connectionId: c.id
+      };
+    }
+    return { ...user, connectionId: c.id };
+  });
 
   const requestedUsers = outgoingRequests.map(c => {
     const user = users.find(u => u.email === c.user2_email);
-    return user ? { ...user, connectionId: c.id } : null;
-  }).filter(u => u !== null);
+    if (!user) {
+      // Fallback: show connection with minimal data if user not found
+      return {
+        email: c.user2_email,
+        full_name: c.user2_email.split('@')[0],
+        connectionId: c.id
+      };
+    }
+    return { ...user, connectionId: c.id };
+  });
 
   // Find potential connections (excluding already connected or pending)
   const allConnectionEmails = connections
