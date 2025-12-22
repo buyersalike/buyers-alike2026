@@ -406,35 +406,42 @@ export default function Recommendations() {
               </div>
             </>
           ) : (
-            <>
+            <div>
               {loadingAI ? (
                 <div className="text-center py-12">
-                  <p className="text-sm sm:text-base" style={{ color: '#000' }}>Loading AI recommendations...</p>
+                  <Loader2 className="w-8 h-8 mx-auto animate-spin mb-4" style={{ color: '#D8A11F' }} />
+                  <p className="text-sm sm:text-base" style={{ color: '#000' }}>Loading AI-recommended opportunities...</p>
                 </div>
-              ) : aiRecommendations?.success && aiRecommendations.recommendations.opportunities?.length > 0 && (
-                <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#7C3AED' }} />
-                    <h3 className="text-base sm:text-lg font-bold" style={{ color: '#000' }}>AI-Recommended for You</h3>
-                  </div>
-                  {aiRecommendations.recommendations.opportunities.map((opp, idx) => (
-                    <div key={idx} className="glass-card glass-card-hover p-4 sm:p-6">
-                      <h3 className="text-lg sm:text-xl font-bold mb-2" style={{ color: '#000' }}>{opp.title}</h3>
-                      <p className="mb-3 text-sm sm:text-base" style={{ color: '#000' }}>{opp.description}</p>
-                      <div className="flex items-start gap-2 p-3 rounded-lg" style={{ background: 'rgba(124, 58, 237, 0.1)' }}>
-                        <Sparkles className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#7C3AED' }} />
-                        <p className="text-xs sm:text-sm" style={{ color: '#000' }}>{opp.relevanceReason}</p>
-                      </div>
-                    </div>
+              ) : aiRecommendations?.success && aiRecommendations.recommendations.opportunities?.length > 0 ? (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  {aiRecommendations.recommendations.opportunities.map((opportunity, index) => (
+                    <OpportunityRecommendationCard 
+                      key={index} 
+                      opportunity={{
+                        id: index,
+                        title: opportunity.title,
+                        category: opportunity.category || "General",
+                        description: opportunity.description,
+                        image: "https://images.unsplash.com/photo-1560472355-536de3962603?w=400&h=300&fit=crop",
+                        createdBy: "AI Recommended",
+                        matchPercentage: opportunity.matchScore || 85,
+                      }} 
+                      index={index} 
+                    />
                   ))}
                 </div>
+              ) : (
+                <div className="text-center py-12 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                  <Sparkles className="w-12 h-12 mx-auto mb-4" style={{ color: '#D8A11F' }} />
+                  <p className="text-lg font-semibold mb-2" style={{ color: '#000' }}>
+                    No AI recommendations available yet
+                  </p>
+                  <p className="text-sm" style={{ color: '#666' }}>
+                    Complete your profile to get personalized opportunity recommendations
+                  </p>
+                </div>
               )}
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {opportunitiesData.map((opportunity, index) => (
-                  <OpportunityRecommendationCard key={opportunity.id} opportunity={opportunity} index={index} />
-                ))}
-              </div>
-            </>
+            </div>
           )}
         </div>
       </main>
