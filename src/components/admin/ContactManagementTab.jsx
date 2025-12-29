@@ -16,18 +16,21 @@ export default function ContactManagementTab() {
 
   const { data: submissions = [], isLoading } = useQuery({
     queryKey: ['contactSubmissions'],
-    queryFn: () => base44.asServiceRole.entities.ContactSubmission.list('-created_date'),
+    queryFn: async () => {
+      const result = await base44.entities.ContactSubmission.list('-created_date');
+      return result;
+    },
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: ({ id, status }) => base44.asServiceRole.entities.ContactSubmission.update(id, { status }),
+    mutationFn: ({ id, status }) => base44.entities.ContactSubmission.update(id, { status }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contactSubmissions'] });
     },
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.asServiceRole.entities.ContactSubmission.delete(id),
+    mutationFn: (id) => base44.entities.ContactSubmission.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contactSubmissions'] });
     },
