@@ -12,7 +12,7 @@ export default function SEO({
 }) {
   const siteTitle = "BuyersAlike";
   const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
-  const defaultDescription = "Join the #1 exclusive platform for professionals, founders, and dealmakers. Find verified partners for acquisitions, investments, JVs, and strategic partnerships.";
+  const defaultDescription = "Join BuyersAlike, a professional networking platform for connecting with like-minded business partners, collaborators, and growth-focused professionals.";
   const metaDescription = description || defaultDescription;
   const defaultKeywords = ["business networking", "partnerships", "investments", "acquisitions", "joint ventures", "entrepreneurs"];
   const allKeywords = [...new Set([...defaultKeywords, ...keywords])];
