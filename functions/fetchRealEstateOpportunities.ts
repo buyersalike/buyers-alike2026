@@ -14,9 +14,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'API key not configured' }, { status: 500 });
     }
 
-    // Use the exact endpoint format from the curl example
+    // Fetch property listings for major Canadian cities
     const response = await fetch(
-      'https://realty-in-ca1.p.rapidapi.com/properties/get-statistics?Longitude=-79.38&CultureId=1&Latitude=43.65',
+      'https://realty-in-ca1.p.rapidapi.com/properties/list-residential?LatitudeMax=49.3&LongitudeMax=-123.0&LatitudeMin=49.2&LongitudeMin=-123.2&CurrentPage=1&RecordsPerPage=20&SortOrder=A&SortBy=1&CultureId=1&ApplicationId=1&PropertySearchTypeId=1',
       {
         headers: {
           'x-rapidapi-host': 'realty-in-ca1.p.rapidapi.com',
