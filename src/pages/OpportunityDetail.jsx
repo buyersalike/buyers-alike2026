@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, MapPin, Calendar, Users, TrendingUp, Sparkles, Mail, Phone, Globe, DollarSign } from "lucide-react";
 import { motion } from "framer-motion";
 import { createPageUrl } from "@/utils";
+import { base44 } from "@/api/base44Client";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export default function OpportunityDetail() {
   const location = useLocation();
@@ -28,6 +31,31 @@ export default function OpportunityDetail() {
   ] : opportunity?.image ? [opportunity.image] : [];
 
   const [selectedImage, setSelectedImage] = useState(additionalImages[0]);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(user => setCurrentUser(user)).catch(() => setCurrentUser(null));
+  }, []);
+
+  const expressInterestMutation = useMutation({
+    mutationFn: async () => {
+      if (!currentUser) {
+        throw new Error("Please log in to express interest");
+      }
+      return await base44.entities.Interest.create({
+        user_email: currentUser.email,
+        interest_name: opportunity.title,
+        status: "pending",
+        description: `Interested in ${opportunity.type}: ${opportunity.title}`,
+      });
+    },
+    onSuccess: () => {
+      toast.success("Interest submitted successfully! We'll be in touch soon.");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to submit interest");
+    },
+  });
 
   if (!opportunity) {
     return (
@@ -234,10 +262,12 @@ export default function OpportunityDetail() {
 
                 {/* CTA Button */}
                 <Button
+                  onClick={() => expressInterestMutation.mutate()}
+                  disabled={expressInterestMutation.isPending}
                   className="w-full mt-6 rounded-xl py-6 text-lg font-bold"
                   style={{ background: '#D8A11F', color: '#fff' }}
                 >
-                  Express Interest
+                  {expressInterestMutation.isPending ? "Submitting..." : "Express Interest"}
                 </Button>
               </motion.div>
             </div>
