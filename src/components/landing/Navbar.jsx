@@ -76,7 +76,7 @@ export default function Navbar() {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/693d02907efe4593497f9496/a8044f835_Onna.png" 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/693d02907efe4593497f9496/10dad5458_ChatGPTImageJan11202606_15_53PM.png" 
                 alt="BuyersAlike"
                 className="h-10 w-auto"
               />
