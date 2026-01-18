@@ -51,7 +51,7 @@ export default function OpportunityDetail() {
         <div className="max-w-6xl mx-auto">
           {/* Back Button */}
           <Button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/Opportunities')}
             variant="outline"
             className="mb-6 rounded-xl"
             style={{ border: '1px solid #000', color: '#000' }}
