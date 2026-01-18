@@ -4,6 +4,7 @@ import Sidebar from "@/components/partnerships/Sidebar";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MapPin, Calendar, Users, TrendingUp, Sparkles, Mail, Phone, Globe, DollarSign } from "lucide-react";
 import { motion } from "framer-motion";
+import { createPageUrl } from "@/utils";
 
 export default function OpportunityDetail() {
   const location = useLocation();
@@ -51,7 +52,7 @@ export default function OpportunityDetail() {
         <div className="max-w-6xl mx-auto">
           {/* Back Button */}
           <Button
-            onClick={() => navigate('/Opportunities')}
+            onClick={() => navigate(createPageUrl('Opportunities'))}
             variant="outline"
             className="mb-6 rounded-xl"
             style={{ border: '1px solid #000', color: '#000' }}
