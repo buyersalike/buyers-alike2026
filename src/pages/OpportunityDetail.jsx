@@ -37,6 +37,28 @@ export default function OpportunityDetail() {
     base44.auth.me().then(user => setCurrentUser(user)).catch(() => setCurrentUser(null));
   }, []);
 
+  useEffect(() => {
+    const fetchAiMatch = async () => {
+      if (!currentUser || !opportunity?.id) return;
+      
+      setLoadingAiMatch(true);
+      try {
+        const response = await base44.functions.invoke('getOpportunityMatchReason', {
+          opportunityId: opportunity.id
+        });
+        if (response.data.success) {
+          setAiMatchData(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch AI match data:', error);
+      } finally {
+        setLoadingAiMatch(false);
+      }
+    };
+
+    fetchAiMatch();
+  }, [currentUser, opportunity?.id]);
+
   const expressInterestMutation = useMutation({
     mutationFn: async () => {
       if (!currentUser) {

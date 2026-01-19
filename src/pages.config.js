@@ -1,3 +1,4 @@
+import ActivityFeed from './pages/ActivityFeed';
 import AdCampaigns from './pages/AdCampaigns';
 import Admin from './pages/Admin';
 import Connections from './pages/Connections';
@@ -16,11 +17,11 @@ import Recommendations from './pages/Recommendations';
 import Settings from './pages/Settings';
 import Sitemap from './pages/Sitemap';
 import Vendors from './pages/Vendors';
-import ActivityFeed from './pages/ActivityFeed';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "ActivityFeed": ActivityFeed,
     "AdCampaigns": AdCampaigns,
     "Admin": Admin,
     "Connections": Connections,
@@ -39,7 +40,6 @@ export const PAGES = {
     "Settings": Settings,
     "Sitemap": Sitemap,
     "Vendors": Vendors,
-    "ActivityFeed": ActivityFeed,
 }
 
 export const pagesConfig = {

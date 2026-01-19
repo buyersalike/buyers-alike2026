@@ -27,7 +27,25 @@ export default function Recommendations() {
     enabled: !!currentUser,
   });
 
-  // Fetch opportunities matched to user interests
+  // Fetch AI-recommended opportunities
+  const { data: aiOpportunities, isLoading: loadingAiOpportunities, refetch: refetchAiOpportunities } = useQuery({
+    queryKey: ['aiOpportunities', currentUser?.email],
+    queryFn: async () => {
+      const response = await base44.functions.invoke('getAIRecommendedOpportunities', {});
+      return response.data;
+    },
+    enabled: false,
+  });
+
+  const [loadingAiOpportunities, setLoadingAiOpportunities] = useState(false);
+
+  const handleGenerateAiOpportunities = async () => {
+    setLoadingAiOpportunities(true);
+    await refetchAiOpportunities();
+    setLoadingAiOpportunities(false);
+  };
+
+  // Fetch opportunities matched to user interests (fallback)
   const { data: matchedOpportunities = [], isLoading: loadingOpportunities } = useQuery({
     queryKey: ['matchedOpportunities', currentUser?.email],
     queryFn: async () => {
@@ -356,12 +374,90 @@ export default function Recommendations() {
             </>
           ) : (
             <div>
-              {loadingOpportunities ? (
-                <div className="text-center py-12">
-                  <Loader2 className="w-8 h-8 mx-auto animate-spin mb-4" style={{ color: '#D8A11F' }} />
-                  <p className="text-sm sm:text-base" style={{ color: '#000' }}>Loading matched opportunities...</p>
+              {/* AI Recommended Opportunities */}
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #D8A11F 0%, #F59E0B 100%)' }}>
+                      <Sparkles className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold" style={{ color: '#000' }}>
+                        AI Recommended Opportunities
+                      </h2>
+                      <p className="text-sm" style={{ color: '#666' }}>
+                        Personalized based on your profile, interests, and partnership history
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleGenerateAiOpportunities}
+                    disabled={loadingAiOpportunities}
+                    className="gap-2 rounded-xl"
+                    style={{ background: '#D8A11F', color: '#fff' }}
+                  >
+                    {loadingAiOpportunities ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Analyzing...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4" />
+                        Get AI Recommendations
+                      </>
+                    )}
+                  </Button>
                 </div>
-              ) : matchedOpportunities.length > 0 ? (
+
+                {aiOpportunities?.success && aiOpportunities.recommendations?.length > 0 ? (
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    {aiOpportunities.recommendations.map((opp, idx) => (
+                      <OpportunityRecommendationCard
+                        key={opp.id}
+                        opportunity={{
+                          id: opp.id,
+                          title: opp.title,
+                          category: opp.category || "General",
+                          description: opp.description,
+                          image: opp.image_url || "https://images.unsplash.com/photo-1560472355-536de3962603?w=400&h=300&fit=crop",
+                          createdBy: "AI Recommended",
+                          matchPercentage: opp.match_score,
+                          matchReason: opp.match_reason,
+                          opportunityId: opp.id,
+                        }}
+                        index={idx}
+                      />
+                    ))}
+                  </div>
+                ) : aiOpportunities && !aiOpportunities.success ? (
+                  <div className="text-center py-8 rounded-xl" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+                    <p style={{ color: '#EF4444' }}>{aiOpportunities.error || 'Failed to generate AI recommendations'}</p>
+                  </div>
+                ) : !aiOpportunities ? (
+                  <div className="text-center py-12 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                    <Sparkles className="w-12 h-12 mx-auto mb-4" style={{ color: '#D8A11F' }} />
+                    <p className="text-lg font-semibold mb-2" style={{ color: '#000' }}>
+                      Discover Your Perfect Opportunities
+                    </p>
+                    <p className="text-sm" style={{ color: '#666' }}>
+                      Click "Get AI Recommendations" to find opportunities tailored to your profile
+                    </p>
+                  </div>
+                ) : null}
+              </div>
+
+              {/* All Opportunities */}
+              <div>
+                <h2 className="text-xl font-bold mb-6" style={{ color: '#000' }}>
+                  All Matched Opportunities
+                </h2>
+                {loadingOpportunities ? (
+                  <div className="text-center py-12">
+                    <Loader2 className="w-8 h-8 mx-auto animate-spin mb-4" style={{ color: '#D8A11F' }} />
+                    <p className="text-sm sm:text-base" style={{ color: '#000' }}>Loading matched opportunities...</p>
+                  </div>
+                ) : matchedOpportunities.length > 0 ? (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {matchedOpportunities.map((opportunity, index) => {
                     // Calculate match percentage based on interest overlap
