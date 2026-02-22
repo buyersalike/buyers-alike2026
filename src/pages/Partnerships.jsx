@@ -1,409 +1,152 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Sidebar from "@/components/partnerships/Sidebar";
 import FilterBar from "@/components/partnerships/FilterBar";
 import PartnershipCard from "@/components/partnerships/PartnershipCard";
 import AdvancedFilters from "@/components/partnerships/AdvancedFilters";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { base44 } from "@/api/base44Client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import SEO from "@/components/seo/SEO";
 import { pageMetadata } from "@/components/seo/seoMetadata";
+import { Users, FileText, TrendingUp, Clock } from "lucide-react";
 
-// Sample data with status
-const partnershipsData = [
-  {
-    id: 1,
-    title: "Mary Brown's Chicken Franchise Opportunity",
-    description: "Established chicken franchise with strong brand recognition looking for strategic investment partner to scale operations.",
-    matchScore: 95,
-    location: "San Francisco, CA",
-    industry: "Food & Beverage",
-    dealSize: "$2M - $5M",
-    companySize: "50-100",
-    postedDate: "2 days ago",
-    status: "active",
-  },
-  {
-    id: 13,
-    title: "Anytime Fitness Franchise Opportunity",
-    description: "24/7 fitness franchise opportunity with proven business model and support systems.",
-    matchScore: 94,
-    location: "Los Angeles, CA",
-    industry: "Fitness",
-    dealSize: "$1M - $3M",
-    companySize: "25-50",
-    postedDate: "1 week ago",
-    status: "active",
-  },
-  {
-    id: 14,
-    title: "Coffee Shop Chain Partnership",
-    description: "Growing coffee shop chain seeking partners for expansion into new markets.",
-    matchScore: 88,
-    location: "Seattle, WA",
-    industry: "Food & Beverage",
-    dealSize: "$500K - $1M",
-    companySize: "10-25",
-    postedDate: "3 days ago",
-    status: "intent",
-  },
-  {
-    id: 15,
-    title: "Tech Startup Co-Founder Wanted",
-    description: "AI-powered SaaS platform seeking technical co-founder for product development.",
-    matchScore: 92,
-    location: "Austin, TX",
-    industry: "SaaS",
-    dealSize: "$100K - $500K",
-    companySize: "5-10",
-    postedDate: "5 days ago",
-    status: "intent",
-  },
-  {
-    id: 16,
-    title: "Real Estate Development Group",
-    description: "Join established real estate development group for commercial projects.",
-    matchScore: 87,
-    location: "Miami, FL",
-    industry: "Real Estate",
-    dealSize: "$5M - $10M",
-    companySize: "50-100",
-    postedDate: "1 week ago",
-    status: "available",
-  },
-  {
-    id: 17,
-    title: "E-commerce Platform Partnership",
-    description: "Established e-commerce platform seeking partners for product line expansion.",
-    matchScore: 90,
-    location: "New York, NY",
-    industry: "E-commerce",
-    dealSize: "$1M - $3M",
-    companySize: "25-50",
-    postedDate: "4 days ago",
-    status: "available",
-  },
-  {
-    id: 18,
-    title: "Restaurant Chain Acquisition",
-    description: "Successfully completed acquisition and integration of multi-location restaurant chain.",
-    matchScore: 95,
-    location: "Chicago, IL",
-    industry: "Food & Beverage",
-    dealSize: "$3M - $5M",
-    companySize: "100-250",
-    postedDate: "3 months ago",
-    status: "completed",
-  },
-  {
-    id: 19,
-    title: "Manufacturing Joint Venture",
-    description: "Completed joint venture for automotive parts manufacturing facility.",
-    matchScore: 91,
-    location: "Detroit, MI",
-    industry: "Manufacturing",
-    dealSize: "$10M+",
-    companySize: "250-500",
-    postedDate: "6 months ago",
-    status: "completed",
-  },
-  {
-    id: 20,
-    title: "Software Development Partnership",
-    description: "Partnership declined due to misaligned technology stack and business goals.",
-    matchScore: 78,
-    location: "San Francisco, CA",
-    industry: "Tech",
-    dealSize: "$500K - $1M",
-    companySize: "10-25",
-    postedDate: "2 weeks ago",
-    status: "declined",
-  },
-  {
-    id: 21,
-    title: "Retail Store Expansion",
-    description: "Withdrawn from retail expansion partnership due to market conditions.",
-    matchScore: 82,
-    location: "Boston, MA",
-    industry: "Retail",
-    dealSize: "$2M - $4M",
-    companySize: "50-100",
-    postedDate: "1 month ago",
-    status: "withdrawn",
-  },
-  {
-    id: 2,
-    title: "E-commerce Brand Acquisition Opportunity",
-    description: "Profitable DTC e-commerce brand in health & wellness space. $3M annual revenue with strong margins and loyal customer base.",
-    matchScore: 92,
-    location: "Austin, TX",
-    industry: "E-commerce",
-    dealSize: "$1M - $3M",
-    companySize: "10-25",
-    postedDate: "3 days ago",
-    status: "active",
-  },
-  {
-    id: 2,
-    title: "E-commerce Brand Acquisition Opportunity",
-    description: "Profitable DTC e-commerce brand in health & wellness space. $3M annual revenue with strong margins and loyal customer base.",
-    matchScore: 92,
-    location: "Austin, TX",
-    industry: "E-commerce",
-    dealSize: "$1M - $3M",
-    companySize: "10-25",
-    postedDate: "3 days ago",
-  },
-  {
-    id: 3,
-    title: "Tech Startup Joint Venture",
-    description: "AI-powered analytics platform seeking JV partner for expansion into European markets. Proven product-market fit.",
-    matchScore: 88,
-    location: "New York, NY",
-    industry: "AI/Tech",
-    dealSize: "$500K - $1M",
-    companySize: "25-50",
-    postedDate: "5 days ago",
-  },
-  {
-    id: 4,
-    title: "Manufacturing Business Merger",
-    description: "Family-owned manufacturing business with 30-year history. Looking to merge with complementary company for market expansion.",
-    matchScore: 85,
-    location: "Chicago, IL",
-    industry: "Manufacturing",
-    dealSize: "$5M - $10M",
-    companySize: "100-250",
-    postedDate: "1 week ago",
-  },
-  {
-    id: 5,
-    title: "FinTech Strategic Partnership",
-    description: "Digital payment platform with 100K+ users seeking strategic partner for product development and market expansion.",
-    matchScore: 90,
-    location: "Boston, MA",
-    industry: "FinTech",
-    dealSize: "$3M - $7M",
-    companySize: "50-100",
-    postedDate: "4 days ago",
-  },
-  {
-    id: 6,
-    title: "Real Estate Investment Opportunity",
-    description: "Commercial real estate portfolio with stable cash flow. Seeking investment partner for portfolio expansion.",
-    matchScore: 87,
-    location: "Miami, FL",
-    industry: "Real Estate",
-    dealSize: "$10M+",
-    companySize: "25-50",
-    postedDate: "6 days ago",
-  },
-  {
-    id: 7,
-    title: "Healthcare Tech Acquisition",
-    description: "Telemedicine platform with regulatory approvals. Strong growth trajectory and established provider network.",
-    matchScore: 93,
-    location: "Seattle, WA",
-    industry: "HealthTech",
-    dealSize: "$2M - $4M",
-    companySize: "25-50",
-    postedDate: "3 days ago",
-  },
-  {
-    id: 8,
-    title: "Marketing Agency Partnership",
-    description: "Full-service digital marketing agency with Fortune 500 clients. Looking for merger to expand service offerings.",
-    matchScore: 84,
-    location: "Los Angeles, CA",
-    industry: "Marketing",
-    dealSize: "$1M - $2M",
-    companySize: "50-75",
-    postedDate: "1 week ago",
-  },
-  {
-    id: 9,
-    title: "Clean Energy Joint Venture",
-    description: "Solar energy solutions provider seeking JV partner for residential market expansion. Proven technology and installations.",
-    matchScore: 89,
-    location: "Denver, CO",
-    industry: "Clean Energy",
-    dealSize: "$3M - $5M",
-    companySize: "50-100",
-    postedDate: "5 days ago",
-  },
-  {
-    id: 10,
-    title: "EdTech Platform Investment",
-    description: "Online learning platform with 50K+ active students. Looking for investment to scale content and technology.",
-    matchScore: 91,
-    location: "San Diego, CA",
-    industry: "EdTech",
-    dealSize: "$1M - $3M",
-    companySize: "25-50",
-    postedDate: "4 days ago",
-  },
-  {
-    id: 11,
-    title: "Food & Beverage Brand Acquisition",
-    description: "Organic beverage brand with national distribution. Strong brand recognition and growth potential.",
-    matchScore: 86,
-    location: "Portland, OR",
-    industry: "F&B",
-    dealSize: "$2M - $4M",
-    companySize: "10-25",
-    postedDate: "1 week ago",
-  },
-  {
-    id: 12,
-    title: "Logistics Company Partnership",
-    description: "Last-mile delivery service with proprietary technology. Seeking strategic partner for geographic expansion.",
-    matchScore: 88,
-    location: "Dallas, TX",
-    industry: "Logistics",
-    dealSize: "$3M - $6M",
-    companySize: "100-250",
-    postedDate: "6 days ago",
-  },
-];
+const ACTIVE_STATUSES = ["accepted_into_group", "group_forming", "approvals_complete", "documents_gathering", "partnership_active"];
+const INTENT_STATUSES = ["intent_created", "pending_group_join"];
+const COMPLETED_STATUSES = ["partnership_completed"];
+const DECLINED_STATUSES = ["rejected", "withdrawn"];
 
 const tabs = [
-  { id: "active", label: "My Active Partnerships", count: 0 },
-  { id: "intent", label: "My Partnership Intents", count: 0 },
-  { id: "available", label: "Available Groups to Join", count: 0 },
-  { id: "completed", label: "Completed Partnerships", count: 0 },
-  { id: "declined", label: "Declined/Withdrawn/Canceled", count: 0 }
+  { id: "active", label: "My Active Partnerships" },
+  { id: "intent", label: "My Partnership Intents" },
+  { id: "available", label: "Available Groups to Join" },
+  { id: "completed", label: "Completed Partnerships" },
+  { id: "declined", label: "Declined/Withdrawn/Canceled" }
 ];
 
 export default function Partnerships() {
   const metadata = pageMetadata.Partnerships;
+  const [currentUser, setCurrentUser] = useState(null);
   const [viewMode, setViewMode] = useState("grid");
   const [activeTab, setActiveTab] = useState("active");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState(null);
   const [filters, setFilters] = useState({
-    industry: "all",
-    companySize: "all",
-    location: "",
-    investmentMin: "",
-    investmentMax: "",
-    sortBy: "match_score"
+    industry: "all", companySize: "all", location: "", investmentMin: "", investmentMax: "", sortBy: "match_score"
+  });
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    base44.auth.me().then(user => setCurrentUser(user)).catch(() => setCurrentUser(null));
+  }, []);
+
+  const { data: intents = [], isLoading: loadingIntents } = useQuery({
+    queryKey: ['partnership-intents', currentUser?.email],
+    queryFn: () => base44.entities.PartnershipIntent.filter({ user_email: currentUser.email }),
+    enabled: !!currentUser,
   });
 
-  // Filter and sort partnerships
-  const filteredPartnerships = useMemo(() => {
-    let results = partnershipsData.filter(p => {
-      // Tab filter
-      if (activeTab === "declined") {
-        if (p.status !== "declined" && p.status !== "withdrawn" && p.status !== "canceled") {
-          return false;
-        }
-      } else if (p.status !== activeTab) {
-        return false;
-      }
-
-      // Industry filter
-      if (filters.industry !== "all" && p.industry !== filters.industry) {
-        return false;
-      }
-
-      // Company size filter
-      if (filters.companySize !== "all") {
-        const size = p.companySize;
-        const filterSize = filters.companySize;
-        if (filterSize === "1-10" && !size.includes("5") && !size.includes("10")) return false;
-        if (filterSize === "11-25" && !size.includes("25") && !size.includes("10")) return false;
-        if (filterSize === "26-50" && !size.includes("50") && !size.includes("25")) return false;
-        if (filterSize === "51-100" && !size.includes("100") && !size.includes("50")) return false;
-        if (filterSize === "101-250" && !size.includes("250") && !size.includes("100")) return false;
-        if (filterSize === "251+" && !size.includes("250") && !size.includes("500")) return false;
-      }
-
-      // Location filter
-      if (filters.location && !p.location.toLowerCase().includes(filters.location.toLowerCase())) {
-        return false;
-      }
-
-      // Investment range filter
-      if (filters.investmentMin || filters.investmentMax) {
-        const dealStr = p.dealSize;
-        const dealMatch = dealStr.match(/\$?(\d+(?:\.\d+)?)(K|M)?\s*-?\s*\$?(\d+(?:\.\d+)?)(K|M)?/i);
-        if (dealMatch) {
-          const parseAmount = (num, unit) => {
-            const multiplier = unit === 'K' ? 1000 : unit === 'M' ? 1000000 : 1;
-            return parseFloat(num) * multiplier;
-          };
-          const dealMin = parseAmount(dealMatch[1], dealMatch[2]);
-          const dealMax = dealMatch[3] ? parseAmount(dealMatch[3], dealMatch[4]) : dealMin;
-          
-          if (filters.investmentMin && dealMax < parseFloat(filters.investmentMin)) return false;
-          if (filters.investmentMax && dealMin > parseFloat(filters.investmentMax)) return false;
-        }
-      }
-
-      return true;
-    });
-
-    // Sort
-    if (filters.sortBy === "match_score") {
-      results.sort((a, b) => b.matchScore - a.matchScore);
-    } else if (filters.sortBy === "recent") {
-      const dateValue = (p) => {
-        if (p.postedDate.includes("days")) return parseInt(p.postedDate);
-        if (p.postedDate.includes("week")) return parseInt(p.postedDate) * 7;
-        if (p.postedDate.includes("month")) return parseInt(p.postedDate) * 30;
-        return 999;
-      };
-      results.sort((a, b) => dateValue(a) - dateValue(b));
-    } else if (filters.sortBy === "deal_size_high" || filters.sortBy === "deal_size_low") {
-      const getValue = (p) => {
-        const match = p.dealSize.match(/\$?(\d+(?:\.\d+)?)(K|M)?/);
-        if (!match) return 0;
-        const multiplier = match[2] === 'K' ? 1000 : match[2] === 'M' ? 1000000 : 1;
-        return parseFloat(match[1]) * multiplier;
-      };
-      results.sort((a, b) => filters.sortBy === "deal_size_high" ? getValue(b) - getValue(a) : getValue(a) - getValue(b));
-    } else if (filters.sortBy === "company_size") {
-      const getValue = (p) => {
-        const match = p.companySize.match(/(\d+)/);
-        return match ? parseInt(match[1]) : 0;
-      };
-      results.sort((a, b) => getValue(b) - getValue(a));
-    }
-
-    return results;
-  }, [partnershipsData, activeTab, filters]);
-
-  // Update tab counts
-  const tabsWithCounts = tabs.map(tab => {
-    let count;
-    if (tab.id === "declined") {
-      count = partnershipsData.filter(p => 
-        p.status === "declined" || p.status === "withdrawn" || p.status === "canceled"
-      ).length;
-    } else {
-      count = partnershipsData.filter(p => p.status === tab.id).length;
-    }
-    return { ...tab, count };
+  const { data: allGroups = [] } = useQuery({
+    queryKey: ['partnership-groups'],
+    queryFn: () => base44.entities.PartnershipGroup.list(),
   });
+
+  const leavePartnershipMutation = useMutation({
+    mutationFn: async ({ intentId, groupId }) => {
+      const group = allGroups.find(g => g.id === groupId);
+      if (group) {
+        const updatedMembers = (group.members || []).map(m =>
+          m.email === currentUser.email ? { ...m, status: 'left' } : m
+        );
+        await base44.entities.PartnershipGroup.update(groupId, { members: updatedMembers });
+      }
+      const intent = intents.find(i => i.id === intentId);
+      const statusHistory = [...(intent?.status_history || []), {
+        status: 'withdrawn',
+        timestamp: new Date().toISOString(),
+        notes: 'User voluntarily withdrew from partnership'
+      }];
+      await base44.entities.PartnershipIntent.update(intentId, {
+        current_status: 'withdrawn',
+        status_history: statusHistory
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['partnership-intents'] });
+      queryClient.invalidateQueries({ queryKey: ['partnership-groups'] });
+      toast.success("Successfully left the partnership");
+      setSelectedGroup(null);
+    },
+    onError: (error) => toast.error(error.message || "Failed to leave partnership"),
+  });
+
+  const joinGroupMutation = useMutation({
+    mutationFn: async (group) => {
+      const pendingMembers = [...(group.pending_members || []), {
+        email: currentUser.email,
+        name: currentUser.full_name,
+        requested_date: new Date().toISOString()
+      }];
+      await base44.entities.PartnershipGroup.update(group.id, { pending_members: pendingMembers });
+      await base44.entities.PartnershipIntent.create({
+        user_email: currentUser.email,
+        user_name: currentUser.full_name,
+        opportunity_id: group.opportunity_id,
+        opportunity_name: group.opportunity_name,
+        opportunity_description: group.opportunity_description,
+        current_status: 'pending_group_join',
+        group_id: group.id,
+        group_name: group.name,
+        status_history: [{ status: 'pending_group_join', timestamp: new Date().toISOString(), notes: 'Requested to join existing group' }]
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['partnership-intents'] });
+      queryClient.invalidateQueries({ queryKey: ['partnership-groups'] });
+      toast.success("Join request submitted!");
+    },
+    onError: (error) => toast.error(error.message || "Failed to join group"),
+  });
+
+  // Compute data per tab
+  const getGroupForIntent = (intent) => allGroups.find(g => g.id === intent.group_id);
+
+  const categorized = useMemo(() => {
+    const myGroupIds = new Set(intents.map(i => i.group_id).filter(Boolean));
+    const myPendingGroupIds = new Set(
+      allGroups
+        .filter(g => (g.pending_members || []).some(m => m.email === currentUser?.email))
+        .map(g => g.id)
+    );
+
+    return {
+      active: intents.filter(i => ACTIVE_STATUSES.includes(i.current_status)),
+      intent: intents.filter(i => INTENT_STATUSES.includes(i.current_status)),
+      available: allGroups.filter(g =>
+        !myGroupIds.has(g.id) &&
+        !myPendingGroupIds.has(g.id) &&
+        g.status === 'forming' &&
+        (g.members || []).filter(m => m.status === 'active').length < (g.max_members || 20)
+      ),
+      completed: intents.filter(i => COMPLETED_STATUSES.includes(i.current_status)),
+      declined: intents.filter(i => DECLINED_STATUSES.includes(i.current_status)),
+    };
+  }, [intents, allGroups, currentUser]);
+
+  const tabsWithCounts = tabs.map(t => ({ ...t, count: categorized[t.id]?.length || 0 }));
+  const currentItems = categorized[activeTab] || [];
 
   return (
     <div className="flex">
-      <SEO 
-        title={metadata.title}
-        description={metadata.description}
-        keywords={metadata.keywords}
-      />
-      {/* Sidebar */}
+      <SEO title={metadata.title} description={metadata.description} keywords={metadata.keywords} />
       <Sidebar />
 
-      {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto" style={{ minHeight: 'calc(100vh - 73px)', background: '#F2F1F5' }}>
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
           <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#000' }}>
-              My Partnerships
-            </h1>
-            <p style={{ color: '#000' }}>
-              Manage your active, pending, and completed partnerships
-            </p>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#000' }}>My Partnerships</h1>
+            <p style={{ color: '#000' }}>Manage your active, pending, and completed partnerships</p>
           </div>
 
           {/* Tabs */}
@@ -413,15 +156,10 @@ export default function Partnerships() {
                 <Button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-300 whitespace-nowrap ${
-                    activeTab === tab.id
-                      ? 'shadow-lg'
-                      : ''
-                  }`}
-                  style={
-                    activeTab === tab.id
-                      ? { background: '#D8A11F', color: '#fff' }
-                      : { background: 'rgba(255, 255, 255, 0.8)', color: '#000', border: '1px solid rgba(0, 0, 0, 0.1)' }
+                  className="px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-300 whitespace-nowrap"
+                  style={activeTab === tab.id
+                    ? { background: '#D8A11F', color: '#fff' }
+                    : { background: 'rgba(255, 255, 255, 0.8)', color: '#000', border: '1px solid rgba(0, 0, 0, 0.1)' }
                   }
                 >
                   {tab.label}
@@ -441,41 +179,181 @@ export default function Partnerships() {
 
           {/* Advanced Filters */}
           <div className="mb-6">
-            <AdvancedFilters
-              filters={filters}
-              setFilters={setFilters}
-              isOpen={filtersOpen}
-              setIsOpen={setFiltersOpen}
-            />
+            <AdvancedFilters filters={filters} setFilters={setFilters} isOpen={filtersOpen} setIsOpen={setFiltersOpen} />
           </div>
 
-          {/* Filter Bar */}
-          <FilterBar 
-            viewMode={viewMode} 
-            setViewMode={setViewMode} 
-            totalResults={filteredPartnerships.length}
-          />
+          <FilterBar viewMode={viewMode} setViewMode={setViewMode} totalResults={currentItems.length} />
 
-          {/* Partnerships Grid */}
-          <div className={viewMode === "grid" ? "grid md:grid-cols-2 gap-6" : "space-y-6"}>
-            {filteredPartnerships.length > 0 ? (
-              filteredPartnerships.map((partnership, index) => (
-                <PartnershipCard 
-                  key={partnership.id} 
-                  partnership={partnership} 
-                  index={index}
-                />
-              ))
-            ) : (
-              <div className="col-span-2 text-center py-16">
-                <p className="text-lg" style={{ color: '#000' }}>
-                  No partnerships found in this category
-                </p>
-              </div>
-            )}
-          </div>
+          {/* Content */}
+          {loadingIntents ? (
+            <div className="text-center py-16">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: '#D8A11F' }} />
+              <p style={{ color: '#666' }}>Loading partnerships...</p>
+            </div>
+          ) : currentItems.length === 0 ? (
+            <div className="text-center py-16 rounded-2xl" style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.1)' }}>
+              <Users className="w-12 h-12 mx-auto mb-4" style={{ color: '#ccc' }} />
+              <p className="text-lg font-semibold" style={{ color: '#000' }}>No partnerships in this category</p>
+              <p className="text-sm mt-1" style={{ color: '#666' }}>
+                {activeTab === 'active' ? 'Express interest in opportunities to start forming partnerships' :
+                 activeTab === 'available' ? 'No open groups to join at this time' :
+                 'Nothing to show here yet'}
+              </p>
+            </div>
+          ) : (
+            <div className={viewMode === "grid" ? "grid md:grid-cols-2 gap-6" : "space-y-6"}>
+              {activeTab === 'available' ? (
+                currentItems.map((group, index) => (
+                  <PartnershipCard
+                    key={group.id}
+                    group={group}
+                    mode="available"
+                    index={index}
+                    onJoin={() => {
+                      if (confirm(`Request to join "${group.name}"?`)) {
+                        joinGroupMutation.mutate(group);
+                      }
+                    }}
+                    onViewDetails={() => setSelectedGroup({ group, intent: null })}
+                  />
+                ))
+              ) : (
+                currentItems.map((intent, index) => {
+                  const group = getGroupForIntent(intent);
+                  return (
+                    <PartnershipCard
+                      key={intent.id}
+                      intent={intent}
+                      group={group}
+                      mode={activeTab}
+                      index={index}
+                      onViewDetails={() => setSelectedGroup({ group, intent })}
+                      onLeave={() => {
+                        if (confirm('Are you sure you want to leave this partnership?')) {
+                          leavePartnershipMutation.mutate({ intentId: intent.id, groupId: intent.group_id });
+                        }
+                      }}
+                      leavePending={leavePartnershipMutation.isPending}
+                    />
+                  );
+                })
+              )}
+            </div>
+          )}
         </div>
       </main>
+
+      {/* Group Details Dialog */}
+      <Dialog open={!!selectedGroup} onOpenChange={() => setSelectedGroup(null)}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto" style={{ background: '#192234', borderColor: 'rgba(255,255,255,0.2)' }}>
+          {selectedGroup && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold" style={{ color: '#E5EDFF' }}>
+                  {selectedGroup.group?.name}
+                </DialogTitle>
+                <DialogDescription style={{ color: '#B6C4E0' }}>
+                  {selectedGroup.group?.opportunity_name}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 mt-4">
+                {/* Status */}
+                <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                  <p className="text-sm font-semibold mb-1" style={{ color: '#B6C4E0' }}>Group Status</p>
+                  <p className="font-bold capitalize" style={{ color: '#D8A11F' }}>{selectedGroup.group?.status?.replace(/_/g, ' ')}</p>
+                </div>
+                {/* Members */}
+                <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="font-semibold" style={{ color: '#E5EDFF' }}>Active Members</p>
+                    <span className="text-sm" style={{ color: '#B6C4E0' }}>
+                      {selectedGroup.group?.members?.filter(m => m.status === 'active').length || 0}/{selectedGroup.group?.max_members || 20}
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    {selectedGroup.group?.members?.filter(m => m.status === 'active').map((member, idx) => (
+                      <div key={idx} className="flex items-center gap-3 p-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm" style={{ background: '#D8A11F', color: '#fff' }}>
+                          {(member.name || member.email).charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>{member.name || member.email}</p>
+                          <p className="text-xs" style={{ color: '#7A8BA6' }}>Joined {new Date(member.joined_date).toLocaleDateString()}</p>
+                        </div>
+                        {member.email === selectedGroup.group?.creator_email && (
+                          <span className="ml-auto text-xs px-2 py-0.5 rounded" style={{ background: '#D8A11F', color: '#fff' }}>Creator</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Pending members */}
+                {selectedGroup.group?.pending_members?.length > 0 && (
+                  <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                    <p className="font-semibold mb-3" style={{ color: '#E5EDFF' }}>Pending Members ({selectedGroup.group.pending_members.length})</p>
+                    <div className="space-y-2">
+                      {selectedGroup.group.pending_members.map((member, idx) => (
+                        <div key={idx} className="flex items-center gap-3 p-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                          <Clock className="w-4 h-4" style={{ color: '#F59E0B' }} />
+                          <p className="text-sm" style={{ color: '#B6C4E0' }}>{member.name || member.email}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {/* Documents */}
+                {selectedGroup.group?.documents?.length > 0 && (
+                  <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                    <p className="font-semibold mb-3" style={{ color: '#E5EDFF' }}>Documents</p>
+                    <div className="space-y-2">
+                      {selectedGroup.group.documents.map((doc, idx) => (
+                        <a key={idx} href={doc.url} target="_blank" rel="noopener noreferrer"
+                          className="flex items-center gap-3 p-2 rounded-lg hover:opacity-80"
+                          style={{ background: 'rgba(255,255,255,0.05)' }}
+                        >
+                          <FileText className="w-4 h-4" style={{ color: '#3B82F6' }} />
+                          <div>
+                            <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>{doc.name}</p>
+                            <p className="text-xs" style={{ color: '#7A8BA6' }}>By {doc.uploaded_by}</p>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {/* Notes */}
+                {selectedGroup.group?.notes && (
+                  <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                    <p className="font-semibold mb-2" style={{ color: '#E5EDFF' }}>Notes</p>
+                    <p className="text-sm" style={{ color: '#B6C4E0' }}>{selectedGroup.group.notes}</p>
+                  </div>
+                )}
+                {/* Status History */}
+                {selectedGroup.intent?.status_history?.length > 0 && (
+                  <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                    <p className="font-semibold mb-3" style={{ color: '#E5EDFF' }}>Status History</p>
+                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                      {[...selectedGroup.intent.status_history].reverse().map((entry, idx) => (
+                        <div key={idx} className="p-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-semibold capitalize" style={{ color: '#D8A11F' }}>
+                              {entry.status?.replace(/_/g, ' ')}
+                            </span>
+                            <span className="text-xs" style={{ color: '#7A8BA6' }}>
+                              {new Date(entry.timestamp).toLocaleDateString()}
+                            </span>
+                          </div>
+                          {entry.notes && <p className="text-xs" style={{ color: '#B6C4E0' }}>{entry.notes}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
