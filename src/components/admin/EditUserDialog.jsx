@@ -119,56 +119,32 @@ export default function EditUserDialog({ user, open, onOpenChange }) {
             <p className="text-lg font-semibold" style={{ color: '#E5EDFF' }}>{user.email}</p>
           </div>
 
-          {/* Role Selection */}
+          {/* Role Display */}
           <div>
             <Label className="text-sm font-semibold mb-3 block" style={{ color: '#B6C4E0' }}>
               Platform Role
             </Label>
-            <Select value={formData.role} onValueChange={(value) => setFormData({...formData, role: value})}>
-              <SelectTrigger className="glass-input h-14" style={{ color: '#E5EDFF' }}>
-                <div className="flex items-center gap-3">
-                  <div 
-                    className="w-10 h-10 rounded-lg flex items-center justify-center"
-                    style={{ 
-                      background: roleConfig?.bgColor || 'rgba(16, 185, 129, 0.15)',
-                      border: `1px solid ${roleConfig?.borderColor || 'rgba(16, 185, 129, 0.3)'}`
-                    }}
-                  >
-                    <RoleIcon className="w-5 h-5" style={{ color: roleConfig?.color || '#10B981' }} />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-left">{rolePermissions?.label || formData.role}</p>
-                    <p className="text-xs text-left" style={{ color: '#7A8BA6' }}>{rolePermissions?.description}</p>
-                  </div>
-                </div>
-              </SelectTrigger>
-              <SelectContent style={{ background: '#0F2744', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                {Object.keys(ROLE_CONFIG).map((role) => {
-                  const config = ROLE_CONFIG[role];
-                  const permissions = PERMISSIONS[role];
-                  const Icon = config.icon;
-                  return (
-                    <SelectItem key={role} value={role} style={{ color: '#E5EDFF' }}>
-                      <div className="flex items-center gap-3 py-2">
-                        <div 
-                          className="w-8 h-8 rounded-lg flex items-center justify-center"
-                          style={{ 
-                            background: config.bgColor,
-                            border: `1px solid ${config.borderColor}`
-                          }}
-                        >
-                          <Icon className="w-4 h-4" style={{ color: config.color }} />
-                        </div>
-                        <div>
-                          <p className="font-semibold" style={{ color: '#E5EDFF' }}>{permissions.label}</p>
-                          <p className="text-xs" style={{ color: '#7A8BA6' }}>{permissions.description}</p>
-                        </div>
-                      </div>
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
+            <div 
+              className="flex items-center gap-3 p-4 rounded-xl"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+            >
+              <div 
+                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{ 
+                  background: roleConfig?.bgColor || 'rgba(16, 185, 129, 0.15)',
+                  border: `1px solid ${roleConfig?.borderColor || 'rgba(16, 185, 129, 0.3)'}`
+                }}
+              >
+                <RoleIcon className="w-5 h-5" style={{ color: roleConfig?.color || '#10B981' }} />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold" style={{ color: '#E5EDFF' }}>{rolePermissions?.label || formData.role}</p>
+                <p className="text-xs" style={{ color: '#7A8BA6' }}>{rolePermissions?.description}</p>
+              </div>
+              <span className="text-xs px-2 py-1 rounded" style={{ background: 'rgba(245,158,11,0.15)', color: '#F59E0B' }}>
+                Change via Dashboard → Users
+              </span>
+            </div>
           </div>
 
           {/* Personal Info */}
