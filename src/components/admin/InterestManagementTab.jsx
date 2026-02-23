@@ -133,16 +133,10 @@ export default function InterestManagementTab() {
           <Pencil className="w-4 h-4" />
           Create New Interest
         </Button>
-      </motion.div>
+      </div>
 
       {/* Search */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.1 }}
-        className="p-4 rounded-2xl"
-        style={{ background: '#fff', border: '1px solid #ddd' }}
-      >
+      <div className="p-4 rounded-2xl" style={{ background: '#fff', border: '1px solid #ddd' }}>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#666' }} />
           <Input
