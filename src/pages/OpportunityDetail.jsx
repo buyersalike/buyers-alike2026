@@ -369,6 +369,33 @@ export default function OpportunityDetail() {
                   </div>
                 </div>
 
+                {/* Franchise Financial Details */}
+                {opportunity.type === 'Franchise' && (opportunity.liquidCapital || opportunity.franchiseFee || opportunity.totalInvestment) && (
+                  <div className="p-6 rounded-2xl mb-6" style={{ background: '#fff', border: '1px solid #000' }}>
+                    <h3 className="font-bold mb-4" style={{ color: '#000' }}>Capital Requirements</h3>
+                    <div className="space-y-3">
+                      {opportunity.liquidCapital && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium" style={{ color: '#666' }}>Liquid Capital</span>
+                          <span className="text-sm font-bold" style={{ color: '#22C55E' }}>{opportunity.liquidCapital}</span>
+                        </div>
+                      )}
+                      {opportunity.franchiseFee && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium" style={{ color: '#666' }}>Franchise Fee</span>
+                          <span className="text-sm font-bold" style={{ color: '#22C55E' }}>{opportunity.franchiseFee}</span>
+                        </div>
+                      )}
+                      {opportunity.totalInvestment && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium" style={{ color: '#666' }}>Total Investment</span>
+                          <span className="text-sm font-bold" style={{ color: '#22C55E' }}>{opportunity.totalInvestment}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Contact Information */}
                 <div className="p-6 rounded-2xl" style={{ background: '#fff', border: '1px solid #000' }}>
                   <h3 className="font-bold mb-4" style={{ color: '#000' }}>Contact Information</h3>
