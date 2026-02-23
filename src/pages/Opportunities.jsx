@@ -252,15 +252,15 @@ export default function Opportunities() {
     return Array.from(interests).sort();
   }, [dbOpportunities]);
 
-  // Filter opportunities
+  // Filter + sort opportunities
   const filteredOpportunities = useMemo(() => {
-    return allOpportunities.filter((opp) => {
+    let filtered = allOpportunities.filter((opp) => {
       // Search filter
       const matchesSearch = !searchQuery || 
         opp.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         opp.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-      // Category filter
+      // Category/type filter
       const matchesCategory = category === "all" || 
         opp.category === category || 
         opp.type === category;
@@ -279,9 +279,32 @@ export default function Opportunities() {
         opp.related_interests.some(interest => selectedInterests.includes(interest))
       );
 
-      return matchesSearch && matchesCategory && matchesInvestment && matchesInterests;
+      // Franchise sub-category filter
+      const matchesFranchiseCategory = franchiseCategory === "all" || 
+        category !== "Franchise" ||
+        opp.franchiseCategory === franchiseCategory ||
+        opp.title?.toLowerCase().includes(franchiseCategory.split(' ')[0].toLowerCase()) ||
+        opp.description?.toLowerCase().includes(franchiseCategory.toLowerCase());
+
+      // Real estate property type filter
+      const matchesPropertyType = propertyType === "all" ||
+        category !== "Real Estate" ||
+        opp.title?.toLowerCase().includes(propertyType.toLowerCase()) ||
+        opp.description?.toLowerCase().includes(propertyType.toLowerCase());
+
+      return matchesSearch && matchesCategory && matchesInvestment && matchesInterests && matchesFranchiseCategory && matchesPropertyType;
     });
-  }, [allOpportunities, searchQuery, category, investmentRange, selectedInterests]);
+
+    // Sort
+    if (sortBy === "lowest_investment") {
+      filtered = [...filtered].sort((a, b) => (a.investmentMin || 0) - (b.investmentMin || 0));
+    } else if (sortBy === "highest_investment") {
+      filtered = [...filtered].sort((a, b) => (b.investmentMax || 0) - (a.investmentMax || 0));
+    }
+    // "most_recent" keeps default order (already sorted by API/source)
+
+    return filtered;
+  }, [allOpportunities, searchQuery, category, investmentRange, selectedInterests, sortBy, franchiseCategory, propertyType]);
 
   // Pagination
   const totalPages = Math.ceil(filteredOpportunities.length / itemsPerPage);
