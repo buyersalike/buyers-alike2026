@@ -15,18 +15,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'userId is required' }, { status: 400 });
     }
 
-    // Separate role from other profile fields
-    const { role, ...profileData } = data;
-
-    // Update profile fields (non-role data)
-    if (Object.keys(profileData).length > 0) {
-      await base44.asServiceRole.entities.User.update(userId, profileData);
-    }
-
-    // Update role separately using the users admin API
-    if (role) {
-      await base44.asServiceRole.users.updateUserRole(userId, role);
-    }
+    await base44.asServiceRole.entities.User.update(userId, data);
 
     return Response.json({ success: true });
   } catch (error) {
