@@ -8,6 +8,8 @@ import { useCompare } from "./CompareContext";
 
 export default function OpportunityCard({ opportunity, index }) {
   const navigate = useNavigate();
+  const { addToCompare, removeFromCompare, isInCompare } = useCompare();
+  const inCompare = isInCompare(opportunity.id);
   const typeColors = {
     "Real Estate": "bg-blue-500/20 text-blue-400 border-blue-500/30",
     "Franchise": "bg-purple-500/20 text-purple-400 border-purple-500/30",
