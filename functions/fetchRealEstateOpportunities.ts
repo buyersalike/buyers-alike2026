@@ -212,11 +212,27 @@ Deno.serve(async (req) => {
     // Remove internal sort field
     opportunities.forEach(o => delete o._sortDate);
 
+    // Save to cache (delete old cache records first, then create new one)
+    const fetchedAt = new Date().toISOString();
+    const expiresAt = new Date(Date.now() + CACHE_TTL_DAYS * 24 * 60 * 60 * 1000).toISOString();
+
+    const oldCaches = await base44.asServiceRole.entities.RealEstateCache.list('-created_date', 10);
+    for (const old of oldCaches) {
+      await base44.asServiceRole.entities.RealEstateCache.delete(old.id);
+    }
+    await base44.asServiceRole.entities.RealEstateCache.create({
+      opportunities,
+      fetched_at: fetchedAt,
+      expires_at: expiresAt,
+    });
+
     return Response.json({ 
       success: true, 
       opportunities,
       count: opportunities.length,
-      fetchedAt: new Date().toISOString(),
+      fetchedAt,
+      cachedUntil: expiresAt,
+      source: 'live',
     });
 
   } catch (error) {
