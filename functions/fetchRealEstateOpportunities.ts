@@ -111,67 +111,77 @@ Deno.serve(async (req) => {
 
     const data = JSON.parse(text);
 
-    // Return raw first result for debugging
-    if (data?.Results?.[0]) {
-      return Response.json({ debug: true, firstResult: data.Results[0] });
-    }
-
     // Transform the data into opportunity format
+    // NOTE: The API structure has fields at root level AND under Property sub-object
     const opportunities = [];
     
     if (data && data.Results) {
-      data.Results.slice(0, 20).forEach((property) => {
+      data.Results.slice(0, 20).forEach((p) => {
         const partners = Math.floor(Math.random() * 20) + 1;
 
-        // Price: API returns a number, format it cleanly
-        const rawPrice = property.Property?.Price;
+        // Price: can be under p.Property.Price as a string like "$38,800" or a number
+        const rawPrice = p.Property?.Price ?? p.Price;
         let investment = 'Contact for pricing';
         if (rawPrice) {
-          const numPrice = typeof rawPrice === 'string'
-            ? parseInt(rawPrice.replace(/[^0-9]/g, ''), 10)
-            : rawPrice;
+          const numPrice = parseInt(String(rawPrice).replace(/[^0-9]/g, ''), 10);
           if (!isNaN(numPrice) && numPrice > 0) {
             investment = `$${numPrice.toLocaleString()}`;
           }
         }
 
-        // Address: AddressText already has the full address, no need to append city/province again
-        const addressText = property.Property?.Address?.AddressText || 'N/A';
-        const buildingType = property.Property?.Building?.StoriesTotal
-          ? `${property.Property.Building.StoriesTotal}-storey`
-          : (property.Property?.Building?.Type || 'Property');
-        const bathrooms = property.Property?.Building?.BathroomTotal || '1';
-        const bedrooms = property.Property?.Building?.BedroomTotal;
-        const bedroomStr = bedrooms ? `${bedrooms} bed, ` : '';
-        const description = `${bedroomStr}${bathrooms} bath, ${buildingType} at ${addressText}`;
+        // Building info: can be at root p.Building or p.Property.Building
+        const building = p.Building || p.Property?.Building || {};
+        const bathrooms = building.BathroomTotal && building.BathroomTotal !== '0' ? building.BathroomTotal : null;
+        const bedrooms = building.BedroomTotal;
+        const bedroomStr = bedrooms && bedrooms !== '0' ? `${bedrooms} bed, ` : '';
+        const bathroomStr = bathrooms ? `${bathrooms} bath` : '';
+        const bedbathStr = (bedroomStr || bathroomStr) ? `${bedroomStr}${bathroomStr}, ` : '';
 
-        // Date: InsertedDateUTC is a Unix timestamp in seconds or milliseconds
-        let postedDate = 'N/A';
-        const rawDate = property.InsertedDateUTC;
-        if (rawDate) {
-          const ts = typeof rawDate === 'number' && rawDate < 1e12
-            ? rawDate * 1000  // convert seconds → ms
-            : rawDate;
-          const d = new Date(ts);
-          if (!isNaN(d.getTime())) {
+        // Address: at p.Property.Address
+        const address = p.Property?.Address || {};
+        const addressText = address.AddressText || 'Address not available';
+        // City is often embedded in AddressText after the | separator
+        let city = address.City || '';
+        if (!city && addressText.includes('|')) {
+          const parts = addressText.split('|');
+          // e.g. "123 Main St|Vancouver, British Columbia V6Z"
+          city = parts[1]?.split(',')[0]?.trim() || 'Canada';
+        }
+        if (!city) city = 'Canada';
+
+        const description = `${bedbathStr}${p.Property?.Type || 'Property'} at ${addressText}`;
+
+        // Date: try multiple possible field locations
+        let postedDate = null;
+        const dateRaw = p.InsertedDateUTC || p.Property?.InsertedDateUTC || p.ListingDate || p.Property?.ListingDate;
+        if (dateRaw) {
+          let d;
+          if (typeof dateRaw === 'string') {
+            d = new Date(dateRaw);
+          } else if (typeof dateRaw === 'number') {
+            // Could be seconds or ms
+            d = new Date(dateRaw < 1e12 ? dateRaw * 1000 : dateRaw);
+          }
+          if (d && !isNaN(d.getTime())) {
             postedDate = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
           }
         }
 
-        // City for title
-        const city = property.Property?.Address?.City || 'Canada';
-        const mlsNum = property.MlsNumber || 'N/A';
-        const propType = property.Property?.Type || 'Property';
+        // Photo
+        const photo = p.Property?.Photo?.[0]?.HighResPath
+          || p.Property?.Photo?.[0]?.MedResPath
+          || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop';
 
         opportunities.push({
-          id: String(property.Id || `re-${Date.now()}-${Math.random()}`),
+          id: String(p.Id || `re-${Date.now()}-${Math.random()}`),
           type: 'Real Estate',
-          title: `${propType} - ${city} (MLS# ${mlsNum})`,
+          title: `${p.Property?.Type || 'Property'} - ${city} (MLS# ${p.MlsNumber || 'N/A'})`,
           investment,
           description,
-          image: property.Property?.Photo?.[0]?.HighResPath || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop',
-          postedDate,
+          image: photo,
+          postedDate: postedDate || 'Not available',
           partners: `1/${partners} partners`,
+          rawDateDebug: dateRaw, // temporary debug field
         });
       });
     }
