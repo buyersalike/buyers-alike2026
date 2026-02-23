@@ -147,16 +147,10 @@ export default function InterestManagementTab() {
             style={{ background: '#fff', border: '1px solid #ddd', color: '#000' }}
           />
         </div>
-      </motion.div>
+      </div>
 
       {/* Interests Table */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="rounded-2xl overflow-hidden"
-        style={{ background: 'transparent', border: '2px solid #000', borderRadius: '16px' }}
-      >
+      <div className="rounded-2xl overflow-hidden" style={{ background: 'transparent', border: '2px solid #000' }}>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead style={{ background: '#F2F1F5', borderBottom: '1px solid #000' }}>
