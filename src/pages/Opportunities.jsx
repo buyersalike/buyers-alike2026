@@ -380,6 +380,12 @@ export default function Opportunities() {
           availableInterests={availableInterests}
           clearFilters={clearFilters}
           activeFiltersCount={activeFiltersCount}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          franchiseCategory={franchiseCategory}
+          setFranchiseCategory={setFranchiseCategory}
+          propertyType={propertyType}
+          setPropertyType={setPropertyType}
         />
 
         {/* AI-Matched Opportunities */}
