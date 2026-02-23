@@ -235,6 +235,12 @@ export default function Opportunities() {
     return { min: values[0] || 0, max: values[1] || values[0] || 0 };
   }
 
+  function parsePostedDate(dateStr) {
+    if (!dateStr) return 0;
+    const d = new Date(dateStr);
+    return isNaN(d.getTime()) ? 0 : d.getTime();
+  }
+
   function formatInvestment(min, max) {
     if (!min && !max) return 'Contact for details';
     if (min === max) return `$${min.toLocaleString()}`;
