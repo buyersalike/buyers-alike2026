@@ -373,24 +373,49 @@ export default function OpportunityDetail() {
                 <div className="p-6 rounded-2xl" style={{ background: '#fff', border: '1px solid #000' }}>
                   <h3 className="font-bold mb-4" style={{ color: '#000' }}>Contact Information</h3>
                   <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <Mail className="w-5 h-5" style={{ color: '#D8A11F' }} />
-                      <a href="mailto:contact@opportunity.com" className="text-sm hover:underline" style={{ color: '#D8A11F' }}>
-                        contact@opportunity.com
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Phone className="w-5 h-5" style={{ color: '#D8A11F' }} />
-                      <a href="tel:+1234567890" className="text-sm hover:underline" style={{ color: '#D8A11F' }}>
-                        +1 (234) 567-8900
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Globe className="w-5 h-5" style={{ color: '#D8A11F' }} />
-                      <a href="#" className="text-sm hover:underline" style={{ color: '#D8A11F' }}>
-                        www.opportunity.com
-                      </a>
-                    </div>
+                    {opportunity.contact?.name && (
+                      <div className="flex items-center gap-3">
+                        <Users className="w-5 h-5" style={{ color: '#D8A11F' }} />
+                        <span className="text-sm" style={{ color: '#000' }}>{opportunity.contact.name}{opportunity.contact.office ? ` — ${opportunity.contact.office}` : ''}</span>
+                      </div>
+                    )}
+                    {opportunity.contact?.email ? (
+                      <div className="flex items-center gap-3">
+                        <Mail className="w-5 h-5" style={{ color: '#D8A11F' }} />
+                        <a href={`mailto:${opportunity.contact.email}`} className="text-sm hover:underline" style={{ color: '#D8A11F' }}>
+                          {opportunity.contact.email}
+                        </a>
+                      </div>
+                    ) : opportunity.contact && (
+                      <div className="flex items-center gap-3">
+                        <Mail className="w-5 h-5" style={{ color: '#D8A11F' }} />
+                        <span className="text-sm" style={{ color: '#666' }}>Email not available</span>
+                      </div>
+                    )}
+                    {opportunity.contact?.phone ? (
+                      <div className="flex items-center gap-3">
+                        <Phone className="w-5 h-5" style={{ color: '#D8A11F' }} />
+                        <a href={`tel:${opportunity.contact.phone}`} className="text-sm hover:underline" style={{ color: '#D8A11F' }}>
+                          {opportunity.contact.phone}
+                        </a>
+                      </div>
+                    ) : opportunity.contact && (
+                      <div className="flex items-center gap-3">
+                        <Phone className="w-5 h-5" style={{ color: '#D8A11F' }} />
+                        <span className="text-sm" style={{ color: '#666' }}>Phone not available</span>
+                      </div>
+                    )}
+                    {opportunity.contact?.website && (
+                      <div className="flex items-center gap-3">
+                        <Globe className="w-5 h-5" style={{ color: '#D8A11F' }} />
+                        <a href={opportunity.contact.website} target="_blank" rel="noopener noreferrer" className="text-sm hover:underline" style={{ color: '#D8A11F' }}>
+                          {opportunity.contact.website.replace(/^https?:\/\//, '')}
+                        </a>
+                      </div>
+                    )}
+                    {!opportunity.contact && (
+                      <p className="text-sm" style={{ color: '#666' }}>Contact information not available</p>
+                    )}
                   </div>
                 </div>
 
