@@ -14,9 +14,9 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'API key not configured' }, { status: 500 });
     }
 
-    // Fetch property listings for major Canadian cities
+    // Fetch property listings for major Canadian cities, sorted by newest (SortBy=6 = insertion date desc)
     const response = await fetch(
-      'https://realty-in-ca1.p.rapidapi.com/properties/list-residential?LatitudeMax=49.3&LongitudeMax=-123.0&LatitudeMin=49.2&LongitudeMin=-123.2&CurrentPage=1&RecordsPerPage=20&SortOrder=A&SortBy=1&CultureId=1&ApplicationId=1&PropertySearchTypeId=1',
+      'https://realty-in-ca1.p.rapidapi.com/properties/list-residential?LatitudeMax=49.3&LongitudeMax=-123.0&LatitudeMin=49.2&LongitudeMin=-123.2&CurrentPage=1&RecordsPerPage=20&SortOrder=D&SortBy=6&CultureId=1&ApplicationId=1&PropertySearchTypeId=1',
       {
         headers: {
           'x-rapidapi-host': 'realty-in-ca1.p.rapidapi.com',
