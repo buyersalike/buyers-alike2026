@@ -244,8 +244,7 @@ export default function EditUserDialog({ user, open, onOpenChange }) {
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="glass-input"
-              style={{ color: '#E5EDFF' }}
+              style={{ color: '#000', background: '#fff', borderColor: '#ccc' }}
             >
               Cancel
             </Button>
