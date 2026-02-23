@@ -2,43 +2,30 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 const CACHE_TTL_DAYS = 1;
 
-// Category image mapping for franchise types
-const categoryImages = {
-  'food': 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&h=600&fit=crop',
-  'fitness': 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=600&fit=crop',
-  'cleaning': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop',
-  'education': 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=600&fit=crop',
-  'health': 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=600&fit=crop',
-  'home': 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop',
-  'retail': 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&h=600&fit=crop',
-  'business': 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop',
-  'auto': 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&h=600&fit=crop',
-  'pet': 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&h=600&fit=crop',
-  'default': 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop',
-};
-
-function getImageForTitle(title) {
-  const t = title.toLowerCase();
-  if (t.includes('food') || t.includes('restaurant') || t.includes('pizza') || t.includes('burger') || t.includes('chicken') || t.includes('coffee') || t.includes('sandwich') || t.includes('cone') || t.includes('baking')) return categoryImages.food;
-  if (t.includes('fitness') || t.includes('gym') || t.includes('sport') || t.includes('athletics') || t.includes('yoga')) return categoryImages.fitness;
-  if (t.includes('clean') || t.includes('window') || t.includes('janitorial') || t.includes('maid')) return categoryImages.cleaning;
-  if (t.includes('education') || t.includes('tutor') || t.includes('school') || t.includes('learning') || t.includes('child') || t.includes('kids')) return categoryImages.education;
-  if (t.includes('health') || t.includes('medical') || t.includes('care') || t.includes('dental') || t.includes('senior')) return categoryImages.health;
-  if (t.includes('home') || t.includes('house') || t.includes('inspection') || t.includes('renovation') || t.includes('floor')) return categoryImages.home;
-  if (t.includes('retail') || t.includes('store') || t.includes('shop') || t.includes('mattress')) return categoryImages.retail;
-  if (t.includes('auto') || t.includes('car') || t.includes('vehicle') || t.includes('oil')) return categoryImages.auto;
-  if (t.includes('pet') || t.includes('dog') || t.includes('animal')) return categoryImages.pet;
-  if (t.includes('business') || t.includes('coach') || t.includes('consulting') || t.includes('broker') || t.includes('sales')) return categoryImages.business;
-  return categoryImages.default;
+function parseAmount(text) {
+  if (!text) return null;
+  const clean = text.replace(/[^0-9.,]/g, '').replace(/,/g, '');
+  const num = parseFloat(clean);
+  return isNaN(num) ? null : num;
 }
 
-function parseCashRequired(text) {
-  if (!text) return null;
-  const match = text.match(/\$?([\d,]+\.?\d*)\s*k?/i);
-  if (!match) return null;
-  let num = parseFloat(match[1].replace(/,/g, ''));
-  if (text.toLowerCase().includes('k')) num *= 1000;
-  return num;
+function extractInvestmentFromSnippet(snippet) {
+  if (!snippet) return { min: 0, max: 0, display: 'Contact for details' };
+
+  // Match patterns like "$50,000" or "$50,000 - $200,000"
+  const rangeMatch = snippet.match(/\$[\d,]+\s*[-–]\s*\$[\d,]+/);
+  if (rangeMatch) {
+    const nums = rangeMatch[0].match(/[\d,]+/g).map(n => parseInt(n.replace(/,/g, ''), 10));
+    return { min: nums[0], max: nums[1], display: rangeMatch[0] };
+  }
+
+  const singleMatch = snippet.match(/\$([\d,]+)/);
+  if (singleMatch) {
+    const val = parseInt(singleMatch[1].replace(/,/g, ''), 10);
+    return { min: val, max: val * 3, display: `$${val.toLocaleString('en-CA')} minimum` };
+  }
+
+  return { min: 0, max: 0, display: 'Contact for details' };
 }
 
 Deno.serve(async (req) => {
@@ -51,11 +38,11 @@ Deno.serve(async (req) => {
     }
 
     const opportunities = [];
-    const pages = [1, 2, 3, 4]; // fetch multiple pages for ~40 results
+    const pages = [1, 2, 3, 4];
 
     for (const page of pages) {
       const start = (page - 1) * 10;
-      const url = `https://serpapi.com/search.json?engine=google&q=site:franchisegator.com+canada+franchise+opportunities&num=10&start=${start}&api_key=${serpApiKey}`;
+      const url = `https://serpapi.com/search.json?engine=google&q=site:franchisegator.com+canada+franchise&num=10&start=${start}&api_key=${serpApiKey}`;
 
       const response = await fetch(url);
       if (!response.ok) continue;
@@ -68,34 +55,64 @@ Deno.serve(async (req) => {
         const snippet = result.snippet || '';
         const link = result.link || '';
 
-        // Only include actual franchise listing pages
         if (!link.includes('/franchises/') && !link.includes('/opportunities/')) continue;
         if (title.toLowerCase().includes('top 100') || title.toLowerCase().includes('list of')) continue;
 
-        // Extract cash required from snippet
-        const cashMatch = snippet.match(/\$?([\d,]+\.?\d*\s*k?)\s*(minimum cash|cash required|min(?:imum)?)/i);
-        const cashText = cashMatch ? cashMatch[0] : null;
-        const cashAmount = cashText ? parseCashRequired(cashText) : null;
+        // Try to get image from Google result thumbnail
+        const image = result.thumbnail || result.pagemap?.cse_image?.[0]?.src || result.pagemap?.cse_thumbnail?.[0]?.src || null;
 
-        const investment = cashAmount
-          ? `$${cashAmount.toLocaleString('en-CA')} minimum`
-          : 'Contact for details';
+        // Try to extract structured details from rich snippets / pagemap
+        const metatags = result.pagemap?.metatags?.[0] || {};
+        const ogImage = metatags['og:image'] || metatags['twitter:image'] || null;
+        const ogDescription = metatags['og:description'] || metatags['twitter:description'] || null;
+
+        const finalImage = ogImage || image || null;
+        const finalDescription = ogDescription || snippet;
+
+        // Extract investment details from snippet
+        const invest = extractInvestmentFromSnippet(snippet);
+
+        // Try to extract specific financial details from snippet text
+        const liquidCapitalMatch = snippet.match(/liquid\s+capital[^$]*\$([\d,]+)/i);
+        const franchiseFeeMatch = snippet.match(/franchise\s+fee[^$]*\$([\d,]+)/i);
+        const totalInvestmentMatch = snippet.match(/total\s+investment[^$]*\$([\d,]+(?:\s*[-–]\s*\$[\d,]+)?)/i);
+
+        const liquidCapital = liquidCapitalMatch ? `$${liquidCapitalMatch[1]}` : null;
+        const franchiseFee = franchiseFeeMatch ? `$${franchiseFeeMatch[1]}` : null;
+        const totalInvestment = totalInvestmentMatch ? totalInvestmentMatch[0].replace(/total\s+investment[^$]*/i, '').trim() : null;
+
+        // Extract contact info from structured data if available
+        const contactInfo = result.pagemap?.organization?.[0] || result.pagemap?.localbusiness?.[0] || null;
+        const contactPhone = contactInfo?.telephone || null;
+        const contactEmail = contactInfo?.email || null;
+        const contactWebsite = contactInfo?.url || link;
 
         const maxPartners = Math.floor(Math.random() * 15) + 3;
+        const cleanTitle = title.replace(' - Franchise Gator', '').replace(' | Franchise Gator', '').trim();
 
         opportunities.push({
           id: `fg-${link.split('/').filter(Boolean).pop() || Math.random().toString(36).slice(2, 10)}`,
           type: 'Franchise',
-          title: title.replace(' - Franchise Gator', '').replace(' | Franchise Gator', '').trim(),
-          description: snippet,
-          investment,
-          investmentMin: cashAmount || 0,
-          investmentMax: cashAmount ? cashAmount * 3 : 0,
-          image: getImageForTitle(title),
+          title: cleanTitle,
+          description: finalDescription,
+          investment: invest.display,
+          investmentMin: invest.min,
+          investmentMax: invest.max,
+          image: finalImage,
           link,
           postedDate: 'Current listing',
           partners: `1/${maxPartners} partners`,
           source: 'franchisegator',
+          // Financial details
+          liquidCapital,
+          franchiseFee,
+          totalInvestment,
+          // Contact
+          contact: {
+            phone: contactPhone,
+            email: contactEmail,
+            website: contactWebsite,
+          },
         });
       }
     }
@@ -115,7 +132,6 @@ Deno.serve(async (req) => {
     const fetchedAt = new Date().toISOString();
     const expiresAt = new Date(Date.now() + CACHE_TTL_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
-    // Clear old cache
     const oldCaches = await base44.asServiceRole.entities.FranchiseCache.list('-created_date', 10);
     for (const old of oldCaches) {
       await base44.asServiceRole.entities.FranchiseCache.delete(old.id);
