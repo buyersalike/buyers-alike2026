@@ -14,12 +14,12 @@ export default function InterestManagementTab() {
   const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [editFormData, setEditFormData] = useState({ 
-    interest_name: "", 
-    description: "", 
+  const [editFormData, setEditFormData] = useState({
+    interest_name: "",
+    description: "",
     user_email: "",
     status: "pending",
-    message: "" 
+    message: ""
   });
 
   const queryClient = useQueryClient();
@@ -31,9 +31,7 @@ export default function InterestManagementTab() {
 
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }) => base44.asServiceRole.entities.Interest.update(id, { status }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allInterests'] });
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['allInterests'] }),
   });
 
   const updateInterestMutation = useMutation({
@@ -60,13 +58,8 @@ export default function InterestManagementTab() {
     setIsDetailDialogOpen(true);
   };
 
-  const handleApprove = (id) => {
-    updateStatusMutation.mutate({ id, status: 'approved' });
-  };
-
-  const handleReject = (id) => {
-    updateStatusMutation.mutate({ id, status: 'rejected' });
-  };
+  const handleApprove = (id) => updateStatusMutation.mutate({ id, status: 'approved' });
+  const handleReject = (id) => updateStatusMutation.mutate({ id, status: 'rejected' });
 
   const handleEdit = (interest) => {
     setSelectedInterest(interest);
@@ -96,15 +89,9 @@ export default function InterestManagementTab() {
   );
 
   const getStatusColor = (status) => {
-    switch (status) {
-      case 'approved':
-        return '#22C55E';
-      case 'rejected':
-        return '#EF4444';
-      case 'pending':
-      default:
-        return '#F59E0B';
-    }
+    if (status === 'approved') return '#22C55E';
+    if (status === 'rejected') return '#EF4444';
+    return '#F59E0B';
   };
 
   if (isLoading) {
@@ -121,12 +108,10 @@ export default function InterestManagementTab() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-2 h-8 rounded-full" style={{ background: 'linear-gradient(180deg, #7C3AED 0%, #3B82F6 100%)' }} />
-          <h2 className="text-2xl font-bold" style={{ color: '#000' }}>
-            Interests
-          </h2>
+          <h2 className="text-2xl font-bold" style={{ color: '#000' }}>Interests</h2>
         </div>
         <Button
-          onClick={() => setIsCreateDialogOpen(true)}
+          onClick={() => { setEditFormData({ interest_name: "", description: "", user_email: "", status: "pending", message: "" }); setIsCreateDialogOpen(true); }}
           style={{ background: '#D8A11F', color: '#fff' }}
           className="gap-2 hover:opacity-80"
         >
@@ -149,122 +134,71 @@ export default function InterestManagementTab() {
         </div>
       </div>
 
-      {/* Interests Table */}
-      <div className="rounded-2xl overflow-hidden" style={{ background: 'transparent', border: '2px solid #000' }}>
+      {/* Table */}
+      <div className="rounded-2xl overflow-hidden" style={{ border: '2px solid #000' }}>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead style={{ background: '#F2F1F5', borderBottom: '1px solid #000' }}>
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
-                  Image
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
-                  Name
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
-                  Description
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
-                  Status
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
-                  Message
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
-                  Actions
-                </th>
+                {['Image', 'Name', 'Description', 'Status', 'Message', 'Actions'].map(h => (
+                  <th key={h} className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: '#000' }}>
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y" style={{ borderColor: '#ddd' }}>
+            <tbody className="divide-y" style={{ borderColor: '#ddd', background: '#fff' }}>
               {filteredInterests.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center" style={{ color: '#666' }}>
-                    No interests found
+                  <td colSpan="6" className="px-6 py-8 text-center" style={{ color: '#666' }}>No interests found</td>
+                </tr>
+              ) : filteredInterests.map((interest) => (
+                <tr key={interest.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4">
+                    {interest.attachment_urls && interest.attachment_urls.length > 0 ? (
+                      <img src={interest.attachment_urls[0]} alt={interest.interest_name} className="w-12 h-12 rounded-lg object-cover" style={{ border: '1px solid #ddd' }} />
+                    ) : (
+                      <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: '#F2F1F5', border: '1px solid #ddd' }}>
+                        <span className="text-xs" style={{ color: '#666' }}>N/A</span>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="font-medium" style={{ color: '#000' }}>{interest.interest_name || 'Untitled'}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-sm" style={{ color: '#000' }}>{interest.description || 'N/A'}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="px-3 py-1 rounded-full text-xs font-semibold" style={{ color: getStatusColor(interest.status), background: `${getStatusColor(interest.status)}22` }}>
+                      {interest.status || 'pending'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-sm" style={{ color: '#666' }}>{interest.message || 'N/A'}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex gap-2">
+                      <button type="button" onClick={() => handleViewDetails(interest)} className="p-2 rounded-lg hover:opacity-80 transition-opacity" style={{ background: '#3B82F6', color: '#fff' }}>
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button type="button" onClick={() => handleEdit(interest)} className="p-2 rounded-lg hover:opacity-80 transition-opacity" style={{ background: '#D8A11F', color: '#fff' }}>
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      {interest.status !== 'approved' && (
+                        <button type="button" onClick={() => handleApprove(interest.id)} className="p-2 rounded-lg hover:opacity-80 transition-opacity" style={{ background: '#22C55E', color: '#fff' }}>
+                          <Check className="w-4 h-4" />
+                        </button>
+                      )}
+                      {interest.status !== 'rejected' && (
+                        <button type="button" onClick={() => handleReject(interest.id)} className="p-2 rounded-lg hover:opacity-80 transition-opacity" style={{ background: '#EF4444', color: '#fff' }}>
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
-              ) : (
-                filteredInterests.map((interest) => (
-                  <tr key={interest.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4">
-                      {interest.attachment_urls && interest.attachment_urls.length > 0 ? (
-                        <img
-                          src={interest.attachment_urls[0]}
-                          alt={interest.interest_name}
-                          className="w-12 h-12 rounded-lg object-cover"
-                          style={{ border: '1px solid #ddd' }}
-                        />
-                      ) : (
-                        <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: '#F2F1F5', border: '1px solid #ddd' }}>
-                          <span className="text-xs" style={{ color: '#666' }}>N/A</span>
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="font-medium" style={{ color: '#000' }}>
-                        {interest.interest_name || 'Untitled'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm" style={{ color: '#000' }}>
-                        {interest.description || 'N/A'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className="px-3 py-1 rounded-full text-xs font-semibold"
-                        style={{ color: getStatusColor(interest.status), background: `${getStatusColor(interest.status)}22` }}
-                      >
-                        {interest.status || 'pending'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm" style={{ color: '#666' }}>
-                        {interest.message || 'N/A'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                     <div className="flex gap-2">
-                       <button
-                         type="button"
-                         onClick={() => handleViewDetails(interest)}
-                         className="p-2 rounded-lg hover:opacity-80 transition-opacity"
-                         style={{ background: '#3B82F6', color: '#fff' }}
-                       >
-                         <Eye className="w-4 h-4" />
-                       </button>
-                       <button
-                         type="button"
-                         onClick={() => handleEdit(interest)}
-                         className="p-2 rounded-lg hover:opacity-80 transition-opacity"
-                         style={{ background: '#D8A11F', color: '#fff' }}
-                       >
-                         <Pencil className="w-4 h-4" />
-                       </button>
-                       {interest.status !== 'approved' && (
-                         <button
-                           type="button"
-                           onClick={() => handleApprove(interest.id)}
-                           className="p-2 rounded-lg hover:opacity-80 transition-opacity"
-                           style={{ background: '#22C55E', color: '#fff' }}
-                         >
-                           <Check className="w-4 h-4" />
-                         </button>
-                       )}
-                       {interest.status !== 'rejected' && (
-                         <button
-                           type="button"
-                           onClick={() => handleReject(interest.id)}
-                           className="p-2 rounded-lg hover:opacity-80 transition-opacity"
-                           style={{ background: '#EF4444', color: '#fff' }}
-                         >
-                           <X className="w-4 h-4" />
-                         </button>
-                       )}
-                     </div>
-                    </td>
-                  </tr>
-                ))
-              )}
+              ))}
             </tbody>
           </table>
         </div>
@@ -272,28 +206,14 @@ export default function InterestManagementTab() {
 
       {/* Detail Dialog */}
       <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
-        <DialogContent 
-          className="border-0 sm:max-w-lg" 
-          style={{ 
-            background: '#F2F1F5',
-            border: '2px solid #000',
-            color: '#000' 
-          }}
-        >
+        <DialogContent className="sm:max-w-lg" style={{ background: '#F2F1F5', border: '2px solid #000', color: '#000' }}>
           <DialogHeader>
-            <DialogTitle className="text-lg" style={{ color: '#000' }}>Interest Details</DialogTitle>
+            <DialogTitle style={{ color: '#000' }}>Interest Details</DialogTitle>
           </DialogHeader>
           {selectedInterest && (
             <div className="space-y-4 py-4">
               {selectedInterest.attachment_urls && selectedInterest.attachment_urls.length > 0 && (
-                <div>
-                  <img
-                    src={selectedInterest.attachment_urls[0]}
-                    alt={selectedInterest.interest_name}
-                    className="w-full h-48 rounded-lg object-cover"
-                    style={{ border: '1px solid #000' }}
-                  />
-                </div>
+                <img src={selectedInterest.attachment_urls[0]} alt={selectedInterest.interest_name} className="w-full h-48 rounded-lg object-cover" style={{ border: '1px solid #000' }} />
               )}
               <div>
                 <label className="text-sm font-semibold mb-1 block" style={{ color: '#000' }}>Interest Name</label>
@@ -309,10 +229,7 @@ export default function InterestManagementTab() {
               </div>
               <div>
                 <label className="text-sm font-semibold mb-1 block" style={{ color: '#000' }}>Status</label>
-                <span
-                  className="px-3 py-1 rounded-full text-xs font-semibold"
-                  style={{ color: getStatusColor(selectedInterest.status), background: `${getStatusColor(selectedInterest.status)}22` }}
-                >
+                <span className="px-3 py-1 rounded-full text-xs font-semibold" style={{ color: getStatusColor(selectedInterest.status), background: `${getStatusColor(selectedInterest.status)}22` }}>
                   {selectedInterest.status || 'pending'}
                 </span>
               </div>
@@ -323,62 +240,26 @@ export default function InterestManagementTab() {
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent 
-          className="border-0 sm:max-w-md" 
-          style={{ 
-            background: '#F2F1F5',
-            border: '2px solid #000',
-            color: '#000' 
-          }}
-        >
+        <DialogContent className="sm:max-w-md" style={{ background: '#F2F1F5', border: '2px solid #000', color: '#000' }}>
           <DialogHeader>
-            <DialogTitle className="text-lg" style={{ color: '#000' }}>Edit Interest</DialogTitle>
+            <DialogTitle style={{ color: '#000' }}>Edit Interest</DialogTitle>
           </DialogHeader>
-          <div className="space-y-5 py-4">
+          <div className="space-y-4 py-4">
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
-                Interest Name
-              </label>
-              <Input
-                value={editFormData.interest_name}
-                onChange={(e) => setEditFormData({ ...editFormData, interest_name: e.target.value })}
-                placeholder="Interest name"
-                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
-              />
+              <label className="text-sm font-medium mb-1 block" style={{ color: '#000' }}>Interest Name</label>
+              <Input value={editFormData.interest_name} onChange={(e) => setEditFormData({ ...editFormData, interest_name: e.target.value })} placeholder="Interest name" style={{ background: '#fff', border: '1px solid #000', color: '#000' }} />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
-                User Email
-              </label>
-              <Input
-                value={editFormData.user_email}
-                onChange={(e) => setEditFormData({ ...editFormData, user_email: e.target.value })}
-                placeholder="user@example.com"
-                type="email"
-                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
-              />
+              <label className="text-sm font-medium mb-1 block" style={{ color: '#000' }}>User Email</label>
+              <Input value={editFormData.user_email} onChange={(e) => setEditFormData({ ...editFormData, user_email: e.target.value })} placeholder="user@example.com" type="email" style={{ background: '#fff', border: '1px solid #000', color: '#000' }} />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
-                Description
-              </label>
-              <Textarea
-                value={editFormData.description}
-                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
-                placeholder="Interest description"
-                rows={4}
-                className="resize-none"
-                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
-              />
+              <label className="text-sm font-medium mb-1 block" style={{ color: '#000' }}>Description</label>
+              <Textarea value={editFormData.description} onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })} placeholder="Interest description" rows={3} className="resize-none" style={{ background: '#fff', border: '1px solid #000', color: '#000' }} />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
-                Status
-              </label>
-              <Select
-                value={editFormData.status}
-                onValueChange={(value) => setEditFormData({ ...editFormData, status: value })}
-              >
+              <label className="text-sm font-medium mb-1 block" style={{ color: '#000' }}>Status</label>
+              <Select value={editFormData.status} onValueChange={(value) => setEditFormData({ ...editFormData, status: value })}>
                 <SelectTrigger style={{ background: '#fff', border: '1px solid #000', color: '#000' }}>
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
@@ -390,34 +271,13 @@ export default function InterestManagementTab() {
               </Select>
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
-                Message
-              </label>
-              <Textarea
-                value={editFormData.message}
-                onChange={(e) => setEditFormData({ ...editFormData, message: e.target.value })}
-                placeholder="Admin message or notes"
-                rows={3}
-                className="resize-none"
-                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
-              />
+              <label className="text-sm font-medium mb-1 block" style={{ color: '#000' }}>Message</label>
+              <Textarea value={editFormData.message} onChange={(e) => setEditFormData({ ...editFormData, message: e.target.value })} placeholder="Admin message or notes" rows={2} className="resize-none" style={{ background: '#fff', border: '1px solid #000', color: '#000' }} />
             </div>
           </div>
           <DialogFooter className="gap-2">
-            <Button
-              onClick={() => setIsEditDialogOpen(false)}
-              variant="outline"
-              style={{ border: '1px solid #000', color: '#000', background: '#fff' }}
-              disabled={updateInterestMutation.isPending}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleUpdate}
-              disabled={!editFormData.interest_name.trim() || !editFormData.user_email.trim() || updateInterestMutation.isPending}
-              style={{ background: '#D8A11F', color: '#fff' }}
-              className="hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <Button onClick={() => setIsEditDialogOpen(false)} variant="outline" style={{ border: '1px solid #000', color: '#000', background: '#fff' }}>Cancel</Button>
+            <Button onClick={handleUpdate} disabled={!editFormData.interest_name.trim() || !editFormData.user_email.trim() || updateInterestMutation.isPending} style={{ background: '#D8A11F', color: '#fff' }}>
               {updateInterestMutation.isPending ? 'Updating...' : 'Update'}
             </Button>
           </DialogFooter>
@@ -426,62 +286,26 @@ export default function InterestManagementTab() {
 
       {/* Create Dialog */}
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogContent 
-          className="border-0 sm:max-w-md" 
-          style={{ 
-            background: '#F2F1F5',
-            border: '2px solid #000',
-            color: '#000' 
-          }}
-        >
+        <DialogContent className="sm:max-w-md" style={{ background: '#F2F1F5', border: '2px solid #000', color: '#000' }}>
           <DialogHeader>
-            <DialogTitle className="text-lg" style={{ color: '#000' }}>Create New Interest</DialogTitle>
+            <DialogTitle style={{ color: '#000' }}>Create New Interest</DialogTitle>
           </DialogHeader>
-          <div className="space-y-5 py-4">
+          <div className="space-y-4 py-4">
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
-                Interest Name
-              </label>
-              <Input
-                value={editFormData.interest_name}
-                onChange={(e) => setEditFormData({ ...editFormData, interest_name: e.target.value })}
-                placeholder="Interest name"
-                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
-              />
+              <label className="text-sm font-medium mb-1 block" style={{ color: '#000' }}>Interest Name</label>
+              <Input value={editFormData.interest_name} onChange={(e) => setEditFormData({ ...editFormData, interest_name: e.target.value })} placeholder="Interest name" style={{ background: '#fff', border: '1px solid #000', color: '#000' }} />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
-                User Email
-              </label>
-              <Input
-                value={editFormData.user_email}
-                onChange={(e) => setEditFormData({ ...editFormData, user_email: e.target.value })}
-                placeholder="user@example.com"
-                type="email"
-                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
-              />
+              <label className="text-sm font-medium mb-1 block" style={{ color: '#000' }}>User Email</label>
+              <Input value={editFormData.user_email} onChange={(e) => setEditFormData({ ...editFormData, user_email: e.target.value })} placeholder="user@example.com" type="email" style={{ background: '#fff', border: '1px solid #000', color: '#000' }} />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
-                Description
-              </label>
-              <Textarea
-                value={editFormData.description}
-                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
-                placeholder="Interest description"
-                rows={4}
-                className="resize-none"
-                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
-              />
+              <label className="text-sm font-medium mb-1 block" style={{ color: '#000' }}>Description</label>
+              <Textarea value={editFormData.description} onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })} placeholder="Interest description" rows={3} className="resize-none" style={{ background: '#fff', border: '1px solid #000', color: '#000' }} />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
-                Status
-              </label>
-              <Select
-                value={editFormData.status}
-                onValueChange={(value) => setEditFormData({ ...editFormData, status: value })}
-              >
+              <label className="text-sm font-medium mb-1 block" style={{ color: '#000' }}>Status</label>
+              <Select value={editFormData.status} onValueChange={(value) => setEditFormData({ ...editFormData, status: value })}>
                 <SelectTrigger style={{ background: '#fff', border: '1px solid #000', color: '#000' }}>
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
@@ -493,34 +317,13 @@ export default function InterestManagementTab() {
               </Select>
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block" style={{ color: '#000' }}>
-                Message
-              </label>
-              <Textarea
-                value={editFormData.message}
-                onChange={(e) => setEditFormData({ ...editFormData, message: e.target.value })}
-                placeholder="Admin message or notes"
-                rows={3}
-                className="resize-none"
-                style={{ background: '#fff', border: '1px solid #000', color: '#000' }}
-              />
+              <label className="text-sm font-medium mb-1 block" style={{ color: '#000' }}>Message</label>
+              <Textarea value={editFormData.message} onChange={(e) => setEditFormData({ ...editFormData, message: e.target.value })} placeholder="Admin message or notes" rows={2} className="resize-none" style={{ background: '#fff', border: '1px solid #000', color: '#000' }} />
             </div>
           </div>
           <DialogFooter className="gap-2">
-            <Button
-              onClick={() => setIsCreateDialogOpen(false)}
-              variant="outline"
-              style={{ border: '1px solid #000', color: '#000', background: '#fff' }}
-              disabled={createInterestMutation.isPending}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleCreate}
-              disabled={!editFormData.interest_name.trim() || !editFormData.user_email.trim() || createInterestMutation.isPending}
-              style={{ background: '#D8A11F', color: '#fff' }}
-              className="hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <Button onClick={() => setIsCreateDialogOpen(false)} variant="outline" style={{ border: '1px solid #000', color: '#000', background: '#fff' }}>Cancel</Button>
+            <Button onClick={handleCreate} disabled={!editFormData.interest_name.trim() || !editFormData.user_email.trim() || createInterestMutation.isPending} style={{ background: '#D8A11F', color: '#fff' }}>
               {createInterestMutation.isPending ? 'Creating...' : 'Create'}
             </Button>
           </DialogFooter>
