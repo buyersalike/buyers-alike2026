@@ -86,6 +86,14 @@ Deno.serve(async (req) => {
 
       const maxPartners = Math.floor(Math.random() * 20) + 5;
 
+      // Extract agent/office contact info
+      const agent = listing.Individual?.[0] || null;
+      const agentName = agent ? [agent.Name?.FirstName, agent.Name?.LastName].filter(Boolean).join(' ') : null;
+      const agentEmail = agent?.Emails?.[0]?.ContactId || agent?.EmailAddresses?.[0] || null;
+      const agentPhone = agent?.PhoneNumbers?.[0]?.PhoneNumber || agent?.Phones?.[0]?.PhoneNumber || null;
+      const agentWebsite = agent?.WebsiteURL || listing.Office?.Website || null;
+      const officeName = listing.Office?.Name || null;
+
       return {
         id: String(listing.Id || listing.MlsNumber || Math.random()),
         type: 'Real Estate',
@@ -96,6 +104,13 @@ Deno.serve(async (req) => {
         images: photos,
         postedDate,
         partners: `1/${maxPartners} partners`,
+        contact: {
+          name: agentName,
+          email: agentEmail,
+          phone: agentPhone,
+          website: agentWebsite,
+          office: officeName,
+        },
         _sortDate: listing.InsertedDateUTC
           ? (typeof listing.InsertedDateUTC === 'string'
             ? parseInt(listing.InsertedDateUTC.replace(/\D/g, ''), 10)
