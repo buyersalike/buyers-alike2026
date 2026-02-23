@@ -116,19 +116,56 @@ Deno.serve(async (req) => {
     
     if (data && data.Results) {
       data.Results.slice(0, 20).forEach((property) => {
-        const price = property.Property?.Price;
         const partners = Math.floor(Math.random() * 20) + 1;
-        
+
+        // Price: API returns a number, format it cleanly
+        const rawPrice = property.Property?.Price;
+        let investment = 'Contact for pricing';
+        if (rawPrice) {
+          const numPrice = typeof rawPrice === 'string'
+            ? parseInt(rawPrice.replace(/[^0-9]/g, ''), 10)
+            : rawPrice;
+          if (!isNaN(numPrice) && numPrice > 0) {
+            investment = `$${numPrice.toLocaleString()}`;
+          }
+        }
+
+        // Address: AddressText already has the full address, no need to append city/province again
+        const addressText = property.Property?.Address?.AddressText || 'N/A';
+        const buildingType = property.Property?.Building?.StoriesTotal
+          ? `${property.Property.Building.StoriesTotal}-storey`
+          : (property.Property?.Building?.Type || 'Property');
+        const bathrooms = property.Property?.Building?.BathroomTotal || '1';
+        const bedrooms = property.Property?.Building?.BedroomTotal;
+        const bedroomStr = bedrooms ? `${bedrooms} bed, ` : '';
+        const description = `${bedroomStr}${bathrooms} bath, ${buildingType} at ${addressText}`;
+
+        // Date: InsertedDateUTC is a Unix timestamp in seconds or milliseconds
+        let postedDate = 'N/A';
+        const rawDate = property.InsertedDateUTC;
+        if (rawDate) {
+          const ts = typeof rawDate === 'number' && rawDate < 1e12
+            ? rawDate * 1000  // convert seconds → ms
+            : rawDate;
+          const d = new Date(ts);
+          if (!isNaN(d.getTime())) {
+            postedDate = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+          }
+        }
+
+        // City for title
+        const city = property.Property?.Address?.City || 'Canada';
+        const mlsNum = property.MlsNumber || 'N/A';
+        const propType = property.Property?.Type || 'Property';
+
         opportunities.push({
-          id: property.Id || `re-${Date.now()}-${Math.random()}`,
+          id: String(property.Id || `re-${Date.now()}-${Math.random()}`),
           type: 'Real Estate',
-          title: `Single Family - ${property.Property?.Address?.City || 'Canada'} (MLS# ${property.MlsNumber || 'N/A'})`,
-          investment: price 
-            ? `$${price.toLocaleString()} - $${price.toLocaleString()}` 
-            : 'Contact for pricing',
-          description: `${property.Property?.Building?.BathroomTotal || '1'} bathroom, ${property.Property?.Building?.Type || 'Single Family'}, at ${property.Property?.Address?.AddressText || 'N/A'}|${property.Property?.Address?.City || 'N/A'}, ${property.Property?.Address?.Province || 'Canada'} ${property.Property?.Address?.Zip || ''}, wit...`,
+          title: `${propType} - ${city} (MLS# ${mlsNum})`,
+          investment,
+          description,
           image: property.Property?.Photo?.[0]?.HighResPath || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop',
-          postedDate: new Date(property.InsertedDateUTC || Date.now()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+          postedDate,
           partners: `1/${partners} partners`,
         });
       });
