@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import OpportunityCard from "@/components/opportunities/OpportunityCard";
 import OpportunitiesFilter from "@/components/opportunities/OpportunitiesFilter";
 import OpportunitiesPagination from "@/components/opportunities/OpportunitiesPagination";
+import CompareDrawer from "@/components/opportunities/CompareDrawer";
+import { CompareProvider } from "@/components/opportunities/CompareContext";
 import Sidebar from "@/components/partnerships/Sidebar";
 import { Sparkles, TrendingUp } from "lucide-react";
 import { base44 } from "@/api/base44Client";
