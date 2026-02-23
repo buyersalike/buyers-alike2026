@@ -67,6 +67,7 @@ export default function InterestManagementTab() {
 
   const handleApprove = (id) => updateStatusMutation.mutate({ id, status: 'approved' });
   const handleReject = (id) => updateStatusMutation.mutate({ id, status: 'rejected' });
+  const handleDelete = (id) => { if (confirm('Delete this interest?')) deleteInterestMutation.mutate(id); };
 
   const handleEdit = (interest) => {
     setSelectedInterest(interest);
