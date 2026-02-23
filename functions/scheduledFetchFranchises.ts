@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
         const maxPartners = Math.floor(Math.random() * 15) + 3;
 
         opportunities.push({
-          id: `fg-${Buffer ? btoa(link).slice(0, 16) : link.split('/').filter(Boolean).pop()}`,
+          id: `fg-${link.split('/').filter(Boolean).pop() || Math.random().toString(36).slice(2, 10)}`,
           type: 'Franchise',
           title: title.replace(' - Franchise Gator', '').replace(' | Franchise Gator', '').trim(),
           description: snippet,
