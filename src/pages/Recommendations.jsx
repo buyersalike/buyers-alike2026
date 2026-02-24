@@ -110,9 +110,8 @@ export default function Recommendations() {
         };
       });
       
-      // Sort by match score and return top matches
+      // Sort by match score and return top matches (include all with scores)
       return usersWithScores
-        .filter(u => u.matchCount > 0)
         .sort((a, b) => b.matchPercentage - a.matchPercentage)
         .slice(0, 20);
     },
