@@ -203,6 +203,150 @@ Deno.serve(async (req) => {
       }
     }
 
+    // --- Source 3: Franchise Direct Canada via SerpAPI ---
+    const fdcPages = [1, 2, 3, 4];
+    for (const page of fdcPages) {
+      const start = (page - 1) * 10;
+      const url = `https://serpapi.com/search.json?engine=google&q=site:franchisedirectcanada.com+franchise+canada&num=10&start=${start}&api_key=${serpApiKey}`;
+
+      const response = await fetch(url);
+      if (!response.ok) continue;
+
+      const data = await response.json();
+      const results = data.organic_results || [];
+
+      for (const result of results) {
+        const title = result.title || '';
+        const snippet = result.snippet || '';
+        const link = result.link || '';
+
+        // Only individual franchise listing pages
+        if (!link.match(/franchisedirectcanada\.com\/[a-z0-9-]+-franchise\//i) &&
+            !link.match(/franchisedirectcanada\.com\/[a-z0-9-]+-opportunity\//i)) continue;
+        if (title.toLowerCase().includes('franchise directory') || title.toLowerCase().includes('top franchise')) continue;
+
+        const image = result.thumbnail || result.pagemap?.cse_image?.[0]?.src || result.pagemap?.cse_thumbnail?.[0]?.src || null;
+        const metatags = result.pagemap?.metatags?.[0] || {};
+        const ogImage = metatags['og:image'] || metatags['twitter:image'] || null;
+        const ogDescription = metatags['og:description'] || metatags['twitter:description'] || null;
+
+        const finalImage = ogImage || image || DEFAULT_FRANCHISE_IMAGE;
+        const finalDescription = ogDescription || snippet;
+
+        // FDC uses "Minimum Investment: $X" and "Max Investment: $X" in snippets
+        const minInvestMatch = snippet.match(/(?:min(?:imum)?\s+investment|investment\s+from)[^$]*\$([\d,]+)/i);
+        const maxInvestMatch = snippet.match(/(?:max(?:imum)?\s+investment|up\s+to)[^$]*\$([\d,]+)/i);
+        const invest = extractInvestmentFromSnippet(snippet);
+
+        const investMin = minInvestMatch ? parseInt(minInvestMatch[1].replace(/,/g, ''), 10) : invest.min;
+        const investMax = maxInvestMatch ? parseInt(maxInvestMatch[1].replace(/,/g, ''), 10) : invest.max;
+        const investDisplay = (investMin || investMax) ? 
+          (investMax && investMax !== investMin ? `$${investMin.toLocaleString('en-CA')} – $${investMax.toLocaleString('en-CA')}` : `$${investMin.toLocaleString('en-CA')}`)
+          : invest.display;
+
+        const contactInfo = result.pagemap?.organization?.[0] || result.pagemap?.localbusiness?.[0] || null;
+        const maxPartners = Math.floor(Math.random() * 15) + 3;
+        const cleanTitle = title
+          .replace(/\s*[-|]\s*Franchise Direct Canada.*/i, '')
+          .replace(/\s*[-|]\s*FranchiseDirect.*/i, '')
+          .replace(/\s*Franchise\s*$/i, '')
+          .trim();
+
+        opportunities.push({
+          id: `fdc-${link.split('/').filter(Boolean).pop() || Math.random().toString(36).slice(2, 10)}`,
+          type: 'Franchise',
+          title: cleanTitle,
+          description: finalDescription,
+          investment: investDisplay,
+          investmentMin: investMin,
+          investmentMax: investMax,
+          image: finalImage,
+          link,
+          postedDate: 'Current listing',
+          partners: `1/${maxPartners} partners`,
+          source: 'franchisedirectcanada',
+          liquidCapital: null,
+          franchiseFee: null,
+          totalInvestment: investDisplay !== 'Contact for details' ? investDisplay : null,
+          contact: {
+            phone: contactInfo?.telephone || null,
+            email: contactInfo?.email || null,
+            website: contactInfo?.url || link,
+          },
+        });
+      }
+    }
+
+    // --- Source 4: BizSold Canada Franchises via SerpAPI ---
+    const bizPages = [1, 2, 3, 4];
+    for (const page of bizPages) {
+      const start = (page - 1) * 10;
+      const url = `https://serpapi.com/search.json?engine=google&q=site:bizsold.com+franchise+canada&num=10&start=${start}&api_key=${serpApiKey}`;
+
+      const response = await fetch(url);
+      if (!response.ok) continue;
+
+      const data = await response.json();
+      const results = data.organic_results || [];
+
+      for (const result of results) {
+        const title = result.title || '';
+        const snippet = result.snippet || '';
+        const link = result.link || '';
+
+        // Only individual listing pages
+        if (!link.match(/bizsold\.com\/[a-z0-9-]+$/i) && !link.match(/bizsold\.com\/listing\//i)) continue;
+        if (title.toLowerCase().includes('businesses for sale') && !title.toLowerCase().includes('franchise')) continue;
+        if (link.includes('/business-for-sale') || link.includes('/search') || link === 'https://bizsold.com/') continue;
+
+        const image = result.thumbnail || result.pagemap?.cse_image?.[0]?.src || result.pagemap?.cse_thumbnail?.[0]?.src || null;
+        const metatags = result.pagemap?.metatags?.[0] || {};
+        const ogImage = metatags['og:image'] || metatags['twitter:image'] || null;
+        const ogDescription = metatags['og:description'] || metatags['twitter:description'] || null;
+
+        const finalImage = ogImage || image || DEFAULT_FRANCHISE_IMAGE;
+        const finalDescription = ogDescription || snippet;
+
+        // BizSold uses "Asking Price: $X" in snippets
+        const askingPriceMatch = snippet.match(/asking\s+price[^$]*\$([\d,]+)/i);
+        const invest = extractInvestmentFromSnippet(snippet);
+
+        const investMin = askingPriceMatch ? parseInt(askingPriceMatch[1].replace(/,/g, ''), 10) : invest.min;
+        const investMax = investMin;
+        const investDisplay = investMin ? `$${investMin.toLocaleString('en-CA')}` : invest.display;
+
+        const contactInfo = result.pagemap?.organization?.[0] || result.pagemap?.localbusiness?.[0] || null;
+        const maxPartners = Math.floor(Math.random() * 15) + 3;
+        const cleanTitle = title
+          .replace(/\s*[-|]\s*BizSold.*/i, '')
+          .replace(/\s*[-|]\s*Businesses for Sale.*/i, '')
+          .trim();
+
+        opportunities.push({
+          id: `biz-${link.split('/').filter(Boolean).pop() || Math.random().toString(36).slice(2, 10)}`,
+          type: 'Franchise',
+          title: cleanTitle,
+          description: finalDescription,
+          investment: investDisplay,
+          investmentMin: investMin,
+          investmentMax: investMax,
+          image: finalImage,
+          link,
+          postedDate: 'Current listing',
+          partners: `1/${maxPartners} partners`,
+          source: 'bizsold',
+          liquidCapital: null,
+          franchiseFee: null,
+          totalInvestment: investDisplay !== 'Contact for details' ? investDisplay : null,
+          contact: {
+            phone: contactInfo?.telephone || null,
+            email: contactInfo?.email || null,
+            website: contactInfo?.url || link,
+          },
+        });
+      }
+    }
+
     if (opportunities.length === 0) {
       return Response.json({ error: 'No franchise listings found', success: false }, { status: 500 });
     }
