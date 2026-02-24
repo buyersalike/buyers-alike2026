@@ -83,7 +83,7 @@ export default function ConnectionCard({ connection, index, onConnect }) {
       <div className="flex items-center justify-center gap-1 mb-4">
         <Heart className="w-4 h-4" style={{ color: '#EF4444', fill: '#EF4444' }} />
         <span className="text-sm font-semibold" style={{ color: '#EF4444' }}>
-          {connection.matchPercentage}% Match
+          {connection.matchPercentage != null ? `${connection.matchPercentage}% Match` : 'Match'}
         </span>
       </div>
 
