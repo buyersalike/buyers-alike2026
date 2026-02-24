@@ -79,14 +79,14 @@ export default function Opportunities() {
     return { success: true, opportunities: cache.opportunities || [] };
   }, [franchiseCache]);
 
-  // Combine all opportunity sources
+  // Combine all opportunity sources — only recalculate when data actually changes
   const allOpportunities = useMemo(() => {
     const combined = [
       ...(realEstateData?.opportunities || []).map(opp => ({
         ...opp,
         source: 'api',
-        investmentMin: parseInvestmentRange(opp.investment).min,
-        investmentMax: parseInvestmentRange(opp.investment).max,
+        investmentMin: opp.investmentMin || parseInvestmentRange(opp.investment).min,
+        investmentMax: opp.investmentMax || parseInvestmentRange(opp.investment).max,
         category: opp.type
       })),
       ...(franchiseData?.opportunities || []).map(opp => ({
@@ -106,7 +106,7 @@ export default function Opportunities() {
       }))
     ];
     return combined;
-  }, [realEstateData, dbOpportunities]);
+  }, [realEstateData, franchiseData, dbOpportunities]);
 
   // Helper function to parse investment range
   function parseInvestmentRange(investmentStr) {
