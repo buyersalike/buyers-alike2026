@@ -67,7 +67,7 @@ Deno.serve(async (req) => {
         const ogImage = metatags['og:image'] || metatags['twitter:image'] || null;
         const ogDescription = metatags['og:description'] || metatags['twitter:description'] || null;
 
-        const finalImage = ogImage || image || null;
+        const finalImage = ogImage || image || DEFAULT_FRANCHISE_IMAGE;
         const finalDescription = ogDescription || snippet;
 
         // Extract investment details from snippet
