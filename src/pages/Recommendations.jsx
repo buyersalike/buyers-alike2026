@@ -464,32 +464,22 @@ export default function Recommendations() {
                   </div>
                 ) : matchedOpportunities.length > 0 ? (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                  {matchedOpportunities.map((opportunity, index) => {
-                    // Calculate match percentage based on interest overlap
-                    const userInterestNames = userInterests.map(i => i.interest_name.toLowerCase());
-                    const oppInterests = (opportunity.related_interests || []).map(i => i.toLowerCase());
-                    const matchCount = oppInterests.filter(interest => userInterestNames.includes(interest)).length;
-                    const matchPercentage = userInterests.length > 0 
-                      ? Math.min(85, Math.max(65, Math.round((matchCount / userInterests.length) * 100)))
-                      : 75;
-
-                    return (
-                      <OpportunityRecommendationCard 
-                        key={opportunity.id} 
-                        opportunity={{
-                          id: opportunity.id,
-                          title: opportunity.title,
-                          category: opportunity.category || "General",
-                          description: opportunity.description,
-                          image: opportunity.image_url || "https://images.unsplash.com/photo-1560472355-536de3962603?w=400&h=300&fit=crop",
-                          createdBy: "AI Recommended",
-                          matchPercentage: matchPercentage,
-                          opportunityId: opportunity.id,
-                        }} 
-                        index={index} 
-                      />
-                    );
-                  })}
+                  {matchedOpportunities.map((opportunity, index) => (
+                    <OpportunityRecommendationCard 
+                      key={opportunity.id} 
+                      opportunity={{
+                        id: opportunity.id,
+                        title: opportunity.title,
+                        category: opportunity.category || "General",
+                        description: opportunity.description,
+                        image: opportunity.image_url || "https://images.unsplash.com/photo-1560472355-536de3962603?w=400&h=300&fit=crop",
+                        createdBy: opportunity.created_by || "Admin",
+                        matchPercentage: opportunity.matchPercentage,
+                        opportunityId: opportunity.id,
+                      }} 
+                      index={index} 
+                    />
+                  ))}
                 </div>
               ) : (
                 <div className="text-center py-12 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
