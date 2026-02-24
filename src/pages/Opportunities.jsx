@@ -368,7 +368,7 @@ export default function Opportunities() {
                 </div>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {realEstateData.opportunities.slice(0, 6).map((opp, index) => (
-                    <OpportunityCard key={opp.id} opportunity={opp} index={index} />
+                    <OpportunityCard key={opp.id} opportunity={opp} index={index} currentUser={currentUser} savedOpportunities={savedOpportunities} />
                   ))}
                 </div>
               </div>
@@ -389,7 +389,7 @@ export default function Opportunities() {
                 </div>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {realEstateData.opportunities.slice(0, 6).map((opp, index) => (
-                    <OpportunityCard key={opp.id} opportunity={opp} index={index} />
+                    <OpportunityCard key={opp.id} opportunity={opp} index={index} currentUser={currentUser} savedOpportunities={savedOpportunities} />
                   ))}
                 </div>
               </div>
@@ -413,7 +413,9 @@ export default function Opportunities() {
                       <OpportunityCard 
                         key={`${opportunity.source}-${opportunity.id}`} 
                         opportunity={opportunity} 
-                        index={index} 
+                        index={index}
+                        currentUser={currentUser}
+                        savedOpportunities={savedOpportunities}
                       />
                     ))}
                   </div>
