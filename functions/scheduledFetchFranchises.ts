@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
-const CACHE_TTL_DAYS = 1;
+const CACHE_TTL_DAYS = 30;
+const DEFAULT_FRANCHISE_IMAGE = 'https://images.unsplash.com/photo-1664575602554-2087b04935a5?w=800&q=80';
 
 function parseAmount(text) {
   if (!text) return null;
