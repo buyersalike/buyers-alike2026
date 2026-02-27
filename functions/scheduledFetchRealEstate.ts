@@ -79,14 +79,13 @@ Deno.serve(async (req) => {
         if (city) descParts.push(city);
         if (state) descParts.push(state);
 
-        // Photos - use original quality by replacing the small 's' size suffix with 'od' (original)
-        const upgradePhotoUrl = (url) => {
-          if (!url) return null;
-          // Realtor.com CDN uses suffix like -m123456789s.jpg (small) → replace with od.jpg
-          return url.replace(/[a-z]\.jpg$/, 'od.jpg');
-        };
-        const photos = (listing?.photos || []).map(p => upgradePhotoUrl(p?.href || p?.url)).filter(Boolean);
-        const primaryPhoto = upgradePhotoUrl(listing?.primary_photo?.href || listing?.thumbnail) || photos[0] || null;
+        // Photos - use larger images by replacing the small suffix letter before .jpg
+        const photos = (listing?.photos || []).map(p => {
+          const u = p?.href || p?.url;
+          return u ? u.replace(/[a-z](\.jpg)$/, 'od$1') : null;
+        }).filter(Boolean);
+        const rawPrimary = listing?.primary_photo?.href || listing?.thumbnail || null;
+        const primaryPhoto = rawPrimary ? rawPrimary.replace(/[a-z](\.jpg)$/, 'od$1') : photos[0] || null;
 
         // Date
         let postedDate = 'Recently listed';
