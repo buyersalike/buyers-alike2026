@@ -39,12 +39,14 @@ Deno.serve(async (req) => {
       });
 
       if (!response.ok) {
-        console.log(`Failed for ${location}: ${response.status}`);
+        const errText = await response.text();
+        console.log(`Failed for ${location}: ${response.status} - ${errText}`);
         continue;
       }
 
       const data = await response.json();
-      const listings = data?.data?.home_search?.results || data?.results || [];
+      console.log(`${location} keys:`, Object.keys(data));
+      const listings = data?.data?.home_search?.results || data?.results || data?.data?.results || data?.properties || [];
 
       for (const listing of listings) {
         const propId = listing?.property_id || listing?.listing_id || String(Math.random());
