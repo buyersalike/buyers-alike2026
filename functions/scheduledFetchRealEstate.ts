@@ -131,7 +131,7 @@ Deno.serve(async (req) => {
     }
 
     if (allOpportunities.length === 0) {
-      return Response.json({ error: 'No listings found from API' }, { status: 500 });
+      return Response.json({ error: 'No listings found from API. This may be a rate limit - existing cache will remain.' }, { status: 500 });
     }
 
     // Sort by most recent first
