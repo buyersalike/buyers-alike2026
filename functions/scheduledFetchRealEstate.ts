@@ -2,16 +2,16 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 const CACHE_TTL_DAYS = 30;
 
-// Canadian cities to search across
+// Canadian cities to search across (using full province names for Realtor.com format)
 const CANADIAN_LOCATIONS = [
-  'Toronto, ON',
-  'Vancouver, BC',
-  'Montreal, QC',
-  'Calgary, AB',
-  'Ottawa, ON',
-  'Edmonton, AB',
-  'Mississauga, ON',
-  'Winnipeg, MB',
+  'Toronto, Ontario',
+  'Vancouver, British Columbia',
+  'Calgary, Alberta',
+  'Ottawa, Ontario',
+  'Edmonton, Alberta',
+  'Mississauga, Ontario',
+  'Winnipeg, Manitoba',
+  'Hamilton, Ontario',
 ];
 
 Deno.serve(async (req) => {
