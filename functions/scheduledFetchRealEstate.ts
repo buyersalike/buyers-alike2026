@@ -26,6 +26,8 @@ Deno.serve(async (req) => {
     const allOpportunities = [];
     const seenIds = new Set();
 
+    console.log('Starting fetch for', CANADIAN_LOCATIONS.length, 'locations');
+
     // Fetch from multiple Canadian cities
     for (const location of CANADIAN_LOCATIONS) {
       const url = `https://realtor16.p.rapidapi.com/search/forsale?location=${encodeURIComponent(location)}&limit=10`;
