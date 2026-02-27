@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
 
       const data = await response.json();
       console.log(`${location} keys:`, Object.keys(data));
-      const listings = data?.data?.home_search?.results || data?.results || data?.data?.results || data?.properties || [];
+      const listings = data?.properties || data?.data?.home_search?.results || data?.results || data?.data?.results || [];
 
       for (const listing of listings) {
         const propId = listing?.property_id || listing?.listing_id || String(Math.random());
