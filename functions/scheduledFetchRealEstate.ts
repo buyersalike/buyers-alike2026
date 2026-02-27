@@ -2,6 +2,18 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 const CACHE_TTL_DAYS = 30;
 
+// Canadian cities to search across
+const CANADIAN_LOCATIONS = [
+  'Toronto, ON',
+  'Vancouver, BC',
+  'Montreal, QC',
+  'Calgary, AB',
+  'Ottawa, ON',
+  'Edmonton, AB',
+  'Mississauga, ON',
+  'Winnipeg, MB',
+];
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -11,121 +23,120 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'API key not configured' }, { status: 500 });
     }
 
-    // Fetch property listings across Canada using Realty in CA (apidojo)
-    const url = 'https://realty-in-ca1.p.rapidapi.com/properties/list-for-sale';
-    const params = new URLSearchParams({
-      LatitudeMax: '83.0',
-      LongitudeMax: '-52.0',
-      LatitudeMin: '41.6',
-      LongitudeMin: '-141.0',
-      CurrentPage: '1',
-      RecordsPerPage: '50',
-      SortBy: '6',
-      SortOrder: 'D',
-      PropertyTypeGroupID: '1',
-      CultureId: '1',
-      ApplicationId: '1',
-    });
+    const allOpportunities = [];
+    const seenIds = new Set();
 
-    const response = await fetch(`${url}?${params}`, {
-      method: 'GET',
-      headers: {
-        'x-rapidapi-host': 'realty-in-ca1.p.rapidapi.com',
-        'x-rapidapi-key': apiKey,
-      },
-    });
+    // Fetch from multiple Canadian cities
+    for (const location of CANADIAN_LOCATIONS) {
+      const url = `https://realtor16.p.rapidapi.com/search/forsale?location=${encodeURIComponent(location)}&limit=10&sort=newest`;
 
-    if (!response.ok) {
-      return Response.json({ error: `API error: ${response.status}` }, { status: 500 });
-    }
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-host': 'realtor16.p.rapidapi.com',
+          'x-rapidapi-key': apiKey,
+        },
+      });
 
-    const data = await response.json();
-    const listings = data?.Results || [];
-
-    const opportunities = listings.map((listing) => {
-      const price = listing.Property?.Price || listing.Property?.PriceUnformatted
-        ? `$${Number(listing.Property?.PriceUnformatted || 0).toLocaleString('en-CA')}`
-        : 'Price on request';
-
-      const address = listing.Property?.Address;
-      const city = address?.City || '';
-      const province = address?.Province || '';
-      const streetAddress = address?.AddressText || '';
-      const cleanAddress = streetAddress.replace(/\|.*$/, '').trim();
-
-      const beds = listing.Building?.Bedrooms || '';
-      const baths = listing.Building?.BathroomTotal || '';
-      const buildingType = listing.Building?.Type || listing.Property?.Type || 'Property';
-
-      const descParts = [];
-      if (beds) descParts.push(`${beds} bed`);
-      if (baths) descParts.push(`${baths} bath`);
-      descParts.push(buildingType);
-      if (cleanAddress) descParts.push(`at ${cleanAddress}`);
-      if (city) descParts.push(city);
-      if (province) descParts.push(province);
-
-      const photos = (listing.Property?.Photo || []).map(p =>
-        p.HighResPath || p.MedResPath || p.LowResPath
-      ).filter(Boolean);
-
-      const photo = photos[0] || null;
-
-      let postedDate = 'Recently listed';
-      const ticks = listing.InsertedDateUTC;
-      if (ticks) {
-        const tickNumber = typeof ticks === 'string' ? parseInt(ticks.replace(/\D/g, ''), 10) : ticks;
-        const unixMs = (tickNumber - 621355968000000000) / 10000;
-        const date = new Date(unixMs);
-        if (!isNaN(date.getTime())) {
-          postedDate = date.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
-        }
+      if (!response.ok) {
+        console.log(`Failed for ${location}: ${response.status}`);
+        continue;
       }
 
-      const mls = listing.MlsNumber || listing.Id || '';
-      const location = [city, province].filter(Boolean).join(', ') || 'Canada';
-      const title = `${buildingType} - ${location}${mls ? ` (MLS# ${mls})` : ''}`;
+      const data = await response.json();
+      const listings = data?.data?.home_search?.results || data?.results || [];
 
-      const maxPartners = Math.floor(Math.random() * 20) + 5;
+      for (const listing of listings) {
+        const propId = listing?.property_id || listing?.listing_id || String(Math.random());
+        if (seenIds.has(propId)) continue;
+        seenIds.add(propId);
 
-      // Extract agent/office contact info
-      const agent = listing.Individual?.[0] || null;
-      const agentName = agent ? [agent.Name?.FirstName, agent.Name?.LastName].filter(Boolean).join(' ') : null;
-      const agentEmail = agent?.Emails?.[0]?.ContactId || agent?.EmailAddresses?.[0] || null;
-      const agentPhone = agent?.PhoneNumbers?.[0]?.PhoneNumber || agent?.Phones?.[0]?.PhoneNumber || null;
-      const agentWebsite = agent?.WebsiteURL || listing.Office?.Website || null;
-      const officeName = listing.Office?.Name || null;
+        const loc = listing?.location?.address || {};
+        const city = loc.city || '';
+        const state = loc.state_code || loc.state || '';
+        const streetAddress = [loc.line, loc.unit].filter(Boolean).join(' ');
 
-      return {
-        id: String(listing.Id || listing.MlsNumber || Math.random()),
-        type: 'Real Estate',
-        title,
-        investment: price,
-        description: descParts.join(', '),
-        image: photo,
-        images: photos,
-        postedDate,
-        partners: `1/${maxPartners} partners`,
-        contact: {
-          name: agentName,
-          email: agentEmail,
-          phone: agentPhone,
-          website: agentWebsite,
-          office: officeName,
-        },
-        _sortDate: listing.InsertedDateUTC
-          ? (typeof listing.InsertedDateUTC === 'string'
-            ? parseInt(listing.InsertedDateUTC.replace(/\D/g, ''), 10)
-            : listing.InsertedDateUTC)
-          : 0,
-      };
-    });
+        const details = listing?.description || {};
+        const beds = details.beds || '';
+        const baths = details.baths || '';
+        const buildingType = details.type || listing?.list_price_min ? 'Condo' : 'Property';
+        const sqft = details.sqft || '';
+
+        const priceRaw = listing?.list_price || listing?.price || 0;
+        const price = priceRaw ? `$${Number(priceRaw).toLocaleString('en-CA')}` : 'Price on request';
+
+        const descParts = [];
+        if (beds) descParts.push(`${beds} bed`);
+        if (baths) descParts.push(`${baths} bath`);
+        if (sqft) descParts.push(`${Number(sqft).toLocaleString()} sqft`);
+        if (buildingType) descParts.push(buildingType);
+        if (streetAddress) descParts.push(`at ${streetAddress}`);
+        if (city) descParts.push(city);
+        if (state) descParts.push(state);
+
+        // Photos
+        const photos = (listing?.photos || []).map(p => p?.href || p?.url).filter(Boolean);
+        const primaryPhoto = listing?.primary_photo?.href || listing?.thumbnail || photos[0] || null;
+
+        // Date
+        let postedDate = 'Recently listed';
+        const listedDate = listing?.list_date || listing?.last_update_date;
+        if (listedDate) {
+          const d = new Date(listedDate);
+          if (!isNaN(d.getTime())) {
+            postedDate = d.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+          }
+        }
+
+        const locationStr = [city, state].filter(Boolean).join(', ') || 'Canada';
+        const title = `${buildingType} - ${locationStr}`;
+
+        // Agent info
+        const agent = listing?.advertisers?.[0] || listing?.agents?.[0] || null;
+        const agentName = agent?.name || agent?.full_name || null;
+        const agentEmail = agent?.email || null;
+        const agentPhone = agent?.phones?.[0]?.number || agent?.phone || null;
+        const agentWebsite = agent?.href || null;
+        const officeName = listing?.branding?.[0]?.name || agent?.office?.name || null;
+
+        const maxPartners = Math.floor(Math.random() * 20) + 5;
+
+        allOpportunities.push({
+          id: propId,
+          type: 'Real Estate',
+          title,
+          investment: price,
+          description: descParts.join(', '),
+          image: primaryPhoto,
+          images: photos,
+          postedDate,
+          partners: `1/${maxPartners} partners`,
+          contact: {
+            name: agentName,
+            email: agentEmail,
+            phone: agentPhone,
+            website: agentWebsite,
+            office: officeName,
+          },
+          _listedDate: listedDate || '',
+        });
+      }
+    }
+
+    if (allOpportunities.length === 0) {
+      return Response.json({ error: 'No listings found from API' }, { status: 500 });
+    }
 
     // Sort by most recent first
-    opportunities.sort((a, b) => b._sortDate - a._sortDate);
-    opportunities.forEach(o => delete o._sortDate);
+    allOpportunities.sort((a, b) => {
+      if (!a._listedDate && !b._listedDate) return 0;
+      if (!a._listedDate) return 1;
+      if (!b._listedDate) return -1;
+      return new Date(b._listedDate) - new Date(a._listedDate);
+    });
+    allOpportunities.forEach(o => delete o._listedDate);
 
-    // Delete old cache records and store fresh data
+    // Delete old caches and store fresh data
     const fetchedAt = new Date().toISOString();
     const expiresAt = new Date(Date.now() + CACHE_TTL_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
@@ -135,14 +146,14 @@ Deno.serve(async (req) => {
     }
 
     await base44.asServiceRole.entities.RealEstateCache.create({
-      opportunities,
+      opportunities: allOpportunities,
       fetched_at: fetchedAt,
       expires_at: expiresAt,
     });
 
     return Response.json({
       success: true,
-      count: opportunities.length,
+      count: allOpportunities.length,
       fetchedAt,
       cachedUntil: expiresAt,
     });
