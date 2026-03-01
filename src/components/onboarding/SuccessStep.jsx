@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Trophy, Sparkles, ArrowRight, TrendingUp, Users, Briefcase } from "lucide-react";
@@ -10,81 +10,125 @@ import confetti from "canvas-confetti";
 
 export default function SuccessStep({ userData, currentUser }) {
   const [saving, setSaving] = useState(true);
-  const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
-  const savedRef = useRef(false);
+  // Prevent double-save in StrictMode
+  const hasSaved = useRef(false);
   const navigate = useNavigate();
 
+  // Capture userData in a ref so the save function always has the latest values
+  // even if React batches the state update and renders SuccessStep before userData state settles
+  const userDataSnapshot = useRef(userData);
+
   const { data: opportunities = [] } = useQuery({
-    queryKey: ['matchedOpportunities'],
+    queryKey: ['matchedOpportunities', userData.interests],
     queryFn: async () => {
       const allOpps = await base44.entities.Opportunity.list();
       return allOpps
-        .filter(opp => userData.interests?.some(int =>
-          opp.category?.toLowerCase().includes(int.toLowerCase()) ||
-          opp.title?.toLowerCase().includes(int.toLowerCase())
-        ))
+        .filter(opp =>
+          userDataSnapshot.current.interests?.some(int =>
+            opp.category?.toLowerCase().includes(int.toLowerCase()) ||
+            opp.title?.toLowerCase().includes(int.toLowerCase())
+          )
+        )
         .slice(0, 3);
     },
   });
 
-  const saveProfile = useCallback(async () => {
-    if (savedRef.current) return;
-    savedRef.current = true;
-    setSaving(true);
-    setError(null);
-
-    try {
-      // Update user profile — full_name is a read-only built-in, only update editable fields
-      const profileUpdate = {
-        title: userData.title || undefined,
-        bio: userData.bio || undefined,
-        location: userData.location || undefined,
-        investment_range: userData.investment_range || undefined,
-        partnership_goals: userData.partnership_goals || undefined,
-        onboarding_complete: true,
-      };
-      // Remove undefined keys so we don't overwrite existing data with nothing
-      Object.keys(profileUpdate).forEach(k => profileUpdate[k] === undefined && delete profileUpdate[k]);
-      await base44.auth.updateMe(profileUpdate);
-
-      // Save interests — deduplicate against existing
-      if (userData.interests?.length > 0) {
-        const existing = await base44.entities.Interest.filter({ user_email: currentUser.email });
-        const existingNames = new Set(existing.map(i => i.interest_name.toLowerCase()));
-
-        const newInterests = userData.interests.filter(
-          interest => !existingNames.has(interest.toLowerCase())
-        );
-
-        for (const interest of newInterests) {
-          await base44.entities.Interest.create({
-            user_email: currentUser.email,
-            interest_name: interest,
-            status: "approved",
-          });
-        }
-      }
-
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-      setSaving(false);
-      setSaved(true);
-
-      setTimeout(() => {
-        navigate(createPageUrl('Partnerships'));
-      }, 2500);
-    } catch (err) {
-      console.error('Error saving profile:', err);
-      setError('Something went wrong. Please try again.');
-      setSaving(false);
-      savedRef.current = false; // allow retry
-    }
-  }, [userData, currentUser, navigate]);
-
   useEffect(() => {
-    saveProfile();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saveProfile]);
+    if (hasSaved.current) return;
+    hasSaved.current = true;
+
+    const save = async () => {
+      setSaving(true);
+      setError(null);
+
+      const data = userDataSnapshot.current;
+
+      try {
+        // Build update payload — skip undefined/empty so existing profile fields aren't wiped
+        const profileUpdate = {};
+        if (data.title) profileUpdate.title = data.title;
+        if (data.bio) profileUpdate.bio = data.bio;
+        if (data.location) profileUpdate.location = data.location;
+        if (data.investment_range) profileUpdate.investment_range = data.investment_range;
+        if (data.partnership_goals) profileUpdate.partnership_goals = data.partnership_goals;
+        profileUpdate.onboarding_complete = true;
+
+        await base44.auth.updateMe(profileUpdate);
+
+        // Save interests — deduplicate against existing
+        if (data.interests?.length > 0) {
+          const existing = await base44.entities.Interest.filter({ user_email: currentUser.email });
+          const existingNames = new Set(existing.map(i => i.interest_name.toLowerCase()));
+          const newInterests = data.interests.filter(
+            interest => !existingNames.has(interest.toLowerCase())
+          );
+          for (const interest of newInterests) {
+            await base44.entities.Interest.create({
+              user_email: currentUser.email,
+              interest_name: interest,
+              status: "approved",
+            });
+          }
+        }
+
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        setSaving(false);
+
+        setTimeout(() => navigate(createPageUrl('Partnerships')), 2500);
+      } catch (err) {
+        console.error('Onboarding save error:', err);
+        setError('Something went wrong saving your profile. Please try again.');
+        setSaving(false);
+        hasSaved.current = false; // allow retry
+      }
+    };
+
+    save();
+  }, []); // intentionally run once on mount
+
+  const handleRetry = () => {
+    hasSaved.current = false;
+    setError(null);
+    setSaving(true);
+    // Re-trigger by resetting hasSaved and calling save manually
+    const save = async () => {
+      hasSaved.current = true;
+      const data = userDataSnapshot.current;
+      try {
+        const profileUpdate = {};
+        if (data.title) profileUpdate.title = data.title;
+        if (data.bio) profileUpdate.bio = data.bio;
+        if (data.location) profileUpdate.location = data.location;
+        if (data.investment_range) profileUpdate.investment_range = data.investment_range;
+        if (data.partnership_goals) profileUpdate.partnership_goals = data.partnership_goals;
+        profileUpdate.onboarding_complete = true;
+        await base44.auth.updateMe(profileUpdate);
+
+        if (data.interests?.length > 0) {
+          const existing = await base44.entities.Interest.filter({ user_email: currentUser.email });
+          const existingNames = new Set(existing.map(i => i.interest_name.toLowerCase()));
+          const newInterests = data.interests.filter(i => !existingNames.has(i.toLowerCase()));
+          for (const interest of newInterests) {
+            await base44.entities.Interest.create({
+              user_email: currentUser.email,
+              interest_name: interest,
+              status: "approved",
+            });
+          }
+        }
+
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        setSaving(false);
+        setTimeout(() => navigate(createPageUrl('Partnerships')), 2500);
+      } catch (err) {
+        setError('Something went wrong. Please try again.');
+        setSaving(false);
+        hasSaved.current = false;
+      }
+    };
+    save();
+  };
 
   return (
     <motion.div
@@ -189,7 +233,7 @@ export default function SuccessStep({ userData, currentUser }) {
             <div className="space-y-3">
               <p className="text-sm" style={{ color: '#EF4444' }}>{error}</p>
               <Button
-                onClick={saveProfile}
+                onClick={handleRetry}
                 size="lg"
                 className="px-8 py-6 text-lg rounded-xl gap-2"
                 style={{ background: '#D8A11F', color: '#fff' }}
