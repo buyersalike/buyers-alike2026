@@ -33,7 +33,9 @@ export default function News() {
       const response = await base44.functions.invoke('fetchNews', {});
       return response.data;
     },
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    // Cache for 30 minutes on the client — backend handles the real 6-hour freshness
+    staleTime: 30 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 
   const articles = newsData?.articles || [];
