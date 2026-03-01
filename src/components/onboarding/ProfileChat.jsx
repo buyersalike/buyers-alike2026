@@ -94,8 +94,8 @@ export default function ProfileChat({ onNext, userData }) {
   };
 
   const handleSkip = () => {
-    const question = QUESTIONS[currentQuestion];
     setMessages(prev => [...prev, { type: "user", text: "Skipped ⏭" }]);
+    // Pass current answers unchanged (no new field added for skipped question)
     advance(answers);
   };
 
