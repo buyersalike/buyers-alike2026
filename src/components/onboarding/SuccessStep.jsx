@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Trophy, Sparkles, ArrowRight, TrendingUp, Users, Briefcase } from "lucide-react";
@@ -10,6 +10,7 @@ import confetti from "canvas-confetti";
 
 export default function SuccessStep({ userData, currentUser }) {
   const [saving, setSaving] = useState(true);
+  const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
   const savedRef = useRef(false);
   const navigate = useNavigate();
@@ -27,55 +28,57 @@ export default function SuccessStep({ userData, currentUser }) {
     },
   });
 
-  useEffect(() => {
-    // Guard against double-execution (StrictMode / remount)
+  const saveProfile = useCallback(async () => {
     if (savedRef.current) return;
     savedRef.current = true;
+    setSaving(true);
+    setError(null);
 
-    const saveProfile = async () => {
-      setSaving(true);
-      setError(null);
-      try {
-        await base44.auth.updateMe({
-          full_name: userData.full_name,
-          title: userData.title,
-          bio: userData.bio,
-          location: userData.location,
-          investment_range: userData.investment_range,
-          partnership_goals: userData.partnership_goals,
-        });
+    try {
+      // Update user profile — NOTE: full_name is read-only, skip it
+      await base44.auth.updateMe({
+        title: userData.title,
+        bio: userData.bio,
+        location: userData.location,
+        investment_range: userData.investment_range,
+        partnership_goals: userData.partnership_goals,
+        onboarding_complete: true,
+      });
 
-        // Deduplicate: fetch existing interests first
-        if (userData.interests?.length > 0) {
-          const existing = await base44.entities.Interest.filter({ user_email: currentUser.email });
-          const existingNames = new Set(existing.map(i => i.interest_name.toLowerCase()));
+      // Save interests — deduplicate against existing
+      if (userData.interests?.length > 0) {
+        const existing = await base44.entities.Interest.filter({ user_email: currentUser.email });
+        const existingNames = new Set(existing.map(i => i.interest_name.toLowerCase()));
 
-          const newInterests = userData.interests.filter(
-            interest => !existingNames.has(interest.toLowerCase())
-          );
+        const newInterests = userData.interests.filter(
+          interest => !existingNames.has(interest.toLowerCase())
+        );
 
-          for (const interest of newInterests) {
-            await base44.entities.Interest.create({
-              user_email: currentUser.email,
-              interest_name: interest,
-              status: "approved",
-            });
-          }
+        for (const interest of newInterests) {
+          await base44.entities.Interest.create({
+            user_email: currentUser.email,
+            interest_name: interest,
+            status: "approved",
+          });
         }
-
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-
-        setTimeout(() => {
-          navigate(createPageUrl('Partnerships'));
-        }, 2500);
-      } catch (err) {
-        console.error('Error saving profile:', err);
-        setError('Something went wrong. Please try again.');
-        setSaving(false);
-        savedRef.current = false; // allow retry
       }
-    };
 
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      setSaving(false);
+      setSaved(true);
+
+      setTimeout(() => {
+        navigate(createPageUrl('Partnerships'));
+      }, 2500);
+    } catch (err) {
+      console.error('Error saving profile:', err);
+      setError('Something went wrong. Please try again.');
+      setSaving(false);
+      savedRef.current = false; // allow retry
+    }
+  }, [userData, currentUser, navigate]);
+
+  useEffect(() => {
     saveProfile();
   }, []);
 
@@ -182,7 +185,7 @@ export default function SuccessStep({ userData, currentUser }) {
             <div className="space-y-3">
               <p className="text-sm" style={{ color: '#EF4444' }}>{error}</p>
               <Button
-                onClick={() => { savedRef.current = false; saveProfile(); }}
+                onClick={saveProfile}
                 size="lg"
                 className="px-8 py-6 text-lg rounded-xl gap-2"
                 style={{ background: '#D8A11F', color: '#fff' }}
@@ -192,7 +195,10 @@ export default function SuccessStep({ userData, currentUser }) {
             </div>
           ) : saving ? (
             <div className="py-4">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-t-transparent" style={{ borderColor: '#D8A11F', borderTopColor: 'transparent' }}></div>
+              <div
+                className="inline-block animate-spin rounded-full h-8 w-8 border-4"
+                style={{ borderColor: '#D8A11F', borderTopColor: 'transparent' }}
+              />
               <p className="mt-4" style={{ color: '#666' }}>Setting up your profile...</p>
             </div>
           ) : (
