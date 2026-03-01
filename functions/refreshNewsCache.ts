@@ -124,17 +124,19 @@ Deno.serve(async (req) => {
 
     // Deduplicate
     const uniqueArticles = [];
-    const seenTitles = new Set();
+    const seenTitles = [];
     for (const article of allArticles) {
+      if (!article.title) continue;
       const normalizedTitle = article.title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
       let isDuplicate = false;
       for (const seenTitle of seenTitles) {
         if (calculateSimilarity(normalizedTitle, seenTitle) > 0.8) { isDuplicate = true; break; }
       }
-      if (!isDuplicate) { seenTitles.add(normalizedTitle); uniqueArticles.push(article); }
+      if (!isDuplicate) { seenTitles.push(normalizedTitle); uniqueArticles.push(article); }
     }
+    // Always sort newest first
     uniqueArticles.sort((a, b) => b.timestamp - a.timestamp);
-    const finalArticles = uniqueArticles.slice(0, 100);
+    const finalArticles = uniqueArticles.slice(0, 120);
 
     const now = new Date();
     const fetchedAt = now.toISOString();
