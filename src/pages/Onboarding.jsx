@@ -44,8 +44,9 @@ export default function Onboarding() {
   const progress = (currentStep / TOTAL_STEPS) * 100;
 
   const handleNext = (data) => {
-    // Merge data first, then advance step — both in same render cycle
-    setUserData(prev => ({ ...prev, ...data }));
+    const updated = { ...userDataRef.current, ...data };
+    userDataRef.current = updated;
+    setUserData(updated);
     setCurrentStep(prev => prev + 1);
   };
 
