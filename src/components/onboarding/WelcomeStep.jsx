@@ -11,6 +11,8 @@ export default function WelcomeStep({ onNext, currentUser }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (name.trim() && title.trim()) {
+      // full_name is passed for display purposes in later steps,
+      // but it's a read-only built-in and won't be sent to updateMe
       onNext({ full_name: name, title });
     }
   };
