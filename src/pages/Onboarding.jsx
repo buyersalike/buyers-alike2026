@@ -23,6 +23,8 @@ export default function Onboarding() {
     partnership_goals: "",
     interests: [],
   });
+  // Keep a ref that's always in sync — SuccessStep reads from this
+  const userDataRef = React.useRef(userData);
   const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
 
