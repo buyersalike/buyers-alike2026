@@ -45,18 +45,14 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'SERP API key not configured' }, { status: 500 });
     }
 
-    // Mirror the same diverse queries used in fetchNews for consistency
+    // 6 queries — same as fetchNews
     const queries = [
-      { q: 'business news Canada', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
-      { q: 'finance markets Canada', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
+      { q: 'business news Canada finance', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
       { q: 'real estate investment Canada', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
-      { q: 'business news', gl: 'us', hl: 'en', region: 'United States', tbs: 'qdr:w' },
-      { q: 'finance markets', gl: 'us', hl: 'en', region: 'United States', tbs: 'qdr:w' },
-      { q: 'stock market today', gl: 'us', hl: 'en', region: 'United States', tbs: 'qdr:w' },
-      { q: 'business finance China', gl: 'cn', hl: 'en', region: 'China', tbs: 'qdr:w' },
-      { q: 'technology startups', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
-      { q: 'franchise business opportunities Canada', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
-      { q: 'entrepreneurship small business', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
+      { q: 'technology startups entrepreneurship Canada', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
+      { q: 'business finance markets USA', gl: 'us', hl: 'en', region: 'United States', tbs: 'qdr:w' },
+      { q: 'stock market today investing', gl: 'us', hl: 'en', region: 'United States', tbs: 'qdr:w' },
+      { q: 'business finance China economy', gl: 'cn', hl: 'en', region: 'China', tbs: 'qdr:w' },
     ];
 
     function parseRelativeDate(dateStr) {
