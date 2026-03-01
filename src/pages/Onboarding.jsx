@@ -42,7 +42,11 @@ export default function Onboarding() {
   const progress = (currentStep / TOTAL_STEPS) * 100;
 
   const handleNext = (data) => {
-    setUserData(prev => ({ ...prev, ...data }));
+    // Merge incoming step data into accumulated userData
+    setUserData(prev => {
+      const merged = { ...prev, ...data };
+      return merged;
+    });
     setCurrentStep(prev => prev + 1);
   };
 
