@@ -28,7 +28,14 @@ export default function Onboarding() {
 
   useEffect(() => {
     base44.auth.me()
-      .then(user => setCurrentUser(user))
+      .then(user => {
+        setCurrentUser(user);
+        // Pre-fill name from existing user data
+        setUserData(prev => ({
+          ...prev,
+          full_name: user.full_name || "",
+        }));
+      })
       .catch(() => base44.auth.redirectToLogin());
   }, []);
 
