@@ -61,7 +61,7 @@ export default function ProfileChat({ onNext, userData }) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const advance = (newAnswers, skipped = false) => {
+  const advance = (newAnswers) => {
     const nextQuestion = currentQuestion + 1;
     if (nextQuestion < QUESTIONS.length) {
       setTimeout(() => {
@@ -75,6 +75,7 @@ export default function ProfileChat({ onNext, userData }) {
           type: "bot",
           text: "Perfect! 🎊 You're all set. Let's find some opportunities for you..."
         }]);
+        // Pass all collected answers to parent
         setTimeout(() => onNext(newAnswers), 1500);
       }, 500);
     }
