@@ -140,7 +140,7 @@ export default function Onboarding() {
             <ProfileChat key="profile" onNext={handleNext} userData={userData} />
           )}
           {currentStep === 4 && (
-            <SuccessStep key="success" userData={userData} currentUser={currentUser} />
+            <SuccessStep key="success" userData={userDataRef.current} currentUser={currentUser} />
           )}
         </AnimatePresence>
       </div>
