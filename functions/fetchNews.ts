@@ -98,18 +98,14 @@ function getCategory(topic) {
 }
 
 async function fetchFreshArticles(SERP_API_KEY) {
-  // Diverse, targeted queries — tbs=qdr:w means "past week" for recency
+  // 6 targeted queries run in parallel — covers all regions + categories well within timeout
   const queries = [
-    { q: 'business news Canada', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
-    { q: 'finance markets Canada', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
+    { q: 'business news Canada finance', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
     { q: 'real estate investment Canada', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
-    { q: 'business news', gl: 'us', hl: 'en', region: 'United States', tbs: 'qdr:w' },
-    { q: 'finance markets', gl: 'us', hl: 'en', region: 'United States', tbs: 'qdr:w' },
-    { q: 'stock market today', gl: 'us', hl: 'en', region: 'United States', tbs: 'qdr:w' },
-    { q: 'business finance China', gl: 'cn', hl: 'en', region: 'China', tbs: 'qdr:w' },
-    { q: 'technology startups', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
-    { q: 'franchise business opportunities Canada', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
-    { q: 'entrepreneurship small business', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
+    { q: 'technology startups entrepreneurship Canada', gl: 'ca', hl: 'en', region: 'Canada', tbs: 'qdr:w' },
+    { q: 'business finance markets USA', gl: 'us', hl: 'en', region: 'United States', tbs: 'qdr:w' },
+    { q: 'stock market today investing', gl: 'us', hl: 'en', region: 'United States', tbs: 'qdr:w' },
+    { q: 'business finance China economy', gl: 'cn', hl: 'en', region: 'China', tbs: 'qdr:w' },
   ];
 
   const allArticles = [];
