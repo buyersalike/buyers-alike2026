@@ -53,7 +53,9 @@ export default function LandingNavbar() {
                 <a
                   key={l.label}
                   href={l.href}
-                  className="text-[15px] font-medium text-gray-500 hover:text-gray-900 transition-colors"
+                  className={`text-[15px] font-medium transition-colors ${
+                    scrolled ? "text-gray-500 hover:text-gray-900" : "text-gray-300 hover:text-white"
+                  }`}
                 >
                   {l.label}
                 </a>
@@ -73,7 +75,9 @@ export default function LandingNavbar() {
                   <>
                     <button
                       onClick={() => base44.auth.redirectToLogin()}
-                      className="text-[15px] font-medium text-gray-500 hover:text-gray-900 transition-colors"
+                      className={`text-[15px] font-medium transition-colors ${
+                        scrolled ? "text-gray-500 hover:text-gray-900" : "text-gray-300 hover:text-white"
+                      }`}
                     >
                       Sign In
                     </button>
@@ -89,7 +93,7 @@ export default function LandingNavbar() {
             </div>
 
             {/* Mobile toggle */}
-            <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 text-gray-700">
+            <button onClick={() => setMobileOpen(!mobileOpen)} className={`md:hidden p-2 ${scrolled ? "text-gray-700" : "text-white"}`}>
               {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
