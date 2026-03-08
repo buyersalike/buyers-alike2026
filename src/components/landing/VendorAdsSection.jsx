@@ -8,16 +8,13 @@ const AdSliderColumn = ({ ads, delay = 0 }) => {
 
   useEffect(() => {
     if (!ads || ads.length === 0) return;
-    
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % ads.length);
-    }, 8000); // All columns change at the same time
-
+    }, 8000);
     return () => clearInterval(interval);
   }, [ads, delay]);
 
   if (!ads || ads.length === 0) return null;
-
   const currentAd = ads[currentIndex];
 
   return (
@@ -25,62 +22,38 @@ const AdSliderColumn = ({ ads, delay = 0 }) => {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: delay / 1000 }}
-      className="relative h-[400px] rounded-2xl overflow-hidden glass-card group"
+      transition={{ delay: delay / 1000, duration: 0.6 }}
+      className="relative h-[400px] rounded-2xl overflow-hidden glass-light group"
     >
       <motion.div
         key={currentIndex}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
         className="relative w-full h-full"
       >
-        <img
-          src={currentAd.flyer_url}
-          alt={currentAd.business_name}
-          className="w-full h-full object-cover"
-        />
-        
-        {/* Overlay gradient */}
+        <img src={currentAd.flyer_url} alt={currentAd.business_name} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-        
-        {/* Content */}
         <div className="absolute bottom-0 left-0 right-0 p-6">
-          <h3 className="text-xl font-bold mb-2" style={{ color: '#E5EDFF' }}>
-            {currentAd.business_name}
-          </h3>
-          
-          {/* CTA Link */}
+          <h3 className="text-xl font-bold mb-2 text-white">{currentAd.business_name}</h3>
           <motion.a
             href={currentAd.source_url || '#'}
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white font-medium"
             style={{ backgroundColor: '#D8A11F' }}
-            onClick={(e) => {
-              if (!currentAd.source_url) {
-                e.preventDefault();
-              }
-            }}
+            onClick={(e) => { if (!currentAd.source_url) e.preventDefault(); }}
           >
             <span>Learn More</span>
             <ExternalLink className="w-4 h-4" />
           </motion.a>
         </div>
-
-        {/* Progress indicator (subtle) */}
         <div className="absolute top-4 right-4 flex gap-1">
           {ads.slice(0, 10).map((_, idx) => (
-            <div
-              key={idx}
-              className="w-1 h-1 rounded-full transition-all"
-              style={{
-                background: idx === currentIndex ? '#3B82F6' : 'rgba(255, 255, 255, 0.3)',
-              }}
-            />
+            <div key={idx} className="w-1 h-1 rounded-full transition-all"
+              style={{ background: idx === currentIndex ? '#D8A11F' : 'rgba(255, 255, 255, 0.3)' }} />
           ))}
         </div>
       </motion.div>
@@ -95,37 +68,22 @@ export default function VendorAdsSection() {
   useEffect(() => {
     const fetchApprovedAds = async () => {
       try {
-        // Fetch approved ads that haven't expired
-        const allAds = await base44.entities.AdvertiseApplication.filter({
-          status: "approved"
-        });
-        
-        // Filter by expiry date (not expired)
+        const allAds = await base44.entities.AdvertiseApplication.filter({ status: "approved" });
         const now = new Date();
-        const activeAds = allAds.filter(ad => {
-          if (!ad.expiry_date) return true;
-          return new Date(ad.expiry_date) > now;
-        });
-
-        console.log("Active ads:", activeAds);
+        const activeAds = allAds.filter(ad => !ad.expiry_date || new Date(ad.expiry_date) > now);
         setAds(activeAds);
       } catch (error) {
-        console.error("Error fetching ads:", error);
-        setAds([]); // Set empty array on error
+        setAds([]);
       } finally {
         setLoading(false);
       }
     };
-
     fetchApprovedAds();
   }, []);
 
-  // Organize ads by column assignment
   const column1 = ads.filter(ad => ad.landing_column === 1).slice(0, 10);
   const column2 = ads.filter(ad => ad.landing_column === 2).slice(0, 10);
   const column3 = ads.filter(ad => ad.landing_column === 3).slice(0, 10);
-  
-  // Distribute unassigned ads evenly across columns
   const unassignedAds = ads.filter(ad => !ad.landing_column || ![1, 2, 3].includes(ad.landing_column));
   unassignedAds.forEach((ad, idx) => {
     const targetColumn = (idx % 3) + 1;
@@ -136,50 +94,47 @@ export default function VendorAdsSection() {
 
   if (loading) {
     return (
-      <section className="relative py-24 px-4">
-        <div className="max-w-7xl mx-auto text-center" style={{ color: '#333' }}>
+      <section className="relative py-24 px-4" style={{ background: '#EEEDF2' }}>
+        <div className="max-w-7xl mx-auto text-center" style={{ color: '#4a4a6a' }}>
           <p>Loading our trusted partners...</p>
         </div>
       </section>
     );
   }
 
-  // Always show section with placeholder if no ads
   const hasAds = ads.length > 0;
 
   return (
-    <section className="relative py-24 px-4" style={{ background: '#F2F1F5' }}>
-      {/* Background effects */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#D8A11F]/10 to-transparent" />
+    <section className="relative py-24 px-4" style={{ background: '#EEEDF2' }}>
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#D8A11F]/5 to-transparent" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto">
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#000' }}>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4" style={{ color: '#1a1a2e' }}>
             Our Trusted Partners
           </h2>
-          <p className="text-xl max-w-2xl mx-auto" style={{ color: '#333' }}>
+          <p className="text-lg md:text-xl max-w-2xl mx-auto" style={{ color: '#4a4a6a' }}>
             Discover businesses and opportunities from our verified vendor community
           </p>
         </motion.div>
 
-        {/* 3-Column Slider Grid */}
         {hasAds ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
             {column1.length > 0 && <AdSliderColumn ads={column1} delay={0} />}
             {column2.length > 0 && <AdSliderColumn ads={column2} delay={0} />}
             {column3.length > 0 && <AdSliderColumn ads={column3} delay={0} />}
           </div>
         ) : (
           <div className="text-center py-12">
-            <p style={{ color: '#333' }}>No active advertisements at the moment.</p>
+            <p style={{ color: '#4a4a6a' }}>No active advertisements at the moment.</p>
           </div>
         )}
       </div>
