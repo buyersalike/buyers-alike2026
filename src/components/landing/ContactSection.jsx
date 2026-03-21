@@ -81,7 +81,7 @@ export default function ContactSection() {
               
               <form onSubmit={handleSubmit} className="space-y-5">
                 {submitted && (
-                  <div className="bg-green-500/20 border border-green-500/50 rounded-xl p-4 text-green-200 text-sm">
+                  <div className="bg-green-500/20 border border-green-500/50 rounded-xl p-4 text-sm" style={{ color: '#166534' }}>
                     Thank you! Your message has been sent successfully.
                   </div>
                 )}
