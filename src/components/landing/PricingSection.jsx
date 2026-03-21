@@ -7,6 +7,7 @@ import { base44 } from "@/api/base44Client";
 const plans = [
   {
     name: "Starter",
+    key: "starter",
     price: "Free",
     period: "",
     description: "Perfect for exploring the platform",
@@ -23,6 +24,7 @@ const plans = [
   },
   {
     name: "Professional",
+    key: "professional",
     price: "$29",
     period: "/month",
     description: "For active dealmakers",
@@ -42,6 +44,7 @@ const plans = [
   },
   {
     name: "Enterprise",
+    key: "enterprise",
     price: "$99",
     period: "/month",
     description: "For teams and organizations",
@@ -61,6 +64,27 @@ const plans = [
 ];
 
 export default function PricingSection() {
+  const [loadingPlan, setLoadingPlan] = useState(null);
+
+  const handleCheckout = async (planKey) => {
+    if (window.self !== window.top) {
+      alert("Checkout works only from the published app. Please open the app in a new tab.");
+      return;
+    }
+
+    if (planKey === "starter") {
+      base44.auth.redirectToLogin(window.location.origin + "/Partnerships");
+      return;
+    }
+
+    setLoadingPlan(planKey);
+    const response = await base44.functions.invoke("createCheckoutSession", { plan: planKey });
+    if (response.data?.url) {
+      window.location.href = response.data.url;
+    }
+    setLoadingPlan(null);
+  };
+
   return (
     <section className="relative py-24 px-4" style={{ background: '#F2F1F5' }}>
       {/* Background */}
@@ -199,7 +223,11 @@ export default function PricingSection() {
                 </div>
 
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-                  <Button className={`w-full py-6 rounded-xl font-bold text-base shadow-2xl relative overflow-hidden group ${plan.buttonStyle}`}>
+                  <Button 
+                    onClick={() => handleCheckout(plan.key)}
+                    disabled={loadingPlan === plan.key}
+                    className={`w-full py-6 rounded-xl font-bold text-base shadow-2xl relative overflow-hidden group ${plan.buttonStyle}`}
+                  >
                     {plan.popular && (
                       <motion.div
                         animate={{
@@ -209,7 +237,10 @@ export default function PricingSection() {
                         className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
                       />
                     )}
-                    <span className="relative z-10">{plan.buttonText}</span>
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      {loadingPlan === plan.key && <Loader2 className="w-4 h-4 animate-spin" />}
+                      {plan.buttonText}
+                    </span>
                   </Button>
                 </motion.div>
                 </div>
