@@ -156,3 +156,8 @@ button:focus-visible {
     @apply bg-background text-foreground;
   }
 }
+
+.success-text {
+  color: #15803d !important;
+  font-weight: 600 !important;
+}
