@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Search, Users, Handshake, ArrowRight, Sparkles } from "lucide-react";
+import { Search, Users, Handshake, ArrowRight, Sparkles, Loader2 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 
 const steps = [
   {
