@@ -24,7 +24,7 @@ const serviceCategories = [
   "Other",
 ];
 
-const provinces = [
+const provincesAndTerritories = [
   "Ontario",
   "British Columbia",
   "Alberta",
@@ -35,6 +35,9 @@ const provinces = [
   "New Brunswick",
   "Prince Edward Island",
   "Newfoundland and Labrador",
+  "Yukon",
+  "Northwest Territories",
+  "Nunavut",
 ];
 
 export default function VendorApplicationDialog({ open, onOpenChange }) {
@@ -48,7 +51,9 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
     website: "",
     category: "",
     province: "",
-    address: "",
+    streetAddress: "",
+    city: "",
+    postalCode: "",
     description: "",
     facebook: "",
     twitter: "",
@@ -57,7 +62,9 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
   });
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [portfolioUrl, setPortfolioUrl] = useState("");
+  const [othersUrl, setOthersUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [uploadingOthers, setUploadingOthers] = useState(false);
   const [user, setUser] = useState(null);
 
   React.useEffect(() => {
@@ -70,7 +77,7 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
     "Contact Details",
     "Location",
     "Social Media",
-    "Portfolio & Review"
+    "Documents & Review"
   ];
 
   const handleFileChange = (e) => {
@@ -82,21 +89,21 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
     setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
   };
 
-  const handlePortfolioUpload = async (e) => {
+  const handleFileUpload = async (e, setter, setLoadingSetter) => {
     const file = e.target.files?.[0];
     if (file) {
-      setUploading(true);
+      setLoadingSetter(true);
       try {
         const { file_url } = await base44.integrations.Core.UploadFile({ file });
-        setPortfolioUrl(file_url);
+        setter(file_url);
       } catch (error) {
         toast({
           title: "Upload Failed",
-          description: "Failed to upload portfolio. Please try again.",
+          description: "Failed to upload file. Please try again.",
           variant: "destructive",
         });
       } finally {
-        setUploading(false);
+        setLoadingSetter(false);
       }
     }
   };
@@ -118,7 +125,9 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
         website: "",
         category: "",
         province: "",
-        address: "",
+        streetAddress: "",
+        city: "",
+        postalCode: "",
         description: "",
         facebook: "",
         twitter: "",
@@ -127,6 +136,7 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
       });
       setUploadedFiles([]);
       setPortfolioUrl("");
+      setOthersUrl("");
       setCurrentStep(1);
       onOpenChange(false);
     },
@@ -157,7 +167,7 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
       });
       return;
     }
-    if (currentStep === 3 && (!formData.province || !formData.address)) {
+    if (currentStep === 3 && (!formData.province || !formData.streetAddress || !formData.city || !formData.postalCode)) {
       toast({
         title: "Required Fields",
         description: "Please fill in all required fields.",
@@ -181,6 +191,15 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
       toast({
         title: "Authentication Required",
         description: "Please log in to submit a vendor application.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!portfolioUrl) {
+      toast({
+        title: "Required Document",
+        description: "Please upload your business document(s) before submitting.",
         variant: "destructive",
       });
       return;
