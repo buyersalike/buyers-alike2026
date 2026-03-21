@@ -393,31 +393,56 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
                 </p>
               </div>
               
+              <div>
+                <Label htmlFor="streetAddress" style={{ color: '#B6C4E0' }}>Street Name and Number *</Label>
+                <Input
+                  id="streetAddress"
+                  value={formData.streetAddress}
+                  onChange={(e) => setFormData({ ...formData, streetAddress: e.target.value })}
+                  className="glass-input mt-1"
+                  style={{ color: '#E5EDFF' }}
+                  placeholder="e.g., 123 Main Street"
+                />
+              </div>
+
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="province" style={{ color: '#B6C4E0' }}>Province *</Label>
-                  <Select value={formData.province} onValueChange={(value) => setFormData({ ...formData, province: value })}>
-                    <SelectTrigger className="glass-input mt-1" style={{ color: '#E5EDFF' }}>
-                      <SelectValue placeholder="Select province" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {provinces.map((prov) => (
-                        <SelectItem key={prov} value={prov}>{prov}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="city" style={{ color: '#B6C4E0' }}>City *</Label>
+                  <Input
+                    id="city"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    className="glass-input mt-1"
+                    style={{ color: '#E5EDFF' }}
+                    placeholder="e.g., Toronto"
+                  />
                 </div>
 
                 <div>
-                  <Label htmlFor="address" style={{ color: '#B6C4E0' }}>Street Address *</Label>
+                  <Label htmlFor="postalCode" style={{ color: '#B6C4E0' }}>Postal Code *</Label>
                   <Input
-                    id="address"
-                    value={formData.address}
-                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    id="postalCode"
+                    value={formData.postalCode}
+                    onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
                     className="glass-input mt-1"
                     style={{ color: '#E5EDFF' }}
+                    placeholder="e.g., M5V 2T6"
                   />
                 </div>
+              </div>
+
+              <div>
+                <Label htmlFor="province" style={{ color: '#B6C4E0' }}>Province / Territory *</Label>
+                <Select value={formData.province} onValueChange={(value) => setFormData({ ...formData, province: value })}>
+                  <SelectTrigger className="glass-input mt-1" style={{ color: '#E5EDFF' }}>
+                    <SelectValue placeholder="Select province or territory" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {provincesAndTerritories.map((prov) => (
+                      <SelectItem key={prov} value={prov}>{prov}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           )}
@@ -503,39 +528,40 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
             </div>
           )}
 
-          {/* Step 5: Portfolio & Review */}
+          {/* Step 5: Documents & Review */}
           {currentStep === 5 && (
             <div className="space-y-6">
               <div className="p-4 rounded-xl mb-4" style={{ background: 'rgba(234, 88, 12, 0.1)', border: '1px solid rgba(234, 88, 12, 0.3)' }}>
                 <p className="text-sm" style={{ color: '#E5EDFF' }}>
-                  Upload your portfolio and review your application before submission.
+                  Upload your business documents and review your application before submission.
                 </p>
               </div>
 
+              {/* Business Document(s) - Mandatory */}
               <div>
-                <Label htmlFor="portfolio" style={{ color: '#B6C4E0' }}>Portfolio Upload (Optional)</Label>
+                <Label htmlFor="businessDoc" style={{ color: '#B6C4E0' }}>Business Document(s) *</Label>
                 <p className="text-xs mb-2" style={{ color: '#7A8BA6' }}>
-                  Upload a PDF showcasing your work, services, or case studies (Max 10MB)
+                  Upload a PDF of your business license, registration, or certification (Max 10MB)
                 </p>
                 
                 {!portfolioUrl ? (
                   <label
-                    htmlFor="portfolio"
+                    htmlFor="businessDoc"
                     className="flex flex-col items-center justify-center w-full h-32 rounded-xl border-2 border-dashed cursor-pointer transition-all hover:border-opacity-50"
                     style={{ borderColor: 'rgba(255, 255, 255, 0.18)', background: 'rgba(255, 255, 255, 0.03)' }}
                   >
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                       <Upload className="w-8 h-8 mb-2" style={{ color: '#EA580C' }} />
                       <p className="text-sm" style={{ color: '#B6C4E0' }}>
-                        {uploading ? 'Uploading...' : 'Click to upload portfolio'}
+                        {uploading ? 'Uploading...' : 'Click to upload business document'}
                       </p>
                     </div>
                     <input
-                      id="portfolio"
+                      id="businessDoc"
                       type="file"
                       className="hidden"
-                      accept=".pdf"
-                      onChange={handlePortfolioUpload}
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      onChange={(e) => handleFileUpload(e, setPortfolioUrl, setUploading)}
                       disabled={uploading}
                     />
                   </label>
@@ -549,17 +575,67 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
                         <FileText className="w-5 h-5" style={{ color: '#fff' }} />
                       </div>
                       <div>
-                        <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>
-                          Portfolio uploaded
-                        </p>
-                        <p className="text-xs" style={{ color: '#7A8BA6' }}>
-                          Ready to submit
-                        </p>
+                        <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>Business document uploaded</p>
+                        <p className="text-xs" style={{ color: '#7A8BA6' }}>Ready to submit</p>
                       </div>
                     </div>
                     <Button
                       type="button"
                       onClick={() => setPortfolioUrl("")}
+                      className="rounded-lg p-2"
+                      style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              {/* Others - Optional */}
+              <div>
+                <Label htmlFor="othersDoc" style={{ color: '#B6C4E0' }}>Others (Optional)</Label>
+                <p className="text-xs mb-2" style={{ color: '#7A8BA6' }}>
+                  Upload any additional supporting documents such as portfolio, case studies, etc.
+                </p>
+                
+                {!othersUrl ? (
+                  <label
+                    htmlFor="othersDoc"
+                    className="flex flex-col items-center justify-center w-full h-32 rounded-xl border-2 border-dashed cursor-pointer transition-all hover:border-opacity-50"
+                    style={{ borderColor: 'rgba(255, 255, 255, 0.18)', background: 'rgba(255, 255, 255, 0.03)' }}
+                  >
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <Upload className="w-8 h-8 mb-2" style={{ color: '#7A8BA6' }} />
+                      <p className="text-sm" style={{ color: '#B6C4E0' }}>
+                        {uploadingOthers ? 'Uploading...' : 'Click to upload additional document'}
+                      </p>
+                    </div>
+                    <input
+                      id="othersDoc"
+                      type="file"
+                      className="hidden"
+                      accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                      onChange={(e) => handleFileUpload(e, setOthersUrl, setUploadingOthers)}
+                      disabled={uploadingOthers}
+                    />
+                  </label>
+                ) : (
+                  <div 
+                    className="flex items-center justify-between p-4 rounded-xl"
+                    style={{ background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.3)' }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: '#22C55E' }}>
+                        <FileText className="w-5 h-5" style={{ color: '#fff' }} />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>Additional document uploaded</p>
+                        <p className="text-xs" style={{ color: '#7A8BA6' }}>Optional</p>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={() => setOthersUrl("")}
                       className="rounded-lg p-2"
                       style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
                     >
@@ -595,8 +671,26 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
                     <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>{formData.phone || '—'}</p>
                   </div>
                   <div>
-                    <p className="text-xs" style={{ color: '#7A8BA6' }}>Province</p>
+                    <p className="text-xs" style={{ color: '#7A8BA6' }}>Province / Territory</p>
                     <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>{formData.province || '—'}</p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <p className="text-xs" style={{ color: '#7A8BA6' }}>Address</p>
+                    <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>
+                      {[formData.streetAddress, formData.city, formData.postalCode].filter(Boolean).join(', ') || '—'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs" style={{ color: '#7A8BA6' }}>Business Document</p>
+                    <p className="text-sm font-medium" style={{ color: portfolioUrl ? '#22C55E' : '#EF4444' }}>
+                      {portfolioUrl ? '✓ Uploaded' : '✗ Not uploaded'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs" style={{ color: '#7A8BA6' }}>Other Documents</p>
+                    <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>
+                      {othersUrl ? '✓ Uploaded' : 'Not provided'}
+                    </p>
                   </div>
                 </div>
               </div>
