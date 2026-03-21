@@ -60,9 +60,9 @@ const AdSliderColumn = ({ ads, delay = 0 }) => {
             onClick={async () => {
               const isAuth = await base44.auth.isAuthenticated();
               if (isAuth) {
-                window.location.href = "/Recommendations";
+                window.location.href = "/Partnerships";
               } else {
-                base44.auth.redirectToLogin(window.location.origin + "/Recommendations");
+                base44.auth.redirectToLogin("/Partnerships");
               }
             }}
           >

@@ -179,7 +179,7 @@ export default function HeroSection() {
                   </div>
                   {!isAuthChecking && (
                     currentUser ? (
-                      <Link to={createPageUrl("Recommendations")}>
+                      <Link to={createPageUrl("Partnerships")}>
                         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
                           <Button className="w-full sm:w-auto px-8 py-6 rounded-xl font-bold text-lg shadow-2xl" style={{ background: '#D8A11F', color: '#fff' }}>
                             <span className="flex items-center">

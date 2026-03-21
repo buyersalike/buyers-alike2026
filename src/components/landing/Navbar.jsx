@@ -130,7 +130,7 @@ export default function Navbar() {
                         variant="ghost" 
                         className="hover:bg-white/10 rounded-xl px-5 flex items-center gap-2" 
                         style={{ color: '#B6C4E0' }}
-                        onClick={() => base44.auth.redirectToLogin(window.location.origin + '/Recommendations')}
+                        onClick={() => base44.auth.redirectToLogin()}
                       >
                         <LogIn className="w-4 h-4" />
                         Sign In
@@ -140,7 +140,7 @@ export default function Navbar() {
                       <Button 
                         className="rounded-xl px-6 py-5 font-semibold shadow-lg relative overflow-hidden group" 
                         style={{ background: '#D8A11F', color: '#fff' }}
-                        onClick={() => base44.auth.redirectToLogin(window.location.origin + '/Recommendations')}
+                        onClick={() => base44.auth.redirectToLogin()}
                       >
                         <motion.div
                           animate={{
@@ -225,7 +225,7 @@ export default function Navbar() {
                           style={{ borderColor: 'rgba(255, 255, 255, 0.18)', color: '#E5EDFF' }}
                           onClick={() => {
                             setMobileMenuOpen(false);
-                            base44.auth.redirectToLogin(window.location.origin + '/Recommendations');
+                            base44.auth.redirectToLogin();
                           }}
                         >
                           <LogIn className="w-4 h-4" />
@@ -236,7 +236,7 @@ export default function Navbar() {
                           style={{ background: '#D8A11F', color: '#fff' }}
                           onClick={() => {
                             setMobileMenuOpen(false);
-                            base44.auth.redirectToLogin(window.location.origin + '/Recommendations');
+                            base44.auth.redirectToLogin();
                           }}
                         >
                           Register Free
