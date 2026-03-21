@@ -81,8 +81,15 @@ export default function ContactSection() {
               
               <form onSubmit={handleSubmit} className="space-y-5">
                 {submitted && (
-                  <div className="bg-green-100 border border-green-400 rounded-xl p-4 text-sm font-medium" style={{ color: '#000000' }}>
-                    Thank you! Your message has been sent successfully.
+                  <div 
+                    className="rounded-xl p-4 text-sm font-medium"
+                    style={{ 
+                      backgroundColor: '#dcfce7', 
+                      border: '1px solid #4ade80', 
+                      color: '#000000' 
+                    }}
+                  >
+                    <span style={{ color: '#000000' }}>✓ Thank you! Your message has been sent successfully.</span>
                   </div>
                 )}
                 <div>
