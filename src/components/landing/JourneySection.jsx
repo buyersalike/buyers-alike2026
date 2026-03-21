@@ -26,6 +26,22 @@ const steps = [
 ];
 
 export default function JourneySection() {
+  const [loading, setLoading] = useState(false);
+
+  const handleGetStarted = async () => {
+    if (window.self !== window.top) {
+      alert("Checkout works only from the published app. Please open the app in a new tab.");
+      return;
+    }
+
+    setLoading(true);
+    const response = await base44.functions.invoke("createCheckoutSession", { plan: "professional" });
+    if (response.data?.url) {
+      window.location.href = response.data.url;
+    }
+    setLoading(false);
+  };
+
   return (
     <section className="relative py-24 px-4" style={{ background: '#F2F1F5' }}>
       {/* Background gradient */}
@@ -101,7 +117,12 @@ export default function JourneySection() {
                 <p style={{ color: '#333' }}>Join thousands of professionals making deals happen</p>
               </div>
             </div>
-            <Button className="bg-white text-gray-900 hover:bg-white/90 px-8 py-6 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105">
+            <Button 
+              onClick={handleGetStarted}
+              disabled={loading}
+              className="bg-white text-gray-900 hover:bg-white/90 px-8 py-6 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105"
+            >
+              {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
               Get Started Free
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
