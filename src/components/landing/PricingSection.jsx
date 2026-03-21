@@ -58,7 +58,7 @@ const plans = [
       "Dedicated account manager",
       "White-glove onboarding",
     ],
-    buttonText: "Contact Sales",
+    buttonText: "Subscribe Now",
     buttonStyle: "bg-[#D8A11F] hover:bg-[#C4900F] text-white",
   },
 ];
