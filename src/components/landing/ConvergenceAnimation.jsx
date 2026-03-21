@@ -137,11 +137,13 @@ export default function ConvergenceAnimation() {
               boxShadow: "0 10px 40px rgba(0, 0, 0, 0.3)",
             }}
           >
-            <h3
+            <motion.h3
               className="text-xl lg:text-2xl font-bold text-white mb-2"
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
             >
               {animationStages[stage].title}
-            </h3>
+            </motion.h3>
             <p className="text-sm lg:text-base text-white/80 leading-relaxed">
               {animationStages[stage].description}
             </p>

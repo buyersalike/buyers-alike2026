@@ -1,6 +1,6 @@
 import React from "react";
 import { HelmetProvider, Helmet } from "react-helmet-async";
-import LandingNavbar from "@/components/landing/LandingNavbar";
+import Navbar from "@/components/landing/Navbar";
 import MobileHeader from "@/components/app/MobileHeader";
 
 export default function Layout({ children, currentPageName }) {
@@ -30,7 +30,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Other pages (if any) get landing navbar */}
       {!isAppPage && currentPageName !== "Home" && (
         <>
-          <LandingNavbar />
+          <Navbar />
           {children}
         </>
       )}

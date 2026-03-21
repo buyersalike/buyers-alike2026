@@ -33,72 +33,25 @@
 }
 
 @layer utilities {
-  /* === 3-Tier Glass System === */
-  
-  /* Layer 1: Background glass - very subtle, for section containers */
-  .glass-bg {
-    background: rgba(255, 255, 255, 0.03) !important;
-    backdrop-filter: blur(4px) !important;
-    -webkit-backdrop-filter: blur(4px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.06) !important;
-  }
-  
-  /* Layer 2: Surface glass - medium, for cards and panels */
   .glass-card {
-    background: rgba(255, 255, 255, 0.07) !important;
-    backdrop-filter: blur(12px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
-    border-radius: 16px;
-  }
-  
-  /* Layer 3: Elevated glass - strong, for interactive/focused elements */
-  .glass-elevated {
-    background: rgba(255, 255, 255, 0.14) !important;
-    backdrop-filter: blur(20px) saturate(200%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(200%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.22) !important;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.05) inset !important;
-    border-radius: 16px;
-  }
-  
-  /* Light-mode glass for light sections */
-  .glass-light {
-    background: rgba(255, 255, 255, 0.55) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.7) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.3) inset !important;
-    border-radius: 16px;
-  }
-  
-  .glass-light-elevated {
-    background: rgba(255, 255, 255, 0.7) !important;
-    backdrop-filter: blur(24px) saturate(200%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.4) inset !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(10px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
     border-radius: 16px;
   }
   
   .glass-card-hover {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
   
   @media (min-width: 769px) {
     .glass-card-hover:hover {
       background: rgba(255, 255, 255, 0.12) !important;
       border: 1px solid rgba(255, 255, 255, 0.28) !important;
-      transform: translateY(-4px) !important;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4) !important;
-    }
-    
-    .glass-light-hover:hover {
-      background: rgba(255, 255, 255, 0.75) !important;
-      border: 1px solid rgba(255, 255, 255, 0.9) !important;
-      transform: translateY(-4px) !important;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1) !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
     }
   }
   
@@ -106,45 +59,13 @@
     background: rgba(255, 255, 255, 0.05) !important;
     backdrop-filter: blur(10px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
     min-height: 44px;
-    transition: all 0.3s ease !important;
   }
   
   .glass-input:focus {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(216, 161, 31, 0.5) !important;
-    box-shadow: 0 0 20px rgba(216, 161, 31, 0.15) !important;
-  }
-  
-  .glass-input-light {
-    background: rgba(255, 255, 255, 0.6) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(0, 0, 0, 0.06) !important;
-    min-height: 44px;
-    transition: all 0.3s ease !important;
-  }
-  
-  .glass-input-light:focus {
-    background: rgba(255, 255, 255, 0.8) !important;
-    border-color: rgba(216, 161, 31, 0.4) !important;
-    box-shadow: 0 0 20px rgba(216, 161, 31, 0.1) !important;
-  }
-
-  /* Section transition wave */
-  .section-wave {
-    position: relative;
-  }
-  .section-wave::before {
-    content: '';
-    position: absolute;
-    top: -60px;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: inherit;
-    clip-path: ellipse(55% 100% at 50% 100%);
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(59, 130, 246, 0.5) !important;
   }
   
   .bg-gradient-main {
