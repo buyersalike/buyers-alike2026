@@ -28,6 +28,7 @@ export default function EditVendorProfileDialog({ vendor, open, onOpenChange }) 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['vendorProfile'] });
       queryClient.invalidateQueries({ queryKey: ['approvedVendors'] });
+      queryClient.invalidateQueries({ queryKey: ['vendor-apps'] });
       onOpenChange(false);
     },
   });
