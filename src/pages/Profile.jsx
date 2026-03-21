@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -15,35 +15,28 @@ import ProfileCompletionWizard from "@/components/profile/ProfileCompletionWizar
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Profile() {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [profileUser, setProfileUser] = useState(null);
   const [activeTab, setActiveTab] = useState("about");
   const location = useLocation();
 
   const urlParams = new URLSearchParams(location.search);
   const userEmail = urlParams.get('email');
 
-  useEffect(() => {
-    base44.auth.me().then(user => {
-      setCurrentUser(user);
-      if (!userEmail) {
-        setProfileUser(user);
-      }
-    }).catch(() => setCurrentUser(null));
-  }, []);
+  // Always fetch current user via query so it auto-refreshes on invalidation
+  const { data: currentUser } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: () => base44.auth.me(),
+  });
 
+  // Fetch other user's profile if viewing someone else
   const { data: users = [] } = useQuery({
     queryKey: ['users'],
     queryFn: () => base44.entities.User.list(),
     enabled: !!userEmail,
   });
 
-  useEffect(() => {
-    if (userEmail && users.length > 0) {
-      const user = users.find(u => u.email === userEmail);
-      setProfileUser(user);
-    }
-  }, [userEmail, users]);
+  const profileUser = userEmail
+    ? users.find(u => u.email === userEmail) || null
+    : currentUser || null;
 
   const isOwnProfile = currentUser?.email === profileUser?.email;
 
