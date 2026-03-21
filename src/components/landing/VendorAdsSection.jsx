@@ -52,23 +52,23 @@ const AdSliderColumn = ({ ads, delay = 0 }) => {
           </h3>
           
           {/* CTA Link */}
-          <motion.a
-            href={currentAd.source_url || '#'}
-            target="_blank"
-            rel="noopener noreferrer"
+          <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white font-medium"
             style={{ backgroundColor: '#D8A11F' }}
-            onClick={(e) => {
-              if (!currentAd.source_url) {
-                e.preventDefault();
+            onClick={async () => {
+              const isAuth = await base44.auth.isAuthenticated();
+              if (isAuth) {
+                window.location.href = "/Partnerships";
+              } else {
+                base44.auth.redirectToLogin("/Partnerships");
               }
             }}
           >
             <span>Learn More</span>
             <ExternalLink className="w-4 h-4" />
-          </motion.a>
+          </motion.button>
         </div>
 
         {/* Progress indicator (subtle) */}
