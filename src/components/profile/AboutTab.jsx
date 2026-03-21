@@ -27,6 +27,17 @@ export default function AboutTab({ user, isOwnProfile }) {
   });
   const queryClient = useQueryClient();
 
+  // Sync form data when user prop changes (e.g. after save)
+  useEffect(() => {
+    setFormData({
+      bio: user.bio || '',
+      title: user.title || '',
+      location: user.location || '',
+      status: user.status || '',
+      birth_date: user.birth_date || '',
+    });
+  }, [user]);
+
   // Fetch vendor application
   const { data: vendorApps = [] } = useQuery({
     queryKey: ['vendor-apps', user.email],
@@ -50,6 +61,7 @@ export default function AboutTab({ user, isOwnProfile }) {
   const updateProfileMutation = useMutation({
     mutationFn: (data) => base44.auth.updateMe(data),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['currentUser'] });
       queryClient.invalidateQueries({ queryKey: ['users'] });
       setShowEditDialog(false);
     },
