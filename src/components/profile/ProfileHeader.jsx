@@ -164,6 +164,7 @@ export default function ProfileHeader({ user, isOwnProfile, currentUser }) {
 
       await base44.auth.updateMe(updates);
       setUploadProgress(100);
+      queryClient.invalidateQueries({ queryKey: ['currentUser'] });
       queryClient.invalidateQueries({ queryKey: ['users'] });
       
       setTimeout(() => {
