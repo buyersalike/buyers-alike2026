@@ -115,7 +115,7 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-4">
               {!isAuthChecking && (
                 currentUser ? (
-                  <Link to={createPageUrl('Recommendations')}>
+                  <Link to="/Partnerships">
                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                       <Button className="rounded-xl px-6 py-5 font-semibold shadow-lg flex items-center gap-2" style={{ background: '#D8A11F', color: '#fff' }}>
                         <User className="w-4 h-4" />
@@ -130,7 +130,7 @@ export default function Navbar() {
                         variant="ghost" 
                         className="hover:bg-white/10 rounded-xl px-5 flex items-center gap-2" 
                         style={{ color: '#B6C4E0' }}
-                        onClick={() => base44.auth.redirectToLogin()}
+                        onClick={() => base44.auth.redirectToLogin(window.location.origin + "/Partnerships")}
                       >
                         <LogIn className="w-4 h-4" />
                         Sign In
@@ -140,7 +140,7 @@ export default function Navbar() {
                       <Button 
                         className="rounded-xl px-6 py-5 font-semibold shadow-lg relative overflow-hidden group" 
                         style={{ background: '#D8A11F', color: '#fff' }}
-                        onClick={() => base44.auth.redirectToLogin()}
+                        onClick={() => base44.auth.redirectToLogin(window.location.origin + "/Partnerships")}
                       >
                         <motion.div
                           animate={{
@@ -207,7 +207,7 @@ export default function Navbar() {
                 <div className="pt-4 space-y-3">
                   {!isAuthChecking && (
                     currentUser ? (
-                      <Link to={createPageUrl('Recommendations')}>
+                      <Link to="/Partnerships">
                         <Button 
                           className="w-full flex items-center justify-center gap-2" 
                           style={{ background: '#D8A11F', color: '#fff' }}
@@ -225,7 +225,7 @@ export default function Navbar() {
                           style={{ borderColor: 'rgba(255, 255, 255, 0.18)', color: '#E5EDFF' }}
                           onClick={() => {
                             setMobileMenuOpen(false);
-                            base44.auth.redirectToLogin();
+                            base44.auth.redirectToLogin(window.location.origin + "/Partnerships");
                           }}
                         >
                           <LogIn className="w-4 h-4" />
@@ -236,7 +236,7 @@ export default function Navbar() {
                           style={{ background: '#D8A11F', color: '#fff' }}
                           onClick={() => {
                             setMobileMenuOpen(false);
-                            base44.auth.redirectToLogin();
+                            base44.auth.redirectToLogin(window.location.origin + "/Partnerships");
                           }}
                         >
                           Register Free
