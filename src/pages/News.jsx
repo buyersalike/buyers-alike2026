@@ -206,7 +206,11 @@ export default function News() {
                     <option value="all">All Regions</option>
                     <option value="Canada">Canada</option>
                     <option value="United States">United States</option>
-                    <option value="China">China</option>
+                    <option value="Asia">Asia</option>
+                    <option value="Europe">Europe</option>
+                    <option value="Africa">Africa</option>
+                    <option value="Middle East">Middle East</option>
+                    <option value="Others">Others</option>
                   </select>
                 </div>
                 <div>
