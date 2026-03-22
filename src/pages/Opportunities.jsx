@@ -22,7 +22,7 @@ export default function Opportunities() {
   const [propertyType, setPropertyType] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [currentUser, setCurrentUser] = useState(null);
-  const itemsPerPage = 50;
+  const itemsPerPage = 51;
 
   useEffect(() => {
     base44.auth.me().then(user => setCurrentUser(user)).catch(() => setCurrentUser(null));
