@@ -203,66 +203,24 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'SERP API key not configured', articles: [] }, { status: 200 });
     }
 
-    // --- 1. Check cache ---
+    // --- FRESH FETCHING DISABLED (SerpAPI credits exhausted) ---
+    // Only serve cached data. Re-enable the "Refresh News Cache" automation
+    // and remove this block when SerpAPI credits are available again.
+
     const caches = await base44.asServiceRole.entities.NewsCache.list('-created_date', 1);
-    const now = new Date();
 
-    if (caches.length > 0) {
-      const cached = caches[0];
-      const expiresAt = new Date(cached.expires_at);
-
-      if (expiresAt > now && cached.articles?.length > 0) {
-        console.log(`Cache hit: ${cached.articles.length} articles (expires ${expiresAt.toISOString()})`);
-        return Response.json({
-          articles: cached.articles,
-          totalResults: cached.articles.length,
-          fromCache: true,
-          cachedAt: cached.fetched_at,
-        });
-      }
-      console.log('Cache expired, fetching fresh articles...');
-    } else {
-      console.log('No cache found, fetching fresh articles...');
+    if (caches.length > 0 && caches[0].articles?.length > 0) {
+      console.log(`Serving cached data (fresh fetching disabled): ${caches[0].articles.length} articles`);
+      return Response.json({
+        articles: caches[0].articles,
+        totalResults: caches[0].articles.length,
+        fromCache: true,
+        cachedAt: caches[0].fetched_at,
+      });
     }
 
-    // --- 2. Fetch fresh from SerpAPI ---
-    const freshArticles = await fetchFreshArticles(SERP_API_KEY);
-
-    if (freshArticles.length === 0) {
-      if (caches.length > 0 && caches[0].articles?.length > 0) {
-        console.log('SerpAPI returned 0 results, serving stale cache as fallback.');
-        return Response.json({
-          articles: caches[0].articles,
-          totalResults: caches[0].articles.length,
-          fromCache: true,
-          stale: true,
-        });
-      }
-      return Response.json({ articles: [], totalResults: 0 });
-    }
-
-    // --- 3. Store in cache ---
-    const fetchedAt = now.toISOString();
-    const expiresAt = new Date(now.getTime() + CACHE_TTL_HOURS * 60 * 60 * 1000).toISOString();
-
-    for (const old of caches) {
-      await base44.asServiceRole.entities.NewsCache.delete(old.id);
-    }
-
-    await base44.asServiceRole.entities.NewsCache.create({
-      articles: freshArticles,
-      fetched_at: fetchedAt,
-      expires_at: expiresAt,
-    });
-
-    console.log(`Cached ${freshArticles.length} articles until ${expiresAt}`);
-
-    return Response.json({
-      articles: freshArticles,
-      totalResults: freshArticles.length,
-      fromCache: false,
-      cachedAt: fetchedAt,
-    });
+    console.log('No cached articles available and fresh fetching is disabled.');
+    return Response.json({ articles: [], totalResults: 0 });
 
   } catch (error) {
     return Response.json({ error: error.message, articles: [] }, { status: 500 });
