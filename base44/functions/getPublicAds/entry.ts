@@ -16,7 +16,22 @@ Deno.serve(async (req) => {
       return new Date(ad.expiry_date) > now;
     });
 
-    return Response.json({ ads: activeAds });
+    // Fetch vendor websites to attach to ads
+    const vendorIds = [...new Set(activeAds.map(ad => ad.vendor_id).filter(Boolean))];
+    let vendorMap = {};
+    if (vendorIds.length > 0) {
+      const vendors = await base44.asServiceRole.entities.VendorApplication.filter({ status: 'approved' });
+      vendors.forEach(v => {
+        vendorMap[v.vendor_id] = v.website || '';
+      });
+    }
+
+    const adsWithWebsites = activeAds.map(ad => ({
+      ...ad,
+      website: vendorMap[ad.vendor_id] || ''
+    }));
+
+    return Response.json({ ads: adsWithWebsites });
   } catch (error) {
     console.error("Error fetching public ads:", error);
     return Response.json({ ads: [] });

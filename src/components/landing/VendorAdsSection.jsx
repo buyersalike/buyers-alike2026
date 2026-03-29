@@ -57,12 +57,10 @@ const AdSliderColumn = ({ ads, delay = 0 }) => {
             whileTap={{ scale: 0.95 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white font-medium"
             style={{ backgroundColor: '#D8A11F' }}
-            onClick={async () => {
-              const isAuth = await base44.auth.isAuthenticated();
-              if (isAuth) {
-                window.location.href = "/Partnerships";
-              } else {
-                base44.auth.redirectToLogin("/Partnerships");
+            onClick={() => {
+              if (currentAd.website) {
+                const url = currentAd.website.startsWith('http') ? currentAd.website : `https://${currentAd.website}`;
+                window.open(url, '_blank', 'noopener,noreferrer');
               }
             }}
           >
