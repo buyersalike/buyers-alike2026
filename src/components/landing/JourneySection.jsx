@@ -28,18 +28,8 @@ const steps = [
 export default function JourneySection() {
   const [loading, setLoading] = useState(false);
 
-  const handleGetStarted = async () => {
-    if (window.self !== window.top) {
-      alert("Checkout works only from the published app. Please open the app in a new tab.");
-      return;
-    }
-
-    setLoading(true);
-    const response = await base44.functions.invoke("createCheckoutSession", { plan: "professional" });
-    if (response.data?.url) {
-      window.location.href = response.data.url;
-    }
-    setLoading(false);
+  const handleGetStarted = () => {
+    base44.auth.redirectToLogin(window.location.origin + "/Partnerships");
   };
 
   return (
