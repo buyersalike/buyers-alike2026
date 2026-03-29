@@ -109,16 +109,14 @@ export default function Recommendations() {
 
   // Fetch users matched to current user's interests
   const { data: matchedUsers = [], isLoading: loadingUsers } = useQuery({
-    queryKey: ['matchedUsers', currentUser?.email],
+    queryKey: ['matchedUsers', currentUser?.email, userInterests.map(i => i.id).join(',')],
     queryFn: async () => {
       const allUsers = await base44.entities.User.list();
       
       // Exclude current user
       const otherUsers = allUsers.filter(u => u.email !== currentUser.email);
       
-      if (userInterests.length === 0) return otherUsers.slice(0, 20);
-      
-      // Fetch interests for all users
+      // Fetch all approved interests
       const allInterests = await base44.entities.Interest.filter({ status: 'approved' });
       
       // Group interests by user
@@ -130,7 +128,12 @@ export default function Recommendations() {
         userInterestsMap[interest.user_email].push(interest.interest_name.toLowerCase());
       });
       
-      const currentUserInterestNames = userInterests.map(i => i.interest_name.toLowerCase());
+      const currentUserInterestNames = (userInterestsMap[currentUser.email] || []);
+      
+      if (currentUserInterestNames.length === 0) {
+        // No interests yet — return all users with 0% match
+        return otherUsers.slice(0, 20).map(u => ({ ...u, matchPercentage: 0, matchCount: 0 }));
+      }
       
       // Calculate match scores for each user
       const usersWithScores = otherUsers.map(user => {
@@ -139,23 +142,22 @@ export default function Recommendations() {
           currentUserInterestNames.includes(interest)
         ).length;
         
-        const matchPercentage = currentUserInterestNames.length > 0
-          ? Math.round((matchCount / currentUserInterestNames.length) * 100)
-          : 0;
+        const matchPercentage = Math.round((matchCount / currentUserInterestNames.length) * 100);
         
         return {
           ...user,
           matchPercentage,
-          matchCount
+          matchCount,
+          sharedInterests: theirInterests.filter(i => currentUserInterestNames.includes(i))
         };
       });
       
-      // Sort by match score and return top matches (include all with scores)
+      // Sort by match score, filter to those with at least 1 shared interest first, then others
       return usersWithScores
         .sort((a, b) => b.matchPercentage - a.matchPercentage)
-        .slice(0, 20);
+        .slice(0, 30);
     },
-    enabled: !!currentUser && userInterests !== undefined,
+    enabled: !!currentUser?.email && userInterests !== undefined,
   });
 
   // Fetch AI-matched connections
