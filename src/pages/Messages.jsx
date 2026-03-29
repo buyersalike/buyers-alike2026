@@ -50,7 +50,7 @@ export default function Messages() {
       return [...sent, ...received].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
     },
     enabled: !!user,
-    refetchInterval: 3000,
+    refetchInterval: 15000,
   });
 
   const { data: groups = [] } = useQuery({
@@ -61,14 +61,14 @@ export default function Messages() {
       return allGroups.filter(g => g.members.includes(user.email));
     },
     enabled: !!user,
-    refetchInterval: 3000,
+    refetchInterval: 15000,
   });
 
   const { data: groupMessages = [] } = useQuery({
     queryKey: ['group-messages'],
     queryFn: () => base44.entities.GroupMessage.list(),
     enabled: !!user,
-    refetchInterval: 3000,
+    refetchInterval: 15000,
   });
 
   const sendMessageMutation = useMutation({
