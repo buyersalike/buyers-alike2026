@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
 Deno.serve(async (req) => {
   try {
@@ -16,19 +16,22 @@ Deno.serve(async (req) => {
       return new Date(ad.expiry_date) > now;
     });
 
-    // Fetch vendor websites to attach to ads
-    const vendorIds = [...new Set(activeAds.map(ad => ad.vendor_id).filter(Boolean))];
-    let vendorMap = {};
-    if (vendorIds.length > 0) {
-      const vendors = await base44.asServiceRole.entities.VendorApplication.filter({ status: 'approved' });
-      vendors.forEach(v => {
-        vendorMap[v.vendor_id] = v.website || '';
-      });
-    }
+    // Fetch all approved vendors to get their websites
+    const vendors = await base44.asServiceRole.entities.VendorApplication.filter({ status: 'approved' });
+    
+    // Build lookup maps: by vendor_id AND by user_email
+    const websiteByVendorId = {};
+    const websiteByEmail = {};
+    vendors.forEach(v => {
+      if (v.website) {
+        if (v.vendor_id) websiteByVendorId[v.vendor_id] = v.website;
+        if (v.user_email) websiteByEmail[v.user_email] = v.website;
+      }
+    });
 
     const adsWithWebsites = activeAds.map(ad => ({
       ...ad,
-      website: vendorMap[ad.vendor_id] || ''
+      website: websiteByVendorId[ad.vendor_id] || websiteByEmail[ad.user_email] || ''
     }));
 
     return Response.json({ ads: adsWithWebsites });
