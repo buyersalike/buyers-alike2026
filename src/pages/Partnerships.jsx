@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import Sidebar from "@/components/partnerships/Sidebar";
 import FilterBar from "@/components/partnerships/FilterBar";
 import PartnershipCard from "@/components/partnerships/PartnershipCard";
@@ -29,6 +30,7 @@ const tabs = [
 export default function Partnerships() {
   const metadata = pageMetadata.Partnerships;
   const [currentUser, setCurrentUser] = useState(null);
+  const location = useLocation();
   const [viewMode, setViewMode] = useState("grid");
   const [activeTab, setActiveTab] = useState("active");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -37,6 +39,22 @@ export default function Partnerships() {
     industry: "all", companySize: "all", location: "", investmentMin: "", investmentMax: "", sortBy: "match_score"
   });
   const queryClient = useQueryClient();
+
+  // Verify checkout on success redirect
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('checkout') === 'success') {
+      base44.functions.invoke('verifyCheckout', {}).then(res => {
+        if (res.data?.updated) {
+          // Refresh user data
+          base44.auth.me().then(user => setCurrentUser(user));
+          toast.success(`Welcome to the ${res.data.plan === 'professional' ? 'Professional' : 'Enterprise'} plan!`);
+        }
+      }).catch(() => {});
+      // Clean up URL
+      window.history.replaceState({}, '', '/Partnerships');
+    }
+  }, [location.search]);
 
   useEffect(() => {
     base44.auth.me().then(user => setCurrentUser(user)).catch(() => setCurrentUser(null));
