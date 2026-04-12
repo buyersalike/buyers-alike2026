@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Check, Sparkles, Zap, Crown, Loader2 } from "lucide-react";
@@ -78,12 +78,31 @@ export default function PricingSection() {
     }
 
     setLoadingPlan(planKey);
+
+    // Check if user is logged in first
+    const isAuthed = await base44.auth.isAuthenticated();
+    if (!isAuthed) {
+      base44.auth.redirectToLogin(window.location.origin + "/?checkout_plan=" + planKey + "#pricing");
+      setLoadingPlan(null);
+      return;
+    }
+
     const response = await base44.functions.invoke("createCheckoutSession", { plan: planKey });
     if (response.data?.url) {
       window.location.href = response.data.url;
     }
     setLoadingPlan(null);
   };
+
+  // Auto-checkout if user was redirected back from login with a plan
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const checkoutPlan = params.get('checkout_plan');
+    if (checkoutPlan && (checkoutPlan === 'professional' || checkoutPlan === 'enterprise')) {
+      window.history.replaceState({}, '', window.location.pathname + '#pricing');
+      handleCheckout(checkoutPlan);
+    }
+  }, []);
 
   return (
     <section className="relative py-24 px-4" style={{ background: '#F2F1F5' }}>
