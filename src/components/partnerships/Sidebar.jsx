@@ -25,6 +25,7 @@ import { base44 } from "@/api/base44Client";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import { canAccessAdmin, hasPermission } from "@/components/utils/permissions";
 import UserProfileDropdown from "@/components/app/UserProfileDropdown";
+import UpgradeBanner from "@/components/app/UpgradeBanner";
 
 const mainMenuItems = [
   { icon: Handshake, label: "Partnerships", href: "Partnerships" },
@@ -127,6 +128,9 @@ export default function Sidebar() {
         </div>
 
       </div>
+
+      {/* Upgrade Banner */}
+      <UpgradeBanner user={currentUser} />
 
       {/* Bottom Menu */}
       <div className="space-y-2 pt-6" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>

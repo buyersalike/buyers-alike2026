@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import SEO from "@/components/seo/SEO";
 import { pageMetadata } from "@/components/seo/seoMetadata";
 import { Users, FileText, TrendingUp, Clock } from "lucide-react";
+import UpgradeCard from "@/components/app/UpgradeCard";
 
 const ACTIVE_STATUSES = ["accepted_into_group", "group_forming", "approvals_complete", "documents_gathering", "partnership_active"];
 const INTENT_STATUSES = ["intent_created", "pending_group_join"];
@@ -148,6 +149,8 @@ export default function Partnerships() {
             <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#000' }}>My Partnerships</h1>
             <p style={{ color: '#000' }}>Manage your active, pending, and completed partnerships</p>
           </div>
+
+          <UpgradeCard user={currentUser} />
 
           {/* Tabs */}
           <div className="mb-6 overflow-x-auto">
