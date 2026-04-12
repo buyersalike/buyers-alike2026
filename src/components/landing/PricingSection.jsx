@@ -39,7 +39,7 @@ const plans = [
       "Priority support",
       "Analytics dashboard",
     ],
-    buttonText: "Start Free Trial",
+    buttonText: "Subscribe Now",
     buttonStyle: "bg-[#D8A11F] hover:bg-[#C4900F] text-white",
   },
   {
