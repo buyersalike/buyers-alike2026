@@ -99,7 +99,7 @@ export default function Sidebar() {
         <div className="space-y-2 mb-8">
           {mainMenuItems.map((item) => {
             // Check permissions for special menu items
-            if (item.label === "Ad Campaigns" && currentUser && !hasPermission(currentUser.role, 'canManageAdvertisements')) {
+            if (item.label === "Ad Campaigns" && (!currentUser || !hasPermission(currentUser.role, 'canManageAdvertisements'))) {
               return null;
             }
 
