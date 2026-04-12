@@ -20,8 +20,16 @@ export default function Recommendations() {
   useEffect(() => {
     base44.auth.me().then(user => {
       setCurrentUser(user);
-      if (user.ai_matches && user.ai_matches.length > 0) {
-        setSavedMatches(user.ai_matches);
+      // Load persisted AI matches
+      if (user.ai_matches_json) {
+        try {
+          const parsed = JSON.parse(user.ai_matches_json);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setSavedMatches(parsed);
+          }
+        } catch (e) {
+          console.error('Failed to parse saved matches:', e);
+        }
       }
     }).catch(() => setCurrentUser(null));
   }, []);
@@ -133,8 +141,9 @@ export default function Recommendations() {
       const data = result?.data;
       if (data?.success && data.matches?.length > 0) {
         setSavedMatches(data.matches);
+        // Store as JSON string for reliable persistence
         await base44.auth.updateMe({
-          ai_matches: data.matches,
+          ai_matches_json: JSON.stringify(data.matches),
           ai_matches_date: new Date().toISOString()
         });
       }

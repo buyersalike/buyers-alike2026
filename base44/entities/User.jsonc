@@ -191,26 +191,9 @@
       "default": "user",
       "description": "User role"
     },
-    "ai_matches": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "match_score": {
-            "type": "number"
-          },
-          "overview": {
-            "type": "string"
-          }
-        }
-      },
-      "description": "Cached AI-recommended connection matches"
+    "ai_matches_json": {
+      "type": "string",
+      "description": "JSON string of cached AI-recommended connection matches"
     },
     "ai_matches_date": {
       "type": "string",
