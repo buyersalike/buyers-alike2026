@@ -13,7 +13,8 @@ const FEATURES = [
 export default function UpgradeCard({ user }) {
   const [dismissed, setDismissed] = useState(false);
 
-  if (!user || user.subscription_plan !== "free" || user.role === "admin" || dismissed) return null;
+  const isPaid = user?.subscription_plan === "professional" || user?.subscription_plan === "enterprise";
+  if (!user || isPaid || user.role === "admin" || dismissed) return null;
 
   return (
     <div

@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { Sparkles, ArrowRight } from "lucide-react";
 
 export default function UpgradeBanner({ user }) {
-  if (!user || user.subscription_plan !== "free" || user.role === "admin") return null;
+  const isPaid = user?.subscription_plan === "professional" || user?.subscription_plan === "enterprise";
+  if (!user || isPaid || user.role === "admin") return null;
 
   return (
     <div
