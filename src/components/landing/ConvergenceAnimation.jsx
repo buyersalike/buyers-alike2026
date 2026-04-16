@@ -270,24 +270,20 @@ export default function ConvergenceAnimation() {
               <React.Fragment key={`${stakeholder.id}-${animationKey}`}>
                 {/* Connection lines */}
                 {stage >= 1 && (
-                  <motion.svg
+                  <svg
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: stage >= 2 ? 0.4 : 0.2 }}
+                    style={{ opacity: stage >= 2 ? 0.4 : 0.2 }}
                   >
-                    <motion.line
+                    <line
                       x1="50%"
                       y1="50%"
-                      x2={`calc(50% + ${position.x}px)`}
-                      y2={`calc(50% + ${position.y}px)`}
+                      x2={`${50 + (position.x / 5.6)}%`}
+                      y2={`${50 + (position.y / 4.8)}%`}
                       stroke={stakeholder.color}
                       strokeWidth="2"
                       strokeDasharray="8 4"
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ duration: 1, delay: index * 0.1 }}
                     />
-                  </motion.svg>
+                  </svg>
                 )}
 
                 {/* Stakeholder node */}
