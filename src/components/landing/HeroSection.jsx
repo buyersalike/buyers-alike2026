@@ -138,16 +138,12 @@ export default function HeroSection() {
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] mb-6" style={{ color: '#E5EDFF' }}>
               Connect with{" "}
-              <motion.span
-                animate={{
-                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                }}
-                transition={{ duration: 5, repeat: Infinity }}
-                className="bg-gradient-to-r from-[#DBA11F] via-[#F59E0B] to-[#DBA11F] bg-clip-text text-transparent"
+              <span
+                className="bg-gradient-to-r from-[#DBA11F] via-[#F59E0B] to-[#DBA11F] bg-clip-text text-transparent animate-gradient-shift"
                 style={{ backgroundSize: "200% 200%" }}
               >
                 Like-Minded
-              </motion.span>{" "}
+              </span>{" "}
               Business Partners
             </h1>
             <p className="text-xl mb-8 max-w-xl leading-relaxed" style={{ color: '#B6C4E0' }}>

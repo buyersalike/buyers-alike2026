@@ -161,3 +161,12 @@ button:focus-visible {
   color: #15803d !important;
   font-weight: 600 !important;
 }
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-gradient-shift {
+  animation: gradient-shift 5s ease infinite;
+}
