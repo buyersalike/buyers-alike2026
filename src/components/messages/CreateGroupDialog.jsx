@@ -10,7 +10,7 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { User } from "lucide-react";
 
-export default function CreateGroupDialog({ open, onOpenChange, currentUser, connections }) {
+export default function CreateGroupDialog({ open, onOpenChange, currentUser }) {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -52,10 +52,7 @@ export default function CreateGroupDialog({ open, onOpenChange, currentUser, con
     }));
   };
 
-  const connectedEmails = connections.flatMap(c => 
-    [c.user1_email, c.user2_email].filter(e => e !== currentUser?.email)
-  );
-  const connectedUsers = users.filter(u => connectedEmails.includes(u.email));
+  const availableUsers = users.filter(u => u.email !== currentUser?.email);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -103,11 +100,11 @@ export default function CreateGroupDialog({ open, onOpenChange, currentUser, con
           </div>
 
           <div>
-            <Label style={{ color: '#000' }}>Add Members * (Select from your connections)</Label>
+            <Label style={{ color: '#000' }}>Add Members *</Label>
             <div className="mt-2 max-h-60 overflow-y-auto p-3 rounded-xl" style={{ background: '#fff', border: '1px solid #000' }}>
-              {connectedUsers.length > 0 ? (
+              {availableUsers.length > 0 ? (
                 <div className="space-y-2">
-                  {connectedUsers.map((user) => (
+                  {availableUsers.map((user) => (
                     <div 
                       key={user.email}
                       className="flex items-center gap-3 p-2 rounded-lg cursor-pointer"
@@ -133,7 +130,7 @@ export default function CreateGroupDialog({ open, onOpenChange, currentUser, con
                 </div>
               ) : (
                 <p className="text-sm text-center py-4" style={{ color: '#666' }}>
-                  No connections available. Connect with others first!
+                  No members available yet.
                 </p>
               )}
             </div>

@@ -2,10 +2,11 @@ import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, User } from "lucide-react";
+import { Send, User, Lock, Crown } from "lucide-react";
 import { format } from "date-fns";
+import { Link } from "react-router-dom";
 
-export default function ChatArea({ conversation, onSendMessage, onMarkAsRead, currentUserEmail }) {
+export default function ChatArea({ conversation, onSendMessage, onMarkAsRead, currentUserEmail, isPaidUser = true }) {
   const [messageText, setMessageText] = React.useState("");
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
@@ -126,25 +127,41 @@ export default function ChatArea({ conversation, onSendMessage, onMarkAsRead, cu
           borderColor: '#000'
         }}
       >
-        <div className="flex gap-2">
-          <Textarea
-            value={messageText}
-            onChange={(e) => setMessageText(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Type a message..."
-            className="resize-none"
-            style={{ color: '#000', background: '#F9FAFB', border: '1px solid #000' }}
-            rows={1}
-          />
-          <Button
-            onClick={handleSend}
-            disabled={!messageText.trim() || !conversation?.otherUserEmail}
-            className="rounded-xl px-4"
-            style={{ background: '#D8A11F', color: '#fff' }}
-          >
-            <Send className="w-5 h-5" />
-          </Button>
-        </div>
+        {isPaidUser ? (
+          <div className="flex gap-2">
+            <Textarea
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Type a message..."
+              className="resize-none"
+              style={{ color: '#000', background: '#F9FAFB', border: '1px solid #000' }}
+              rows={1}
+            />
+            <Button
+              onClick={handleSend}
+              disabled={!messageText.trim() || !conversation?.otherUserEmail}
+              className="rounded-xl px-4"
+              style={{ background: '#D8A11F', color: '#fff' }}
+            >
+              <Send className="w-5 h-5" />
+            </Button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3 p-3 rounded-xl" style={{ background: '#FEF3C7', border: '1px solid #D8A11F' }}>
+            <Lock className="w-5 h-5 flex-shrink-0" style={{ color: '#D8A11F' }} />
+            <div className="flex-1">
+              <p className="text-sm font-medium" style={{ color: '#92400E' }}>Upgrade to send messages</p>
+              <p className="text-xs" style={{ color: '#A16207' }}>You can read messages but need a paid plan to reply.</p>
+            </div>
+            <Link to="/#pricing">
+              <Button size="sm" className="gap-1 rounded-lg text-xs flex-shrink-0" style={{ background: '#D8A11F', color: '#fff' }}>
+                <Crown className="w-3 h-3" />
+                Upgrade
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

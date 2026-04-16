@@ -3,8 +3,7 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Plus, User, Users, Lock, Crown } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Search, Plus, User, Users } from "lucide-react";
 import { format } from "date-fns";
 
 export default function ConversationList({ 
@@ -163,23 +162,9 @@ export default function ConversationList({
             })
           ) : (
             <div className="text-center py-8">
-              {!isPaidUser ? (
-                <div className="px-4">
-                  <Lock className="w-8 h-8 mx-auto mb-2" style={{ color: '#D8A11F' }} />
-                  <p className="text-sm font-medium mb-1" style={{ color: '#000' }}>Messaging is a paid feature</p>
-                  <p className="text-xs mb-3" style={{ color: '#666' }}>Upgrade to start conversations</p>
-                  <Link to="/#pricing">
-                    <Button size="sm" className="gap-1 rounded-lg text-xs" style={{ background: '#D8A11F', color: '#fff' }}>
-                      <Crown className="w-3 h-3" />
-                      Upgrade
-                    </Button>
-                  </Link>
-                </div>
-              ) : (
-                <p className="text-sm" style={{ color: '#666' }}>
-                  {searchQuery ? 'No conversations found' : 'No conversations yet'}
-                </p>
-              )}
+              <p className="text-sm" style={{ color: '#666' }}>
+                {searchQuery ? 'No conversations found' : 'No conversations yet'}
+              </p>
             </div>
           )
         ) : (

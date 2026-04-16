@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Search, X, User, MessageSquare, Lock, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export default function SearchMembers({ connections, onSelectMember, onClose, currentUserEmail, isPaidUser }) {
+export default function SearchMembers({ onSelectMember, onClose, currentUserEmail, isPaidUser }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,12 +24,6 @@ export default function SearchMembers({ connections, onSelectMember, onClose, cu
     };
     fetchUsers();
   }, [currentUserEmail]);
-
-  const connectedEmails = new Set(
-    connections.map(conn => 
-      conn.user1_email === currentUserEmail ? conn.user2_email : conn.user1_email
-    )
-  );
 
   const filteredUsers = allUsers.filter(user =>
     user.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -80,7 +74,7 @@ export default function SearchMembers({ connections, onSelectMember, onClose, cu
                 Messaging is a paid feature
               </p>
               <p className="text-xs mt-1" style={{ color: '#A16207' }}>
-                Upgrade to Professional or Enterprise to connect and message members.
+                Upgrade to Professional or Enterprise to message members.
               </p>
               <Link to="/#pricing">
                 <Button size="sm" className="mt-2 gap-1 rounded-lg text-xs" style={{ background: '#D8A11F', color: '#fff' }}>
@@ -102,7 +96,6 @@ export default function SearchMembers({ connections, onSelectMember, onClose, cu
         ) : filteredUsers.length > 0 ? (
           <div className="space-y-2">
             {filteredUsers.map((member) => {
-              const isConnected = connectedEmails.has(member.email);
               return (
                 <motion.div
                   key={member.id}
@@ -123,16 +116,9 @@ export default function SearchMembers({ connections, onSelectMember, onClose, cu
                     </div>
                     
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium" style={{ color: '#000' }}>
-                          {member.full_name || 'User'}
-                        </p>
-                        {isConnected && (
-                          <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: '#DCFCE7', color: '#166534' }}>
-                            Connected
-                          </span>
-                        )}
-                      </div>
+                      <p className="font-medium" style={{ color: '#000' }}>
+                        {member.full_name || 'User'}
+                      </p>
                       <p className="text-sm truncate" style={{ color: '#666' }}>
                         {member.title || member.occupation || member.email}
                       </p>

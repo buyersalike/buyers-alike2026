@@ -7,7 +7,7 @@ import ChatArea from "@/components/messages/ChatArea";
 import GroupChatArea from "@/components/messages/GroupChatArea";
 import SearchMembers from "@/components/messages/SearchMembers";
 import CreateGroupDialog from "@/components/messages/CreateGroupDialog";
-import PaidFeatureGate from "@/components/messages/PaidFeatureGate";
+// PaidFeatureGate is now handled inline in ChatArea
 
 export default function Messages() {
   const [user, setUser] = useState(null);
@@ -29,17 +29,6 @@ export default function Messages() {
     };
     fetchUser();
   }, []);
-
-  const { data: connections = [] } = useQuery({
-    queryKey: ['connections', user?.email],
-    queryFn: async () => {
-      if (!user) return [];
-      const conn1 = await base44.entities.Connection.filter({ user1_email: user.email, status: "connected" });
-      const conn2 = await base44.entities.Connection.filter({ user2_email: user.email, status: "connected" });
-      return [...conn1, ...conn2];
-    },
-    enabled: !!user,
-  });
 
   const { data: messages = [] } = useQuery({
     queryKey: ['messages', user?.email],
@@ -127,20 +116,7 @@ export default function Messages() {
 
   const getConversations = () => {
     const conversationMap = new Map();
-    
-    connections.forEach(conn => {
-      const otherUserEmail = conn.user1_email === user?.email ? conn.user2_email : conn.user1_email;
-      const conversationId = [user?.email, otherUserEmail].sort().join('_');
-      
-      conversationMap.set(conversationId, {
-        id: conversationId,
-        otherUserEmail,
-        messages: [],
-        unreadCount: 0,
-      });
-    });
 
-    // Also create entries from messages that may not have a matching connection
     messages.forEach(msg => {
       const conversationId = msg.conversation_id;
       if (!conversationMap.has(conversationId)) {
@@ -236,7 +212,6 @@ export default function Messages() {
         
         {showSearch ? (
           <SearchMembers
-            connections={connections}
             onSelectMember={(email) => {
               const conversationId = [user.email, email].sort().join('_');
               handleSelectConversation(conversationId);
@@ -246,8 +221,6 @@ export default function Messages() {
             currentUserEmail={user.email}
             isPaidUser={isPaidUser}
           />
-        ) : !isPaidUser && (selectedConversation || selectedGroup) ? (
-          <PaidFeatureGate />
         ) : chatType === 'group' && selectedGroup ? (
           <GroupChatArea
             group={groups.find(g => g.id === selectedGroup)}
@@ -261,6 +234,7 @@ export default function Messages() {
             onSendMessage={handleSendMessage}
             onMarkAsRead={markAsReadMutation.mutate}
             currentUserEmail={user.email}
+            isPaidUser={isPaidUser}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center">
@@ -280,7 +254,6 @@ export default function Messages() {
         open={showCreateGroup}
         onOpenChange={setShowCreateGroup}
         currentUser={user}
-        connections={connections}
       />
     </div>
   );
