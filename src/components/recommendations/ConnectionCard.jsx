@@ -3,12 +3,13 @@ import { motion } from "framer-motion";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Heart, UserPlus } from "lucide-react";
+import { Heart, UserPlus, Check } from "lucide-react";
 import SendRequestDialog from "@/components/connections/SendRequestDialog";
 
 export default function ConnectionCard({ connection, index }) {
   const [currentUser, setCurrentUser] = React.useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [requestSent, setRequestSent] = useState(false);
   const queryClient = useQueryClient();
 
   React.useEffect(() => {
@@ -40,7 +41,7 @@ export default function ConnectionCard({ connection, index }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['connections'] });
       setDialogOpen(false);
-      alert('Connection request sent!');
+      setRequestSent(true);
     },
   });
 
@@ -102,11 +103,18 @@ export default function ConnectionCard({ connection, index }) {
         {/* Connect Button */}
         <Button
           onClick={() => setDialogOpen(true)}
-          className="w-full rounded-lg px-4 py-3 text-sm font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2"
-          style={{ background: '#D8A11F', color: '#fff' }}
+          disabled={requestSent || sendConnectionRequestMutation.isPending}
+          className="w-full rounded-lg px-4 py-3 text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2"
+          style={requestSent 
+            ? { background: '#22C55E', color: '#fff', opacity: 1 } 
+            : { background: '#D8A11F', color: '#fff' }
+          }
         >
-          <UserPlus className="w-4 h-4" />
-          Connect
+          {requestSent ? (
+            <><Check className="w-4 h-4" /> Request Sent</>
+          ) : (
+            <><UserPlus className="w-4 h-4" /> Connect</>
+          )}
         </Button>
       </motion.div>
 
