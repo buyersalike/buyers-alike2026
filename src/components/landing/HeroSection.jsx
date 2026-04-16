@@ -5,6 +5,7 @@ import { Search, Users, Building2, Handshake, ArrowRight, Sparkles, TrendingUp, 
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import ConvergenceAnimation from "./ConvergenceAnimation";
+import StatCard from "./StatCard";
 import { base44 } from "@/api/base44Client";
 
 export default function HeroSection() {
@@ -43,7 +44,7 @@ export default function HeroSection() {
         <div className="absolute top-40 right-20 w-[500px] h-[500px] bg-[#3B82F6]/25 rounded-full blur-3xl animate-float-medium" />
         <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-[#1F3A8A]/20 rounded-full blur-3xl animate-float-fast" />
         
-        {[...Array(8)].map((_, i) => (
+        {Array.from({ length: 8 }, (_, i) => i).map((i) => (
           <div
             key={i}
             className="absolute w-2 h-2 bg-cyan-400/40 rounded-full blur-sm animate-pulse-float"
@@ -147,7 +148,7 @@ export default function HeroSection() {
               {/* Trust indicators */}
               <div className="flex items-center gap-4 mt-4 flex-wrap">
                 <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
+                  {Array.from({ length: 5 }, (_, i) => i).map((i) => (
                     <svg key={i} className="w-4 h-4" fill="#FACC15" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
@@ -163,27 +164,9 @@ export default function HeroSection() {
 
             {/* Stats */}
             <div className="flex flex-wrap gap-6">
-              {[
-                { icon: Users, value: "10K+", label: "Active Members", gradient: "from-[#DBA11F] to-[#F59E0B]" },
-                { icon: Building2, value: "5K+", label: "Partners", gradient: "from-[#F59E0B] to-[#DBA11F]" },
-                { icon: Handshake, value: "2K+", label: "Deals Closed", gradient: "from-[#DBA11F] to-[#F59E0B]" },
-              ].map((stat, index) => (
-                <div
-                  key={stat.label}
-                  className="flex items-center gap-4 glass-card glass-card-hover px-5 py-4 rounded-2xl animate-fade-in-up"
-                  style={{ animationDelay: `${0.6 + index * 0.1}s` }}
-                >
-                  <div className={`w-14 h-14 rounded-xl flex items-center justify-center bg-gradient-to-br ${stat.gradient} shadow-lg`}>
-                    <stat.icon className="w-7 h-7" style={{ color: '#fff' }} />
-                  </div>
-                  <div>
-                    <p className="text-3xl font-bold" style={{ color: '#E5EDFF' }}>
-                      {stat.value}
-                    </p>
-                    <p className="text-sm font-medium" style={{ color: '#B6C4E0' }}>{stat.label}</p>
-                  </div>
-                </div>
-              ))}
+              <StatCard icon={Users} value="10K+" label="Active Members" gradient="from-[#DBA11F] to-[#F59E0B]" delay={0.6} />
+              <StatCard icon={Building2} value="5K+" label="Partners" gradient="from-[#F59E0B] to-[#DBA11F]" delay={0.7} />
+              <StatCard icon={Handshake} value="2K+" label="Deals Closed" gradient="from-[#DBA11F] to-[#F59E0B]" delay={0.8} />
             </div>
           </div>
 
