@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "@/components/partnerships/Sidebar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Users, Briefcase, Store, Heart, UserPlus, Loader2 } from "lucide-react";
+import { Sparkles, Users, Briefcase, Store, Heart, UserPlus, Loader2, Check } from "lucide-react";
 import ConnectionCard from "@/components/recommendations/ConnectionCard";
 import OpportunityRecommendationCard from "@/components/recommendations/OpportunityRecommendationCard";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 
 
@@ -15,6 +16,8 @@ export default function Recommendations() {
   const [currentUser, setCurrentUser] = useState(null);
   const [loadingAiMatches, setLoadingAiMatches] = useState(false);
   const [savedMatches, setSavedMatches] = useState([]);
+  const [sentRequests, setSentRequests] = useState(new Set());
+  const [sendingRequest, setSendingRequest] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -204,8 +207,8 @@ export default function Recommendations() {
               }
             >
               <Users className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              <span className="hidden sm:inline">Potential Connections ({savedMatches.length})</span>
-              <span className="sm:hidden">Connections ({savedMatches.length})</span>
+              <span className="hidden sm:inline">Potential Connections ({savedMatches.filter(m => !sentRequests.has(m.email)).length})</span>
+              <span className="sm:hidden">Connections ({savedMatches.filter(m => !sentRequests.has(m.email)).length})</span>
             </Button>
             <Button
               onClick={() => setActiveTab("opportunities")}
@@ -265,7 +268,7 @@ export default function Recommendations() {
 
                 {savedMatches.length > 0 ? (
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    {savedMatches.map((match, idx) => (
+                    {savedMatches.filter(match => !sentRequests.has(match.email)).map((match, idx) => (
                         <div
                           key={idx}
                           className="rounded-2xl p-6 flex flex-col items-center"
@@ -300,6 +303,8 @@ export default function Recommendations() {
                           
                           <Button
                             onClick={async () => {
+                              if (sentRequests.has(match.email) || sendingRequest === match.email) return;
+                              setSendingRequest(match.email);
                               try {
                                 await base44.entities.Connection.create({
                                   user1_email: currentUser.email,
@@ -315,16 +320,29 @@ export default function Recommendations() {
                                   sendEmail: true
                                 });
                                 queryClient.invalidateQueries({ queryKey: ['connections'] });
-                                alert('Connection request sent!');
+                                setSentRequests(prev => new Set(prev).add(match.email));
+                                toast.success(`Connection request sent to ${match.name}!`);
                               } catch (error) {
                                 console.error('Failed to send connection request:', error);
+                                toast.error('Failed to send request. Please try again.');
+                              } finally {
+                                setSendingRequest(null);
                               }
                             }}
+                            disabled={sentRequests.has(match.email) || sendingRequest === match.email}
                             className="w-full rounded-xl gap-2 font-semibold"
-                            style={{ background: '#D8A11F', color: '#1E293B' }}
+                            style={sentRequests.has(match.email)
+                              ? { background: '#22C55E', color: '#fff' }
+                              : { background: '#D8A11F', color: '#1E293B' }
+                            }
                           >
-                            <UserPlus className="w-4 h-4" />
-                            Connect
+                            {sendingRequest === match.email ? (
+                              <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</>
+                            ) : sentRequests.has(match.email) ? (
+                              <><Check className="w-4 h-4" /> Request Sent</>
+                            ) : (
+                              <><UserPlus className="w-4 h-4" /> Connect</>
+                            )}
                           </Button>
                         </div>
                       ))}
