@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Users, Eye, LogOut, CheckCircle2, X, Clock, UserPlus } from "lucide-react";
+import { Users, Eye, LogOut, CheckCircle2, X, Clock, UserPlus, ExternalLink, Target, User } from "lucide-react";
 
 const statusOrder = [
   "intent_created",
@@ -85,14 +85,49 @@ export default function PartnershipCard({ intent, group, mode, index, onViewDeta
 
       {/* Group Info */}
       {groupName && (
-        <div className="mb-4 p-3 rounded-lg" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          <p className="text-sm font-semibold mb-1 truncate" style={{ color: '#E5EDFF' }}>
+        <div className="mb-4 p-3 rounded-lg space-y-2" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <p className="text-sm font-semibold truncate" style={{ color: '#E5EDFF' }}>
             Group: {groupName}
           </p>
           <div className="flex items-center gap-1.5 text-sm" style={{ color: '#B6C4E0' }}>
             <Users className="w-4 h-4" />
             <span>Members: {activeMembers}/{maxMembers}</span>
           </div>
+
+          {/* Group Intent - show for available mode */}
+          {mode === 'available' && group?.group_intent && (
+            <div className="flex items-start gap-1.5 text-xs" style={{ color: '#B6C4E0' }}>
+              <Target className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" style={{ color: '#D8A11F' }} />
+              <span className="line-clamp-2">{group.group_intent}</span>
+            </div>
+          )}
+
+          {/* Opportunity Link */}
+          {mode === 'available' && group?.opportunity_link && (
+            <a href={group.opportunity_link} target="_blank" rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-xs hover:underline"
+              style={{ color: '#3B82F6' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ExternalLink className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">View Listing</span>
+            </a>
+          )}
+
+          {/* Member Avatars */}
+          {mode === 'available' && group?.members?.filter(m => m.status === 'active').length > 0 && (
+            <div className="flex items-center gap-1 flex-wrap">
+              {group.members.filter(m => m.status === 'active').slice(0, 6).map((m, i) => (
+                <span key={i} className="inline-flex items-center gap-1 text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.06)', color: '#B6C4E0' }}>
+                  <User className="w-3 h-3" />
+                  {(m.name || m.email.split('@')[0]).split(' ')[0]}
+                </span>
+              ))}
+              {group.members.filter(m => m.status === 'active').length > 6 && (
+                <span className="text-xs" style={{ color: '#7A8BA6' }}>+{group.members.filter(m => m.status === 'active').length - 6}</span>
+              )}
+            </div>
+          )}
         </div>
       )}
 

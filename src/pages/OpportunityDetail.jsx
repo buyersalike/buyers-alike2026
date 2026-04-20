@@ -8,6 +8,7 @@ import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import ExpressInterestDialog from "@/components/opportunities/ExpressInterestDialog";
 
 export default function OpportunityDetail() {
   const location = useLocation();
@@ -33,6 +34,7 @@ export default function OpportunityDetail() {
   const [currentUser, setCurrentUser] = useState(null);
   const [aiMatchData, setAiMatchData] = useState(null);
   const [loadingAiMatch, setLoadingAiMatch] = useState(false);
+  const [showInterestDialog, setShowInterestDialog] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(user => setCurrentUser(user)).catch(() => setCurrentUser(null));
@@ -60,47 +62,48 @@ export default function OpportunityDetail() {
     fetchAiMatch();
   }, [currentUser, opportunity?.id]);
 
+  const opportunityLink = opportunity?.link || opportunity?.source_url || opportunity?.contact?.website || null;
+
   const expressInterestMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (formData) => {
       if (!currentUser) {
         throw new Error("Please log in to express interest");
       }
-
-      // Check if a group already exists for this opportunity
-      const existingGroups = await base44.entities.PartnershipGroup.filter({
-        opportunity_id: opportunity.id || opportunity.title,
-      });
 
       let groupId = null;
       let groupName = null;
       let status = "intent_created";
 
-      if (existingGroups.length > 0) {
-        // Group exists - add to pending members
-        const group = existingGroups[0];
+      if (formData.mode === 'join') {
+        // Join existing group
+        const group = formData.group;
         groupId = group.id;
         groupName = group.name;
         status = "pending_group_join";
 
-        // Add to pending members
-        const pendingMembers = group.pending_members || [];
-        pendingMembers.push({
+        const pendingMembers = [...(group.pending_members || []), {
           email: currentUser.email,
           name: currentUser.full_name,
           requested_date: new Date().toISOString()
-        });
+        }];
 
         await base44.entities.PartnershipGroup.update(group.id, {
           pending_members: pendingMembers
         });
       } else {
-        // First person - create new group
+        // Create new group with user-specified settings
         const newGroup = await base44.entities.PartnershipGroup.create({
-          name: `Group for "${opportunity.title}"`,
+          name: formData.groupTitle,
           opportunity_id: opportunity.id || opportunity.title,
           opportunity_name: opportunity.title,
           opportunity_description: opportunity.description,
+          opportunity_link: opportunityLink || '',
+          opportunity_image: opportunity.image || '',
+          opportunity_investment: opportunity.investment || '',
+          opportunity_type: opportunity.type || '',
+          group_intent: formData.groupIntent || '',
           creator_email: currentUser.email,
+          max_members: formData.maxMembers,
           members: [{
             email: currentUser.email,
             name: currentUser.full_name,
@@ -114,7 +117,6 @@ export default function OpportunityDetail() {
         status = "accepted_into_group";
       }
 
-      // Create Partnership Intent
       return await base44.entities.PartnershipIntent.create({
         user_email: currentUser.email,
         user_name: currentUser.full_name,
@@ -127,19 +129,20 @@ export default function OpportunityDetail() {
         status_history: [{
           status: status,
           timestamp: new Date().toISOString(),
-          notes: status === "intent_created" 
+          notes: status === "accepted_into_group"
             ? "Created new partnership group" 
-            : "Joined existing partnership group as pending member"
+            : "Requested to join existing partnership group"
         }]
       });
     },
     onSuccess: (data) => {
-      if (data.current_status === "intent_created" || data.current_status === "accepted_into_group") {
+      setShowInterestDialog(false);
+      if (data.current_status === "accepted_into_group") {
         toast.success("Partnership group created! You're the first member.");
       } else {
-        toast.success("Interest submitted! Waiting for group approval.");
+        toast.success("Join request submitted! Waiting for group approval.");
       }
-      navigate(createPageUrl('ActivityFeed'));
+      navigate(createPageUrl('Partnerships'));
     },
     onError: (error) => {
       toast.error(error.message || "Failed to submit interest");
@@ -456,17 +459,25 @@ export default function OpportunityDetail() {
 
                 {/* CTA Button */}
                 <Button
-                  onClick={() => expressInterestMutation.mutate()}
-                  disabled={expressInterestMutation.isPending}
+                  onClick={() => setShowInterestDialog(true)}
                   className="w-full mt-6 rounded-xl py-6 text-lg font-bold"
                   style={{ background: '#D8A11F', color: '#fff' }}
                 >
-                  {expressInterestMutation.isPending ? "Submitting..." : "Express Interest"}
+                  Express Interest
                 </Button>
               </motion.div>
             </div>
           </div>
         </div>
+
+        <ExpressInterestDialog
+          open={showInterestDialog}
+          onOpenChange={setShowInterestDialog}
+          opportunity={opportunity}
+          currentUser={currentUser}
+          onSubmit={(formData) => expressInterestMutation.mutate(formData)}
+          isPending={expressInterestMutation.isPending}
+        />
       </main>
     </div>
   );

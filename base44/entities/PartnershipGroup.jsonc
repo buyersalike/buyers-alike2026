@@ -1,0 +1,140 @@
+{
+  "name": "PartnershipGroup",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Group name"
+    },
+    "opportunity_id": {
+      "type": "string",
+      "description": "Reference to opportunity"
+    },
+    "opportunity_name": {
+      "type": "string",
+      "description": "Opportunity name for display"
+    },
+    "opportunity_description": {
+      "type": "string",
+      "description": "Opportunity description"
+    },
+    "opportunity_link": {
+      "type": "string",
+      "description": "External link to property or franchise listing"
+    },
+    "opportunity_image": {
+      "type": "string",
+      "description": "Main image URL of the opportunity"
+    },
+    "opportunity_investment": {
+      "type": "string",
+      "description": "Investment amount for display"
+    },
+    "opportunity_type": {
+      "type": "string",
+      "description": "Type of opportunity (Real Estate, Franchise, etc.)"
+    },
+    "group_intent": {
+      "type": "string",
+      "description": "Description of the group's intent or goal"
+    },
+    "creator_email": {
+      "type": "string",
+      "description": "Email of group creator"
+    },
+    "members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "joined_date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "left"
+            ]
+          }
+        }
+      },
+      "description": "Array of member objects"
+    },
+    "pending_members": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "requested_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "description": "Array of pending member requests"
+    },
+    "max_members": {
+      "type": "number",
+      "default": 20,
+      "description": "Maximum number of members"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "forming",
+        "approvals_complete",
+        "documents_gathering",
+        "active",
+        "completed",
+        "closed"
+      ],
+      "default": "forming",
+      "description": "Group lifecycle status"
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "uploaded_by": {
+            "type": "string"
+          },
+          "uploaded_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "description": "Partnership documents"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Group notes and details"
+    }
+  },
+  "required": [
+    "name",
+    "opportunity_id",
+    "creator_email"
+  ]
+}
