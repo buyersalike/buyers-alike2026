@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import AddMemberDialog from "./AddMemberDialog";
 import MessageActions from "./MessageActions";
 import { MediaPreview, FilePreviewBar } from "./MediaAttachment";
+import MessageStatus from "./MessageStatus";
 
 export default function GroupChatArea({ group, messages, onSendMessage, currentUser }) {
   const [messageText, setMessageText] = React.useState("");
@@ -51,8 +52,25 @@ export default function GroupChatArea({ group, messages, onSendMessage, currentU
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Mark unread group messages as read
+  const markGroupMessagesRead = useMutation({
+    mutationFn: async ({ id, read_by }) => {
+      await base44.entities.GroupMessage.update(id, { read_by });
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['group-messages'] }),
+  });
+
   useEffect(() => {
     scrollToBottom();
+    // Mark unread group messages as read by current user
+    messages.forEach(msg => {
+      if (msg.sender_email !== currentUser.email && !(msg.read_by || []).includes(currentUser.email)) {
+        markGroupMessagesRead.mutate({ 
+          id: msg.id, 
+          read_by: [...(msg.read_by || []), currentUser.email] 
+        });
+      }
+    });
   }, [messages.length]);
 
   const handleSend = async () => {
@@ -234,9 +252,14 @@ export default function GroupChatArea({ group, messages, onSendMessage, currentU
                     >
                       {msg.content && <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>}
                       <MediaPreview urls={msg.file_urls} />
-                      {msg.edited && !msg.deleted && (
-                        <p className="text-xs mt-0.5 opacity-60">edited</p>
-                      )}
+                      <div className="flex items-center justify-end gap-1 mt-0.5">
+                        {msg.edited && !msg.deleted && (
+                          <span className="text-xs opacity-60">edited</span>
+                        )}
+                        {isOwn && !msg.deleted && (
+                          <MessageStatus msg={msg} isGroup groupMemberCount={group.members.length} />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </motion.div>

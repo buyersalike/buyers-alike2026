@@ -9,6 +9,7 @@ import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import MessageActions from "./MessageActions";
 import { MediaPreview, FilePreviewBar } from "./MediaAttachment";
+import MessageStatus from "./MessageStatus";
 
 export default function ChatArea({ conversation, onSendMessage, onMarkAsRead, currentUserEmail, isPaidUser = true }) {
   const queryClient = useQueryClient();
@@ -152,9 +153,12 @@ export default function ChatArea({ conversation, onSendMessage, onMarkAsRead, cu
                   >
                     {msg.content && <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>}
                     <MediaPreview urls={msg.file_urls} />
-                    {msg.edited && !msg.deleted && (
-                      <p className="text-xs mt-0.5 opacity-60">edited</p>
-                    )}
+                    <div className="flex items-center justify-end gap-1 mt-0.5">
+                      {msg.edited && !msg.deleted && (
+                        <span className="text-xs opacity-60">edited</span>
+                      )}
+                      {isOwn && !msg.deleted && <MessageStatus msg={msg} />}
+                    </div>
                   </div>
                 </motion.div>
                 {!msg.deleted && (
