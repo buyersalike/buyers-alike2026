@@ -171,12 +171,14 @@ export default function Messages() {
     setChatType('direct');
     setSelectedConversation(conversationId);
     setSelectedGroup(null);
+    setShowSearch(false);
   };
 
   const handleSelectGroup = (groupId) => {
     setChatType('group');
     setSelectedGroup(groupId);
     setSelectedConversation(null);
+    setShowSearch(false);
   };
 
   if (!user) {
