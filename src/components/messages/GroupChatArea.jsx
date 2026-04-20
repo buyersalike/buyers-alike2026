@@ -177,11 +177,11 @@ export default function GroupChatArea({ group, messages, onSendMessage, currentU
                 </div>
               )}
               
-              <div className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
+              <div className={`flex flex-col w-full ${isOwn ? 'items-end' : 'items-start'}`}>
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`flex gap-2 ${isOwn ? 'justify-end' : 'justify-start'} group`}
+                  className={`flex gap-2 w-full ${isOwn ? 'justify-end' : 'justify-start'} group`}
                 >
                   {!isOwn && (
                     <div 
