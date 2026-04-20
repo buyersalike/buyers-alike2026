@@ -110,11 +110,11 @@ export default function ChatArea({ conversation, onSendMessage, onMarkAsRead, cu
                 </div>
               )}
               
-              <div className={`flex flex-col w-full ${isOwn ? 'items-end' : 'items-start'}`}>
+              <div className={`flex flex-col w-full group ${isOwn ? 'items-end' : 'items-start'}`}>
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`flex w-full ${isOwn ? 'justify-end' : 'justify-start'} group`}
+                  className={`flex w-full ${isOwn ? 'justify-end' : 'justify-start'}`}
                 >
                   <div 
                     className={`max-w-[70%] px-4 py-2 rounded-2xl inline-block ${msg.deleted ? 'italic opacity-60' : ''}`}
