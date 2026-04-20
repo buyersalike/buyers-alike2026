@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { User } from "lucide-react";
+import { User, Search } from "lucide-react";
 
 export default function CreateGroupDialog({ open, onOpenChange, currentUser }) {
   const [formData, setFormData] = useState({
@@ -17,6 +17,7 @@ export default function CreateGroupDialog({ open, onOpenChange, currentUser }) {
     type: "general",
     members: []
   });
+  const [memberSearch, setMemberSearch] = useState("");
   const queryClient = useQueryClient();
 
   const { data: users = [] } = useQuery({
@@ -55,7 +56,11 @@ export default function CreateGroupDialog({ open, onOpenChange, currentUser }) {
     }));
   };
 
-  const availableUsers = users.filter(u => u.email !== currentUser?.email);
+  const availableUsers = users.filter(u => 
+    u.email !== currentUser?.email &&
+    (u.full_name?.toLowerCase().includes(memberSearch.toLowerCase()) ||
+     u.email?.toLowerCase().includes(memberSearch.toLowerCase()))
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -104,7 +109,17 @@ export default function CreateGroupDialog({ open, onOpenChange, currentUser }) {
 
           <div>
             <Label style={{ color: '#000' }}>Add Members *</Label>
-            <div className="mt-2 max-h-60 overflow-y-auto p-3 rounded-xl" style={{ background: '#fff', border: '1px solid #000' }}>
+            <div className="relative mt-2 mb-2">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#666' }} />
+              <Input
+                value={memberSearch}
+                onChange={(e) => setMemberSearch(e.target.value)}
+                placeholder="Search by name or email..."
+                className="pl-10"
+                style={{ color: '#000', background: '#fff', border: '1px solid #000' }}
+              />
+            </div>
+            <div className="max-h-60 overflow-y-auto p-3 rounded-xl" style={{ background: '#fff', border: '1px solid #000' }}>
               {availableUsers.length > 0 ? (
                 <div className="space-y-2">
                   {availableUsers.map((user) => (
