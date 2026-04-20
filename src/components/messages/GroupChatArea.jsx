@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import AddMemberDialog from "./AddMemberDialog";
+import MessageActions from "./MessageActions";
 
 export default function GroupChatArea({ group, messages, onSendMessage, currentUser }) {
   const [messageText, setMessageText] = React.useState("");
@@ -17,6 +18,20 @@ export default function GroupChatArea({ group, messages, onSendMessage, currentU
   const queryClient = useQueryClient();
 
   const isAdmin = currentUser.role === 'admin' || currentUser.email === group.creator_email;
+
+  const editGroupMessageMutation = useMutation({
+    mutationFn: async ({ id, content }) => {
+      await base44.entities.GroupMessage.update(id, { content, edited: true });
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['group-messages'] }),
+  });
+
+  const deleteGroupMessageMutation = useMutation({
+    mutationFn: async (id) => {
+      await base44.entities.GroupMessage.update(id, { deleted: true, content: 'This message was deleted' });
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['group-messages'] }),
+  });
 
   const removeMemberMutation = useMutation({
     mutationFn: async (emailToRemove) => {
@@ -162,43 +177,56 @@ export default function GroupChatArea({ group, messages, onSendMessage, currentU
                 </div>
               )}
               
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`flex gap-2 ${isOwn ? 'justify-end' : 'justify-start'}`}
-              >
-                {!isOwn && (
-                  <div 
-                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1"
-                    style={{ background: '#D8A11F' }}
-                  >
-                    <User className="w-4 h-4" style={{ color: '#fff' }} />
-                  </div>
-                )}
-                
-                <div className="max-w-[70%]">
+              <div className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex gap-2 ${isOwn ? 'justify-end' : 'justify-start'} group`}
+                >
                   {!isOwn && (
-                    <p className="text-xs font-semibold mb-1 px-2" style={{ color: '#D8A11F' }}>
-                      {msg.sender_name}
-                    </p>
+                    <div 
+                      className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1"
+                      style={{ background: '#D8A11F' }}
+                    >
+                      <User className="w-4 h-4" style={{ color: '#fff' }} />
+                    </div>
                   )}
-                  <div 
-                    className="px-4 py-2 rounded-2xl"
-                    style={isOwn ? {
-                      background: '#D8A11F',
-                      color: '#fff',
-                      borderBottomRightRadius: '4px'
-                    } : {
-                      background: '#fff',
-                      color: '#000',
-                      border: '1px solid #E5E7EB',
-                      borderBottomLeftRadius: '4px'
-                    }}
-                  >
-                    <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
+                  
+                  <div className="max-w-[70%]">
+                    {!isOwn && (
+                      <p className="text-xs font-semibold mb-1 px-2" style={{ color: '#D8A11F' }}>
+                        {msg.sender_name}
+                      </p>
+                    )}
+                    <div 
+                      className={`px-4 py-2 rounded-2xl ${msg.deleted ? 'italic opacity-60' : ''}`}
+                      style={isOwn ? {
+                        background: msg.deleted ? '#B8860B' : '#D8A11F',
+                        color: '#fff',
+                        borderBottomRightRadius: '4px'
+                      } : {
+                        background: '#fff',
+                        color: msg.deleted ? '#999' : '#000',
+                        border: '1px solid #E5E7EB',
+                        borderBottomLeftRadius: '4px'
+                      }}
+                    >
+                      <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
+                      {msg.edited && !msg.deleted && (
+                        <p className="text-xs mt-0.5 opacity-60">edited</p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+                {!msg.deleted && (
+                  <MessageActions
+                    msg={msg}
+                    isOwn={isOwn}
+                    onEdit={(id, content) => editGroupMessageMutation.mutate({ id, content })}
+                    onDelete={(id) => deleteGroupMessageMutation.mutate(id)}
+                  />
+                )}
+              </div>
             </div>
           );
         })}

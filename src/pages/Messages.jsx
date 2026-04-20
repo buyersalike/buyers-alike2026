@@ -114,10 +114,27 @@ export default function Messages() {
     },
   });
 
+  const removeConversationMutation = useMutation({
+    mutationFn: async (conversationId) => {
+      // Hide all messages in this conversation for the current user
+      const conversationMsgs = messages.filter(m => m.conversation_id === conversationId);
+      for (const msg of conversationMsgs) {
+        const hiddenFor = msg.hidden_for || [];
+        if (!hiddenFor.includes(user.email)) {
+          await base44.entities.Message.update(msg.id, { hidden_for: [...hiddenFor, user.email] });
+        }
+      }
+    },
+    onSuccess: () => {
+      setSelectedConversation(null);
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
+    },
+  });
+
   const getConversations = () => {
     const conversationMap = new Map();
 
-    messages.forEach(msg => {
+    messages.filter(msg => !(msg.hidden_for || []).includes(user?.email)).forEach(msg => {
       const conversationId = msg.conversation_id;
       if (!conversationMap.has(conversationId)) {
         const otherEmail = msg.sender_email === user?.email ? msg.recipient_email : msg.sender_email;
@@ -199,17 +216,18 @@ export default function Messages() {
       <Sidebar />
       <main className="flex-1 flex">
         <ConversationList
-          conversations={conversations}
-          groups={groups}
-          selectedConversation={selectedConversation}
-          selectedGroup={selectedGroup}
-          onSelectConversation={handleSelectConversation}
-          onSelectGroup={handleSelectGroup}
-          onShowSearch={() => setShowSearch(true)}
-          onShowCreateGroup={() => setShowCreateGroup(true)}
-          currentUserEmail={user.email}
-          groupMessages={groupMessages}
-          isPaidUser={isPaidUser}
+        conversations={conversations}
+        groups={groups}
+        selectedConversation={selectedConversation}
+        selectedGroup={selectedGroup}
+        onSelectConversation={handleSelectConversation}
+        onSelectGroup={handleSelectGroup}
+        onShowSearch={() => setShowSearch(true)}
+        onShowCreateGroup={() => setShowCreateGroup(true)}
+        onRemoveConversation={(convId) => removeConversationMutation.mutate(convId)}
+        currentUserEmail={user.email}
+        groupMessages={groupMessages}
+        isPaidUser={isPaidUser}
         />
         
         {showSearch ? (

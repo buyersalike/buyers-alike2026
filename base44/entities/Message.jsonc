@@ -1,0 +1,51 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "ID linking messages to a conversation"
+    },
+    "sender_email": {
+      "type": "string",
+      "description": "Email of the message sender"
+    },
+    "recipient_email": {
+      "type": "string",
+      "description": "Email of the message recipient"
+    },
+    "content": {
+      "type": "string",
+      "description": "Message content"
+    },
+    "read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the message has been read"
+    },
+    "deleted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the message was deleted by sender"
+    },
+    "edited": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the message was edited"
+    },
+    "hidden_for": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "List of emails who have hidden this conversation"
+    }
+  },
+  "required": [
+    "conversation_id",
+    "sender_email",
+    "recipient_email",
+    "content"
+  ]
+}

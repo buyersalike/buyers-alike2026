@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Plus, User, Users } from "lucide-react";
+import { Search, Plus, User, Users, X } from "lucide-react";
 import { format } from "date-fns";
 
 export default function ConversationList({ 
@@ -15,6 +15,7 @@ export default function ConversationList({
   onSelectGroup,
   onShowSearch,
   onShowCreateGroup,
+  onRemoveConversation,
   currentUserEmail,
   groupMessages = [],
   isPaidUser
@@ -110,7 +111,7 @@ export default function ConversationList({
                   key={conv.id}
                   whileHover={{ x: 4 }}
                   onClick={() => onSelectConversation(conv.id)}
-                  className="p-3 rounded-xl mb-2 cursor-pointer transition-all"
+                  className="p-3 rounded-xl mb-2 cursor-pointer transition-all relative group"
                   style={isSelected ? {
                     background: '#FEF3C7',
                     border: '1px solid #D8A11F',
@@ -119,6 +120,15 @@ export default function ConversationList({
                     border: '1px solid #E5E7EB',
                   }}
                 >
+                  {onRemoveConversation && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); onRemoveConversation(conv.id); }}
+                      className="absolute top-1 right-1 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-100"
+                      title="Remove conversation"
+                    >
+                      <X className="w-3.5 h-3.5" style={{ color: '#EF4444' }} />
+                    </button>
+                  )}
                   <div className="flex items-start gap-3">
                     <div 
                       className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"

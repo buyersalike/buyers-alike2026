@@ -1,0 +1,46 @@
+{
+  "name": "GroupMessage",
+  "type": "object",
+  "properties": {
+    "group_id": {
+      "type": "string",
+      "description": "Group chat ID"
+    },
+    "sender_email": {
+      "type": "string",
+      "description": "Email of the message sender"
+    },
+    "sender_name": {
+      "type": "string",
+      "description": "Name of the message sender"
+    },
+    "content": {
+      "type": "string",
+      "description": "Message content"
+    },
+    "read_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Array of emails who have read the message"
+    },
+    "deleted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the message was deleted by sender"
+    },
+    "edited": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the message was edited"
+    }
+  },
+  "required": [
+    "group_id",
+    "sender_email",
+    "sender_name",
+    "content"
+  ]
+}
