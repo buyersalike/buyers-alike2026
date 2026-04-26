@@ -1,14 +1,17 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Users, Eye, LogOut, CheckCircle2, X, Clock, UserPlus, ExternalLink, Target, User } from "lucide-react";
+import { 
+  Users, Eye, LogOut, CheckCircle2, Circle, UserPlus, 
+  ExternalLink, MapPin, Home, Ruler, BedDouble, Target
+} from "lucide-react";
 
 const statusOrder = [
   "intent_created",
   "pending_group_join",
   "accepted_into_group",
-  "approvals_complete",
   "group_forming",
+  "approvals_complete",
   "documents_gathering",
   "partnership_active",
   "partnership_completed"
@@ -18,24 +21,24 @@ const statusLabels = {
   intent_created: "Intent Created",
   pending_group_join: "Pending Group Join",
   accepted_into_group: "Accepted into Group",
-  approvals_complete: "Approvals Complete",
   group_forming: "Group Forming",
+  approvals_complete: "Approvals Complete",
   documents_gathering: "Document Gathering",
   partnership_active: "Partnership Active",
   partnership_completed: "Partnership Completed",
 };
 
-const statusBadgeStyle = {
-  intent_created: { background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.3)' },
-  pending_group_join: { background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.3)' },
-  accepted_into_group: { background: 'rgba(34, 197, 94, 0.15)', color: '#22C55E', border: '1px solid rgba(34, 197, 94, 0.3)' },
-  approvals_complete: { background: 'rgba(34, 197, 94, 0.15)', color: '#22C55E', border: '1px solid rgba(34, 197, 94, 0.3)' },
-  group_forming: { background: 'rgba(59, 130, 246, 0.15)', color: '#3B82F6', border: '1px solid rgba(59, 130, 246, 0.3)' },
-  documents_gathering: { background: 'rgba(139, 92, 246, 0.15)', color: '#8B5CF6', border: '1px solid rgba(139, 92, 246, 0.3)' },
-  partnership_active: { background: 'rgba(34, 197, 94, 0.15)', color: '#22C55E', border: '1px solid rgba(34, 197, 94, 0.3)' },
-  partnership_completed: { background: 'rgba(216, 161, 31, 0.15)', color: '#D8A11F', border: '1px solid rgba(216, 161, 31, 0.3)' },
-  withdrawn: { background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444', border: '1px solid rgba(239, 68, 68, 0.3)' },
-  rejected: { background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444', border: '1px solid rgba(239, 68, 68, 0.3)' },
+const statusBadgeColors = {
+  intent_created: { bg: '#FEF3C7', color: '#92400E' },
+  pending_group_join: { bg: '#FEF3C7', color: '#92400E' },
+  accepted_into_group: { bg: '#D1FAE5', color: '#065F46' },
+  approvals_complete: { bg: '#D1FAE5', color: '#065F46' },
+  group_forming: { bg: '#DBEAFE', color: '#1E40AF' },
+  documents_gathering: { bg: '#EDE9FE', color: '#5B21B6' },
+  partnership_active: { bg: '#D1FAE5', color: '#065F46' },
+  partnership_completed: { bg: '#FEF3C7', color: '#92400E' },
+  withdrawn: { bg: '#FEE2E2', color: '#991B1B' },
+  rejected: { bg: '#FEE2E2', color: '#991B1B' },
 };
 
 export default function PartnershipCard({ intent, group, mode, index, onViewDetails, onLeave, onJoin, leavePending }) {
@@ -46,8 +49,16 @@ export default function PartnershipCard({ intent, group, mode, index, onViewDeta
   const title = intent?.opportunity_name || group?.opportunity_name || "Partnership";
   const description = intent?.opportunity_description || group?.opportunity_description || "";
   const groupName = group?.name || intent?.group_name || "";
+  const groupIntent = group?.group_intent || "";
   const activeMembers = group?.members?.filter(m => m.status === 'active').length ?? 0;
   const maxMembers = group?.max_members ?? 20;
+  const fillPercent = maxMembers > 0 ? Math.round((activeMembers / maxMembers) * 100) : 0;
+  const imageUrl = group?.opportunity_image || null;
+  const investmentAmount = group?.opportunity_investment || "";
+  const opportunityType = group?.opportunity_type || "";
+  const opportunityLink = group?.opportunity_link || "";
+
+  const badgeColor = statusBadgeColors[currentStatus] || statusBadgeColors['intent_created'];
 
   const progressLabel = currentStatus === 'partnership_completed' ? 'Partnership Completed' :
     currentStatus === 'partnership_active' ? 'Partnership Active' :
@@ -57,167 +68,227 @@ export default function PartnershipCard({ intent, group, mode, index, onViewDeta
     currentStatus === 'accepted_into_group' ? 'Group Forming' :
     'Getting Started';
 
-  const badgeStyle = statusBadgeStyle[currentStatus] || statusBadgeStyle['intent_created'];
-
   const canLeave = mode !== 'completed' && mode !== 'declined' && !['partnership_completed', 'withdrawn', 'rejected'].includes(currentStatus);
+
+  // Extract location-like info from description
+  const extractDetail = (text, pattern) => {
+    if (!text) return null;
+    const match = text.match(pattern);
+    return match ? match[0] : null;
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="p-6 rounded-2xl transition-all duration-300 hover:transform hover:-translate-y-1"
-      style={{ background: '#0F2744', border: '1px solid rgba(255, 255, 255, 0.1)', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.3)' }}
+      className="rounded-2xl overflow-hidden bg-white shadow-lg hover:shadow-xl transition-shadow duration-300"
+      style={{ border: '1px solid #E5E7EB' }}
     >
-      {/* Header */}
-      <div className="mb-3">
-        <h3 className="text-lg font-semibold mb-2" style={{ color: '#E5EDFF' }}>
-          {title}
-        </h3>
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium mb-2" style={badgeStyle}>
-          <CheckCircle2 className="w-3 h-3" />
-          {statusLabels[currentStatus] || currentStatus?.replace(/_/g, ' ')}
+      {/* Image Section with Status Badge */}
+      <div className="relative h-52 bg-gray-200">
+        {imageUrl ? (
+          <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+            <Home className="w-16 h-16 text-white/40" />
+          </div>
+        )}
+        {/* Status Badge overlay */}
+        <div className="absolute top-3 left-3">
+          <span
+            className="px-3 py-1.5 rounded-md text-xs font-bold"
+            style={{ background: badgeColor.bg, color: badgeColor.color }}
+          >
+            {statusLabels[currentStatus] || currentStatus?.replace(/_/g, ' ')}
+          </span>
         </div>
+      </div>
+
+      {/* Property Info */}
+      <div className="px-5 pt-4 pb-3">
+        {opportunityType && (
+          <div className="flex items-center gap-1.5 mb-2">
+            <Home className="w-3.5 h-3.5" style={{ color: '#D8A11F' }} />
+            <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#D8A11F' }}>
+              {opportunityType}
+            </span>
+          </div>
+        )}
+        <h3 className="text-xl font-bold text-gray-900 mb-1 line-clamp-1">{title}</h3>
         {description && (
-          <p className="text-sm line-clamp-2 mt-2" style={{ color: '#B6C4E0' }}>{description}</p>
+          <div className="flex items-start gap-1.5 mb-2">
+            <MapPin className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-gray-400" />
+            <p className="text-sm text-gray-500 line-clamp-1">{description.substring(0, 80)}</p>
+          </div>
+        )}
+
+        {/* Investment Amount Display */}
+        {investmentAmount && (
+          <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+            <span className="font-semibold text-gray-900">{investmentAmount}</span>
+          </div>
         )}
       </div>
 
-      {/* Group Info */}
-      {groupName && (
-        <div className="mb-4 p-3 rounded-lg space-y-2" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-          <p className="text-sm font-semibold truncate" style={{ color: '#E5EDFF' }}>
-            Group: {groupName}
-          </p>
-          <div className="flex items-center gap-1.5 text-sm" style={{ color: '#B6C4E0' }}>
-            <Users className="w-4 h-4" />
-            <span>Members: {activeMembers}/{maxMembers}</span>
+      {/* Group Details Card */}
+      <div className="mx-4 mb-3 p-4 rounded-xl" style={{ background: '#FFFBEB', border: '1px solid #FDE68A' }}>
+        <div className="flex items-start justify-between mb-2">
+          <div className="flex-1 min-w-0">
+            <h4 className="font-bold text-gray-900 text-sm line-clamp-1">{groupName || 'Partnership Group'}</h4>
+            {groupIntent && (
+              <p className="text-xs font-semibold uppercase tracking-wide mt-0.5" style={{ color: '#D8A11F' }}>
+                {groupIntent.substring(0, 60)}
+              </p>
+            )}
           </div>
-
-          {/* Group Intent - show for available mode */}
-          {mode === 'available' && group?.group_intent && (
-            <div className="flex items-start gap-1.5 text-xs" style={{ color: '#B6C4E0' }}>
-              <Target className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" style={{ color: '#D8A11F' }} />
-              <span className="line-clamp-2">{group.group_intent}</span>
-            </div>
-          )}
-
-          {/* Opportunity Link */}
-          {mode === 'available' && group?.opportunity_link && (
-            <a href={group.opportunity_link} target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs hover:underline"
-              style={{ color: '#3B82F6' }}
+          {opportunityLink && (
+            <a href={opportunityLink.startsWith('http') ? opportunityLink : `https://${opportunityLink}`}
+              target="_blank" rel="noopener noreferrer"
+              className="ml-2 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ background: '#D8A11F' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <ExternalLink className="w-3.5 h-3.5 flex-shrink-0" />
-              <span className="truncate">View Listing</span>
+              <ExternalLink className="w-4 h-4 text-white" />
             </a>
           )}
-
-          {/* Member Avatars */}
-          {mode === 'available' && group?.members?.filter(m => m.status === 'active').length > 0 && (
-            <div className="flex items-center gap-1 flex-wrap">
-              {group.members.filter(m => m.status === 'active').slice(0, 6).map((m, i) => (
-                <span key={i} className="inline-flex items-center gap-1 text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.06)', color: '#B6C4E0' }}>
-                  <User className="w-3 h-3" />
-                  {(m.name || m.email.split('@')[0]).split(' ')[0]}
-                </span>
-              ))}
-              {group.members.filter(m => m.status === 'active').length > 6 && (
-                <span className="text-xs" style={{ color: '#7A8BA6' }}>+{group.members.filter(m => m.status === 'active').length - 6}</span>
-              )}
-            </div>
-          )}
         </div>
-      )}
 
-      {/* Action Buttons */}
-      <div className="flex gap-2 mb-4">
-        {mode === 'available' ? (
-          <>
-            {onViewDetails && (
-              <Button
-                onClick={onViewDetails}
-                className="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium flex items-center justify-center gap-2"
-                style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}
-              >
-                <Eye className="w-4 h-4" />
-                View Details
-              </Button>
-            )}
-            {onJoin && (
-              <Button
-                onClick={onJoin}
-                className="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium flex items-center justify-center gap-2"
-                style={{ background: '#22C55E', color: '#fff' }}
-              >
-                <UserPlus className="w-4 h-4" />
-                Request to Join
-              </Button>
-            )}
-          </>
-        ) : (
-          <>
-            {group && onViewDetails && (
-              <Button
-                onClick={onViewDetails}
-                className="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium flex items-center justify-center gap-2"
-                style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#E5EDFF' }}
-              >
-                <Eye className="w-4 h-4" />
-                View Group Details
-              </Button>
-            )}
-            {canLeave && onLeave && (
-              <Button
-                onClick={onLeave}
-                disabled={leavePending}
-                className="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium flex items-center justify-center gap-2"
-                style={{ background: '#EF4444', color: '#fff' }}
-              >
-                <LogOut className="w-4 h-4" />
-                {leavePending ? 'Leaving...' : 'Leave Partnership'}
-              </Button>
-            )}
-          </>
+        {description && (
+          <p className="text-xs text-gray-600 mb-3 line-clamp-2">{description.substring(0, 150)}</p>
         )}
-      </div>
 
-      {/* Progress */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium" style={{ color: '#FACC15' }}>{progressLabel}</span>
-          <span className="text-xs" style={{ color: '#7A8BA6' }}>{Math.round(progress)}%</span>
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-2 gap-2 mb-3">
+          <MetricBox label="MIN. BUY-IN" value={investmentAmount || 'TBD'} />
+          <MetricBox label="TARGET IRR" value="10-15%" />
+          <MetricBox label="HOLD PERIOD" value="5 years" />
+          <MetricBox label="DISTRIBUTIONS" value="Quarterly" />
         </div>
-        <div className="relative h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 1, delay: 0.2 }}
-            className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, #FACC15 0%, #3B82F6 100%)' }}
+
+        {/* Bottom row: type + members */}
+        <div className="flex items-center justify-between pt-2" style={{ borderTop: '1px solid #FDE68A' }}>
+          <span className="text-xs text-gray-600">
+            {opportunityType || 'Partnership'} — {groupName ? groupName.split(' ').slice(-1)[0] : 'Group'}
+          </span>
+          <span className="text-xs text-gray-500">
+            {activeMembers}/{maxMembers} members · {fillPercent}% filled
+          </span>
+        </div>
+        {/* Fill bar */}
+        <div className="mt-2 h-1.5 rounded-full bg-gray-200 overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all duration-500"
+            style={{ width: `${fillPercent}%`, background: '#3B82F6' }}
           />
         </div>
       </div>
 
-      {/* Stage Checklist */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-        {statusOrder.map((status, idx) => {
-          const isComplete = currentStatusIdx >= idx;
-          return (
-            <div key={status} className="flex items-center gap-2">
-              {isComplete ? (
-                <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: '#3B82F6' }} />
-              ) : (
-                <X className="w-4 h-4 flex-shrink-0" style={{ color: '#7A8BA6' }} />
+      {/* Action Buttons */}
+      <div className="px-4 pb-3">
+        <div className="flex gap-2">
+          {mode === 'available' ? (
+            <>
+              {onViewDetails && (
+                <Button
+                  onClick={onViewDetails}
+                  className="flex-1 rounded-lg py-2.5 text-sm font-semibold gap-2"
+                  style={{ background: '#14B8A6', color: '#fff' }}
+                >
+                  <Eye className="w-4 h-4" />
+                  View Group
+                </Button>
               )}
-              <span className="text-xs" style={{ color: isComplete ? '#B6C4E0' : '#7A8BA6' }}>
-                {statusLabels[status]}
-              </span>
-            </div>
-          );
-        })}
+              {onJoin && (
+                <Button
+                  onClick={onJoin}
+                  className="flex-1 rounded-lg py-2.5 text-sm font-semibold gap-2"
+                  style={{ background: '#F59E0B', color: '#fff' }}
+                >
+                  <UserPlus className="w-4 h-4" />
+                  Join
+                </Button>
+              )}
+            </>
+          ) : (
+            <>
+              {group && onViewDetails && (
+                <Button
+                  onClick={onViewDetails}
+                  className="flex-1 rounded-lg py-2.5 text-sm font-semibold gap-2"
+                  style={{ background: '#14B8A6', color: '#fff' }}
+                >
+                  <Eye className="w-4 h-4" />
+                  View Group
+                </Button>
+              )}
+              {canLeave && onLeave && (
+                <Button
+                  onClick={onLeave}
+                  disabled={leavePending}
+                  variant="outline"
+                  className="flex-1 rounded-lg py-2.5 text-sm font-semibold gap-2"
+                  style={{ borderColor: '#FCA5A5', color: '#EF4444' }}
+                >
+                  <LogOut className="w-4 h-4" />
+                  {leavePending ? 'Leaving...' : 'Leave'}
+                </Button>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Progress Section */}
+      <div className="px-4 pb-4">
+        <div className="pt-3" style={{ borderTop: '1px solid #E5E7EB' }}>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#D8A11F' }}>
+              {progressLabel}
+            </span>
+            <span className="text-xs font-bold" style={{ color: '#14B8A6' }}>{Math.round(progress)}%</span>
+          </div>
+          {/* Progress bar */}
+          <div className="h-1.5 rounded-full bg-gray-200 overflow-hidden mb-3">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="h-full rounded-full"
+              style={{ background: 'linear-gradient(90deg, #3B82F6, #14B8A6)' }}
+            />
+          </div>
+          {/* Stage Checklist */}
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+            {statusOrder.map((status, idx) => {
+              const isComplete = currentStatusIdx >= idx;
+              return (
+                <div key={status} className="flex items-center gap-2">
+                  {isComplete ? (
+                    <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#22C55E' }} />
+                  ) : (
+                    <Circle className="w-3.5 h-3.5 flex-shrink-0 text-gray-300" />
+                  )}
+                  <span className={`text-xs ${isComplete ? 'text-gray-700 font-medium' : 'text-gray-400'}`}>
+                    {statusLabels[status]}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </motion.div>
+  );
+}
+
+function MetricBox({ label, value }) {
+  return (
+    <div className="px-3 py-2 rounded-lg" style={{ background: '#FEF3C7', border: '1px solid #FDE68A' }}>
+      <span className="text-[10px] font-bold uppercase tracking-wide block mb-0.5" style={{ color: '#DC2626' }}>
+        {label}
+      </span>
+      <span className="text-sm font-bold text-gray-900">{value}</span>
+    </div>
   );
 }

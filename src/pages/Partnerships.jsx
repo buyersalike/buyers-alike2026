@@ -325,7 +325,7 @@ export default function Partnerships() {
               </p>
             </div>
           ) : (
-            <div className={viewMode === "grid" ? "grid md:grid-cols-2 gap-6" : "space-y-6"}>
+            <div className={viewMode === "grid" ? "grid md:grid-cols-2 gap-8" : "space-y-6"}>
               {activeTab === 'available' ? (
                 currentItems.map((group, index) => (
                   <PartnershipCard
