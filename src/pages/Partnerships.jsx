@@ -203,7 +203,7 @@ export default function Partnerships() {
             <AdvancedFilters filters={filters} setFilters={setFilters} isOpen={filtersOpen} setIsOpen={setFiltersOpen} />
           </div>
 
-          <FilterBar viewMode={viewMode} setViewMode={setViewMode} totalResults={currentItems.length} />
+          <FilterBar viewMode={viewMode} setViewMode={setViewMode} totalResults={currentItems.length} filtersOpen={filtersOpen} setFiltersOpen={setFiltersOpen} />
 
           {/* Content */}
           {loadingIntents ? (

@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export default function FilterBar({ viewMode, setViewMode, totalResults }) {
+export default function FilterBar({ viewMode, setViewMode, totalResults, filtersOpen, setFiltersOpen }) {
   return (
     <div className="glass-card p-4 mb-6">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -27,10 +27,14 @@ export default function FilterBar({ viewMode, setViewMode, totalResults }) {
           </p>
           <Button
             variant="outline"
+            onClick={() => setFiltersOpen && setFiltersOpen(!filtersOpen)}
             className="glass-card glass-card-hover rounded-xl"
-            style={{ color: '#000', background: '#fff', border: '1px solid rgba(0, 0, 0, 0.1)' }}
+            style={filtersOpen 
+              ? { color: '#fff', background: '#D8A11F', border: '1px solid #D8A11F' }
+              : { color: '#000', background: '#fff', border: '1px solid rgba(0, 0, 0, 0.1)' }
+            }
           >
-            <Filter className="w-4 h-4 mr-2" style={{ color: '#D8A11F' }} />
+            <Filter className="w-4 h-4 mr-2" style={{ color: filtersOpen ? '#fff' : '#D8A11F' }} />
             Filters
           </Button>
         </div>
