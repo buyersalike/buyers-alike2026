@@ -14,6 +14,7 @@ export default function Forum() {
   const [user, setUser] = useState(null);
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -67,6 +68,9 @@ export default function Forum() {
   const filteredPosts = posts.filter(post => {
     // Hide removed posts from non-moderators
     if (post.removed && !isModerator) return false;
+    
+    // Category filter
+    if (selectedCategoryId && post.category_id !== selectedCategoryId) return false;
     
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
@@ -122,6 +126,8 @@ export default function Forum() {
                   key={category.id}
                   category={category}
                   postCount={getCategoryPostCount(category.id)}
+                  isSelected={selectedCategoryId === category.id}
+                  onClick={() => setSelectedCategoryId(selectedCategoryId === category.id ? null : category.id)}
                 />
               ))}
             </div>
