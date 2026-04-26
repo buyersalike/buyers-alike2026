@@ -41,7 +41,7 @@ const statusBadgeColors = {
   rejected: { bg: '#FEE2E2', color: '#991B1B' },
 };
 
-export default function PartnershipCard({ intent, group, mode, index, onViewDetails, onLeave, onJoin, leavePending }) {
+export default function PartnershipCard({ intent, group, mode, index, onViewDetails, onLeave, onJoin, leavePending, imageMap = {} }) {
   const currentStatus = intent?.current_status || 'intent_created';
   const currentStatusIdx = statusOrder.indexOf(currentStatus);
   const progress = currentStatusIdx >= 0 ? ((currentStatusIdx + 1) / statusOrder.length) * 100 : 12;
@@ -53,7 +53,8 @@ export default function PartnershipCard({ intent, group, mode, index, onViewDeta
   const activeMembers = group?.members?.filter(m => m.status === 'active').length ?? 0;
   const maxMembers = group?.max_members ?? 20;
   const fillPercent = maxMembers > 0 ? Math.round((activeMembers / maxMembers) * 100) : 0;
-  const imageUrl = group?.opportunity_image || null;
+  const opportunityId = group?.opportunity_id || intent?.opportunity_id || '';
+  const imageUrl = group?.opportunity_image || imageMap[String(opportunityId)] || null;
   const investmentAmount = group?.opportunity_investment || "";
   const opportunityType = group?.opportunity_type || "";
   const opportunityLink = group?.opportunity_link || "";

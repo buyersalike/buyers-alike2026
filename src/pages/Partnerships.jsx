@@ -71,6 +71,30 @@ export default function Partnerships() {
     queryFn: () => base44.entities.PartnershipGroup.list(),
   });
 
+  // Fetch cached opportunity images to fill in groups missing images
+  const { data: imageMap = {} } = useQuery({
+    queryKey: ['opportunity-image-map'],
+    queryFn: async () => {
+      const [realEstateCache, franchiseCache] = await Promise.all([
+        base44.entities.RealEstateCache.list().catch(() => []),
+        base44.entities.FranchiseCache.list().catch(() => []),
+      ]);
+      const map = {};
+      for (const cache of realEstateCache) {
+        for (const opp of (cache.opportunities || [])) {
+          if (opp.id && opp.image) map[String(opp.id)] = opp.image;
+        }
+      }
+      for (const cache of franchiseCache) {
+        for (const opp of (cache.opportunities || [])) {
+          if (opp.id && opp.image) map[String(opp.id)] = opp.image;
+        }
+      }
+      return map;
+    },
+    staleTime: 1000 * 60 * 10,
+  });
+
   const leavePartnershipMutation = useMutation({
     mutationFn: async ({ intentId, groupId }) => {
       const group = allGroups.find(g => g.id === groupId);
@@ -333,6 +357,7 @@ export default function Partnerships() {
                     group={group}
                     mode="available"
                     index={index}
+                    imageMap={imageMap}
                     onJoin={() => {
                       if (confirm(`Request to join "${group.name}"?`)) {
                         joinGroupMutation.mutate(group);
@@ -351,6 +376,7 @@ export default function Partnerships() {
                       group={group}
                       mode={activeTab}
                       index={index}
+                      imageMap={imageMap}
                       onViewDetails={() => setSelectedGroup({ group, intent })}
                       onLeave={() => {
                         if (confirm('Are you sure you want to leave this partnership?')) {
