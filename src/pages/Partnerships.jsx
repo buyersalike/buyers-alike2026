@@ -173,12 +173,30 @@ export default function Partnerships() {
       return parseFloat(String(str).replace(/[^0-9.]/g, '')) || 0;
     };
 
+    // Map industry filter values to keywords that appear in actual data
+    const industryKeywords = {
+      'Real Estate': ['real estate', 'single_family', 'multi_family', 'condo', 'townhouse', 'apartment', 'sqft', 'bed', 'bath', 'property', 'mls'],
+      'Franchise': ['franchise'],
+      'Food & Beverage': ['food', 'beverage', 'restaurant', 'cafe', 'bar'],
+      'E-commerce': ['e-commerce', 'ecommerce', 'online store', 'shopify'],
+      'Technology': ['technology', 'tech', 'software', 'saas', 'app'],
+      'Healthcare': ['healthcare', 'health', 'medical', 'clinic'],
+      'Manufacturing': ['manufacturing', 'factory', 'production'],
+      'Finance': ['finance', 'financial', 'banking', 'investment fund'],
+      'Retail': ['retail', 'store', 'shop'],
+      'SaaS': ['saas', 'software as a service'],
+      'Clean Energy': ['clean energy', 'solar', 'wind', 'renewable'],
+    };
+
     let filtered = items.filter(item => {
       const group = getGroupData(item);
+      // Combine text from both intent and group for searching
       const name = (group.opportunity_name || group.name || item.opportunity_name || '').toLowerCase();
       const desc = (group.opportunity_description || item.opportunity_description || '').toLowerCase();
       const type = (group.opportunity_type || '').toLowerCase();
-      const allText = `${name} ${desc} ${type}`;
+      const intentDesc = (item.opportunity_description || '').toLowerCase();
+      const intentName = (item.opportunity_name || '').toLowerCase();
+      const allText = `${name} ${desc} ${type} ${intentDesc} ${intentName}`;
 
       // Location filter
       if (filters.location) {
@@ -186,10 +204,11 @@ export default function Partnerships() {
         if (!allText.includes(loc)) return false;
       }
 
-      // Industry filter - match against opportunity_type and description
+      // Industry filter - match against opportunity_type OR keyword patterns in description
       if (filters.industry && filters.industry !== 'all') {
-        const industry = filters.industry.toLowerCase();
-        if (!allText.includes(industry)) return false;
+        const keywords = industryKeywords[filters.industry] || [filters.industry.toLowerCase()];
+        const matchesIndustry = keywords.some(kw => allText.includes(kw));
+        if (!matchesIndustry) return false;
       }
 
       // Company size filter - match against member count
@@ -204,13 +223,12 @@ export default function Partnerships() {
         if (range === '251+' && activeMembers < 251) return false;
       }
 
-      // Investment range filter
+      // Investment range filter - check group first, then fall back to intent data
       if (filters.investmentMin || filters.investmentMax) {
-        const investNum = parseInvestment(group.opportunity_investment);
-        if (filters.investmentMin && investNum > 0 && investNum < parseFloat(filters.investmentMin)) return false;
-        if (filters.investmentMax && investNum > 0 && investNum > parseFloat(filters.investmentMax)) return false;
-        // If no investment data and user set a filter, exclude the item
-        if (investNum === 0 && (filters.investmentMin || filters.investmentMax)) return false;
+        const investNum = parseInvestment(group.opportunity_investment || item.opportunity_investment);
+        if (investNum === 0) return false; // No investment data, exclude when filter is active
+        if (filters.investmentMin && investNum < parseFloat(filters.investmentMin)) return false;
+        if (filters.investmentMax && investNum > parseFloat(filters.investmentMax)) return false;
       }
 
       return true;
