@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 // Maps entity names to readable labels
 const ENTITY_LABELS = {
@@ -105,14 +105,50 @@ Deno.serve(async (req) => {
       return Response.json({ skipped: true });
     }
 
+    const userEmail = data?.user_email || data?.creator_email || data?.author_email || data?.created_by || null;
+    const userName = data?.user_name || data?.author_name || data?.full_name || null;
+
     await base44.asServiceRole.entities.SystemLog.create({
       type,
       message,
       entity_type: event.entity_name,
       entity_id: event.entity_id,
-      user_email: data?.user_email || data?.creator_email || data?.author_email || data?.created_by || null,
-      user_name: data?.user_name || data?.author_name || null,
+      user_email: userEmail,
+      user_name: userName,
     });
+
+    // Also create a user-facing Activity record
+    if (userEmail) {
+      // Map internal types to Activity entity types
+      const activityTypeMap = {
+        connection_created: 'connection',
+        connection_established: 'connection',
+        interest_created: 'interest_approved',
+        interest_approved: 'interest_approved',
+        interest_rejected: 'interest_approved',
+        opportunity_created: 'achievement',
+        partnership_group_created: 'achievement',
+        forum_post_created: 'post',
+        vendor_application: 'achievement',
+        vendor_approved: 'achievement',
+        ad_campaign_created: 'achievement',
+      };
+
+      const activityType = activityTypeMap[type] || 'achievement';
+
+      await base44.asServiceRole.entities.Activity.create({
+        user_email: userEmail,
+        user_name: userName || userEmail.split('@')[0],
+        type: activityType,
+        title: message,
+        description: data?.description || data?.opportunity_description || data?.interest_name || null,
+        link: event.entity_name === 'ForumPost' ? `/PostDetail?id=${event.entity_id}` 
+            : event.entity_name === 'Connection' ? '/Connections'
+            : event.entity_name === 'PartnershipGroup' ? '/Partnerships'
+            : event.entity_name === 'Opportunity' ? '/Opportunities'
+            : null,
+      });
+    }
 
     return Response.json({ success: true });
   } catch (error) {

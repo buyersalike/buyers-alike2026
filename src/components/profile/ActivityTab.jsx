@@ -20,36 +20,11 @@ export default function ActivityTab({ userEmail, isOwnProfile }) {
   const [filterType, setFilterType] = useState("all");
   const itemsPerPage = 12;
 
-  // Fetch connections to identify network
-  const { data: connections = [] } = useQuery({
-    queryKey: ['connections'],
-    queryFn: () => base44.entities.Connection.list(),
-  });
-
-  // Get connected user emails
-  const connectedEmails = connections
-    .filter(c => 
-      (c.user1_email === userEmail || c.user2_email === userEmail) && 
-      c.status === 'connected'
-    )
-    .map(c => c.user1_email === userEmail ? c.user2_email : c.user1_email);
-
-  // Fetch all activities from connections
+  // Fetch this user's activities
   const { data: activities = [] } = useQuery({
-    queryKey: ['networkActivities', userEmail],
-    queryFn: async () => {
-      if (!isOwnProfile || connectedEmails.length === 0) {
-        // Show user's own activities if not their profile or no connections
-        return await base44.entities.Activity.filter({ user_email: userEmail });
-      }
-      
-      // Fetch activities from all connections
-      const allActivities = await base44.entities.Activity.list();
-      return allActivities.filter(activity => 
-        connectedEmails.includes(activity.user_email)
-      );
-    },
-    enabled: connectedEmails !== undefined,
+    queryKey: ['userActivities', userEmail],
+    queryFn: () => base44.entities.Activity.filter({ user_email: userEmail }),
+    enabled: !!userEmail,
   });
 
   // Filter activities by type
@@ -140,14 +115,8 @@ export default function ActivityTab({ userEmail, isOwnProfile }) {
             <Users className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold" style={{ color: '#000' }}>
-              {isOwnProfile ? 'Network Activity Feed' : 'Activity Log'}
-            </h2>
-            <p className="text-sm" style={{ color: '#666' }}>
-              {isOwnProfile 
-                ? `Updates from your ${connectedEmails.length} connections` 
-                : 'Recent activity history'}
-            </p>
+            <h2 className="text-2xl font-bold" style={{ color: '#000' }}>Activity Log</h2>
+            <p className="text-sm" style={{ color: '#666' }}>Recent activity history</p>
           </div>
         </div>
 
@@ -239,14 +208,8 @@ export default function ActivityTab({ userEmail, isOwnProfile }) {
       ) : (
         <div className="text-center py-16 rounded-xl" style={{ background: '#F9FAFB', border: '1px solid #E5E7EB' }}>
           <Users className="w-16 h-16 mx-auto mb-4" style={{ color: '#9CA3AF' }} />
-          <p className="text-lg font-semibold mb-2" style={{ color: '#374151' }}>
-            {isOwnProfile ? 'No network activity yet' : 'No activities to display'}
-          </p>
-          <p className="text-sm" style={{ color: '#6B7280' }}>
-            {isOwnProfile 
-              ? 'Connect with more people to see their updates here' 
-              : 'Activity will appear here as it happens'}
-          </p>
+          <p className="text-lg font-semibold mb-2" style={{ color: '#374151' }}>No activities to display</p>
+          <p className="text-sm" style={{ color: '#6B7280' }}>Activity will appear here as it happens</p>
         </div>
       )}
 
