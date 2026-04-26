@@ -80,9 +80,10 @@ export default function AdvancedFilters({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Industries</SelectItem>
+                      <SelectItem value="Real Estate">Real Estate</SelectItem>
+                      <SelectItem value="Franchise">Franchise</SelectItem>
                       <SelectItem value="Food & Beverage">Food & Beverage</SelectItem>
                       <SelectItem value="E-commerce">E-commerce</SelectItem>
-                      <SelectItem value="Real Estate">Real Estate</SelectItem>
                       <SelectItem value="Technology">Technology</SelectItem>
                       <SelectItem value="Healthcare">Healthcare</SelectItem>
                       <SelectItem value="Manufacturing">Manufacturing</SelectItem>
@@ -97,7 +98,7 @@ export default function AdvancedFilters({
                 {/* Company Size Filter */}
                 <div>
                   <label className="block text-sm font-medium mb-2" style={{ color: '#000' }}>
-                    Company Size
+                    Group Size
                   </label>
                   <Select 
                     value={filters.companySize} 
@@ -108,12 +109,12 @@ export default function AdvancedFilters({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Sizes</SelectItem>
-                      <SelectItem value="1-10">1-10 employees</SelectItem>
-                      <SelectItem value="11-25">11-25 employees</SelectItem>
-                      <SelectItem value="26-50">26-50 employees</SelectItem>
-                      <SelectItem value="51-100">51-100 employees</SelectItem>
-                      <SelectItem value="101-250">101-250 employees</SelectItem>
-                      <SelectItem value="251+">251+ employees</SelectItem>
+                      <SelectItem value="1-10">1-10 members</SelectItem>
+                      <SelectItem value="11-25">11-25 members</SelectItem>
+                      <SelectItem value="26-50">26-50 members</SelectItem>
+                      <SelectItem value="51-100">51-100 members</SelectItem>
+                      <SelectItem value="101-250">101-250 members</SelectItem>
+                      <SelectItem value="251+">251+ members</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

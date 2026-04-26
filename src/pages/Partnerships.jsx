@@ -168,29 +168,49 @@ export default function Partnerships() {
       return allGroups.find(g => g.id === item.group_id) || {};
     };
 
+    const parseInvestment = (str) => {
+      if (!str) return 0;
+      return parseFloat(String(str).replace(/[^0-9.]/g, '')) || 0;
+    };
+
     let filtered = items.filter(item => {
       const group = getGroupData(item);
       const name = (group.opportunity_name || group.name || item.opportunity_name || '').toLowerCase();
       const desc = (group.opportunity_description || item.opportunity_description || '').toLowerCase();
       const type = (group.opportunity_type || '').toLowerCase();
-      const investment = group.opportunity_investment || '';
+      const allText = `${name} ${desc} ${type}`;
 
-      // Location filter - search in name and description
+      // Location filter
       if (filters.location) {
         const loc = filters.location.toLowerCase();
-        if (!name.includes(loc) && !desc.includes(loc)) return false;
+        if (!allText.includes(loc)) return false;
       }
 
-      // Industry filter - match against opportunity_type
+      // Industry filter - match against opportunity_type and description
       if (filters.industry && filters.industry !== 'all') {
-        if (!type.includes(filters.industry.toLowerCase())) return false;
+        const industry = filters.industry.toLowerCase();
+        if (!allText.includes(industry)) return false;
       }
 
-      // Investment range filter - parse investment string for numeric value
+      // Company size filter - match against member count
+      if (filters.companySize && filters.companySize !== 'all') {
+        const activeMembers = (group.members || []).filter(m => m.status === 'active').length;
+        const range = filters.companySize;
+        if (range === '1-10' && activeMembers > 10) return false;
+        if (range === '11-25' && (activeMembers < 11 || activeMembers > 25)) return false;
+        if (range === '26-50' && (activeMembers < 26 || activeMembers > 50)) return false;
+        if (range === '51-100' && (activeMembers < 51 || activeMembers > 100)) return false;
+        if (range === '101-250' && (activeMembers < 101 || activeMembers > 250)) return false;
+        if (range === '251+' && activeMembers < 251) return false;
+      }
+
+      // Investment range filter
       if (filters.investmentMin || filters.investmentMax) {
-        const investNum = parseFloat(investment.replace(/[^0-9.]/g, '')) || 0;
-        if (filters.investmentMin && investNum < parseFloat(filters.investmentMin)) return false;
-        if (filters.investmentMax && investNum > parseFloat(filters.investmentMax)) return false;
+        const investNum = parseInvestment(group.opportunity_investment);
+        if (filters.investmentMin && investNum > 0 && investNum < parseFloat(filters.investmentMin)) return false;
+        if (filters.investmentMax && investNum > 0 && investNum > parseFloat(filters.investmentMax)) return false;
+        // If no investment data and user set a filter, exclude the item
+        if (investNum === 0 && (filters.investmentMin || filters.investmentMax)) return false;
       }
 
       return true;
@@ -203,9 +223,17 @@ export default function Partnerships() {
       filtered.sort((a, b) => {
         const gA = getGroupData(a);
         const gB = getGroupData(b);
-        const valA = parseFloat((gA.opportunity_investment || '').replace(/[^0-9.]/g, '')) || 0;
-        const valB = parseFloat((gB.opportunity_investment || '').replace(/[^0-9.]/g, '')) || 0;
+        const valA = parseInvestment(gA.opportunity_investment);
+        const valB = parseInvestment(gB.opportunity_investment);
         return filters.sortBy === 'deal_size_high' ? valB - valA : valA - valB;
+      });
+    } else if (filters.sortBy === 'company_size') {
+      filtered.sort((a, b) => {
+        const gA = getGroupData(a);
+        const gB = getGroupData(b);
+        const countA = (gA.members || []).filter(m => m.status === 'active').length;
+        const countB = (gB.members || []).filter(m => m.status === 'active').length;
+        return countB - countA;
       });
     }
 
