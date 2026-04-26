@@ -56,7 +56,7 @@ export default function Recommendations() {
 
   // Filtered matches: remove anyone we already have a connection with
   const filteredMatches = React.useMemo(() => {
-    return savedMatches.filter(m => !connectedEmails.has(m.email));
+    return savedMatches.filter(m => !connectedEmails.has(m.email) && (m.match_score || 0) >= 80);
   }, [savedMatches, connectedEmails]);
 
   // Fetch user interests
