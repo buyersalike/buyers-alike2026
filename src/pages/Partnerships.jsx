@@ -154,7 +154,63 @@ export default function Partnerships() {
   }, [intents, allGroups, currentUser]);
 
   const tabsWithCounts = tabs.map(t => ({ ...t, count: categorized[t.id]?.length || 0 }));
-  const currentItems = categorized[activeTab] || [];
+
+  // Apply advanced filters to current tab items
+  const currentItems = useMemo(() => {
+    const items = categorized[activeTab] || [];
+    const hasActiveFilters = filters.location || filters.investmentMin || filters.investmentMax || 
+      (filters.industry && filters.industry !== 'all') || (filters.companySize && filters.companySize !== 'all');
+
+    if (!hasActiveFilters && filters.sortBy === 'match_score') return items;
+
+    const getGroupData = (item) => {
+      if (activeTab === 'available') return item; // item IS the group
+      return allGroups.find(g => g.id === item.group_id) || {};
+    };
+
+    let filtered = items.filter(item => {
+      const group = getGroupData(item);
+      const name = (group.opportunity_name || group.name || item.opportunity_name || '').toLowerCase();
+      const desc = (group.opportunity_description || item.opportunity_description || '').toLowerCase();
+      const type = (group.opportunity_type || '').toLowerCase();
+      const investment = group.opportunity_investment || '';
+
+      // Location filter - search in name and description
+      if (filters.location) {
+        const loc = filters.location.toLowerCase();
+        if (!name.includes(loc) && !desc.includes(loc)) return false;
+      }
+
+      // Industry filter - match against opportunity_type
+      if (filters.industry && filters.industry !== 'all') {
+        if (!type.includes(filters.industry.toLowerCase())) return false;
+      }
+
+      // Investment range filter - parse investment string for numeric value
+      if (filters.investmentMin || filters.investmentMax) {
+        const investNum = parseFloat(investment.replace(/[^0-9.]/g, '')) || 0;
+        if (filters.investmentMin && investNum < parseFloat(filters.investmentMin)) return false;
+        if (filters.investmentMax && investNum > parseFloat(filters.investmentMax)) return false;
+      }
+
+      return true;
+    });
+
+    // Sort
+    if (filters.sortBy === 'recent') {
+      filtered.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+    } else if (filters.sortBy === 'deal_size_high' || filters.sortBy === 'deal_size_low') {
+      filtered.sort((a, b) => {
+        const gA = getGroupData(a);
+        const gB = getGroupData(b);
+        const valA = parseFloat((gA.opportunity_investment || '').replace(/[^0-9.]/g, '')) || 0;
+        const valB = parseFloat((gB.opportunity_investment || '').replace(/[^0-9.]/g, '')) || 0;
+        return filters.sortBy === 'deal_size_high' ? valB - valA : valA - valB;
+      });
+    }
+
+    return filtered;
+  }, [categorized, activeTab, filters, allGroups]);
 
   return (
     <div className="flex">
@@ -204,6 +260,7 @@ export default function Partnerships() {
           </div>
 
           <FilterBar viewMode={viewMode} setViewMode={setViewMode} totalResults={currentItems.length} filtersOpen={filtersOpen} setFiltersOpen={setFiltersOpen} />
+
 
           {/* Content */}
           {loadingIntents ? (
