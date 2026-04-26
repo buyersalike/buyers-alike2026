@@ -2,16 +2,14 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   X,
-  Sparkles,
   Briefcase,
   Handshake,
-  FolderKanban,
   Store,
   Mail,
   MessageSquare,
   Newspaper,
-  Calendar,
   LayoutGrid,
+  TrendingUp,
   User,
   Settings,
   Shield,
@@ -20,20 +18,17 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { canAccessAdmin } from "@/components/utils/permissions";
-import NotificationBell from "@/components/notifications/NotificationBell";
+import { canAccessAdmin, hasPermission } from "@/components/utils/permissions";
 
 const mainMenuItems = [
-  { icon: Sparkles, label: "Recommendations", href: "Recommendations" },
-  { icon: Briefcase, label: "Opportunities", href: "Opportunities" },
   { icon: Handshake, label: "Partnerships", href: "Partnerships" },
-  { icon: FolderKanban, label: "Projects", href: "Projects" },
+  { icon: Briefcase, label: "Opportunities", href: "Opportunities" },
+  { icon: TrendingUp, label: "Recommendations", href: "Recommendations" },
   { icon: Store, label: "Vendors", href: "Vendors" },
+  { icon: LayoutGrid, label: "Ad Campaigns", href: "AdCampaigns", permission: "canManageAdvertisements" },
   { icon: Mail, label: "Messages", href: "Messages" },
   { icon: MessageSquare, label: "Forum", href: "Forum" },
   { icon: Newspaper, label: "News", href: "News" },
-  { icon: Calendar, label: "Events", href: "Events" },
-  { icon: LayoutGrid, label: "Ad Campaigns", href: "AdCampaigns" },
 ];
 
 export default function MobileSidebar({ isOpen, onClose, currentUser }) {
@@ -83,6 +78,9 @@ export default function MobileSidebar({ isOpen, onClose, currentUser }) {
               {/* Menu Items */}
               <div className="space-y-2 mb-8">
                 {mainMenuItems.map((item) => {
+                  if (item.permission && (!currentUser || !hasPermission(currentUser.role, item.permission))) {
+                    return null;
+                  }
                   const isActive = currentPath.includes(item.href);
                   return (
                     <Link key={item.label} to={createPageUrl(item.href)} onClick={onClose}>
