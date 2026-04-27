@@ -207,7 +207,7 @@ function NotificationItem({ notification, Icon, color, onDelete, onClick }) {
             </Button>
           </div>
           <p className="text-xs mb-2" style={{ color: '#B6C4E0' }}>{notification.message}</p>
-          <p className="text-xs" style={{ color: '#7A8BA6' }}>{moment(notification.created_date).fromNow()}</p>
+          <p className="text-xs" style={{ color: '#7A8BA6' }}>{moment.utc(notification.created_date).fromNow()}</p>
         </div>
       </div>
     </div>
