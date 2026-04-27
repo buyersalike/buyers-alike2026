@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 
 const AdSliderColumn = ({ ads, delay = 0 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -11,7 +11,7 @@ const AdSliderColumn = ({ ads, delay = 0 }) => {
     
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % ads.length);
-    }, 8000); // All columns change at the same time
+    }, 8000);
 
     return () => clearInterval(interval);
   }, [ads, delay]);
@@ -19,6 +19,16 @@ const AdSliderColumn = ({ ads, delay = 0 }) => {
   if (!ads || ads.length === 0) return null;
 
   const currentAd = ads[currentIndex];
+
+  const goPrev = (e) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev - 1 + ads.length) % ads.length);
+  };
+
+  const goNext = (e) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev + 1) % ads.length);
+  };
 
   return (
     <motion.div
@@ -74,14 +84,35 @@ const AdSliderColumn = ({ ads, delay = 0 }) => {
           {ads.slice(0, 10).map((_, idx) => (
             <div
               key={idx}
-              className="w-1 h-1 rounded-full transition-all"
+              className="w-2 h-2 rounded-full transition-all cursor-pointer"
+              onClick={(e) => { e.stopPropagation(); setCurrentIndex(idx); }}
               style={{
-                background: idx === currentIndex ? '#3B82F6' : 'rgba(255, 255, 255, 0.3)',
+                background: idx === currentIndex ? '#D8A11F' : 'rgba(255, 255, 255, 0.4)',
               }}
             />
           ))}
         </div>
       </motion.div>
+
+      {/* Navigation Arrows */}
+      {ads.length > 1 && (
+        <>
+          <button
+            onClick={goPrev}
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+            style={{ background: 'rgba(0,0,0,0.5)', color: '#fff' }}
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={goNext}
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+            style={{ background: 'rgba(0,0,0,0.5)', color: '#fff' }}
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </>
+      )}
     </motion.div>
   );
 };
