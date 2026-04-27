@@ -36,12 +36,17 @@ export default function Recommendations() {
     }).catch(() => setCurrentUser(null));
   }, []);
 
-  // Fetch existing connections to filter out already-connected users
-  const { data: existingConnections = [] } = useQuery({
-    queryKey: ['connections', currentUser?.email],
-    queryFn: () => base44.entities.Connection.list(),
+  // Fetch existing connections via backend (non-admin users can't list connections directly)
+  const { data: connectionsData } = useQuery({
+    queryKey: ['connections-data'],
+    queryFn: async () => {
+      const res = await base44.functions.invoke('getConnectionsData', {});
+      return res.data;
+    },
     enabled: !!currentUser,
   });
+
+  const existingConnections = connectionsData?.connections || [];
 
   // Build a set of emails we already have connections with (pending or connected)
   const connectedEmails = React.useMemo(() => {
@@ -201,7 +206,7 @@ export default function Recommendations() {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['connections'] });
+      queryClient.invalidateQueries({ queryKey: ['connections-data'] });
     },
   });
 
@@ -369,7 +374,7 @@ export default function Recommendations() {
                                   link: `/Profile?email=${currentUser.email}`,
                                   sendEmail: true
                                 }).catch(e => console.warn('Notification send failed:', e));
-                                queryClient.invalidateQueries({ queryKey: ['connections'] });
+                                queryClient.invalidateQueries({ queryKey: ['connections-data'] });
                                 const updatedMatches = savedMatches.filter(m => m.email !== match.email);
                                 setSavedMatches(updatedMatches);
                                 await base44.auth.updateMe({
