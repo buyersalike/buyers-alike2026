@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { User, Users, UserPlus, UserMinus, Check, X, Sparkles, MessageSquare } from "lucide-react";
+import { User, Users, UserPlus, UserMinus, Check, X, Sparkles, MessageSquare, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,6 +20,7 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [viewingRequest, setViewingRequest] = useState(null);
+  const [searchQueries, setSearchQueries] = useState({ connections: '', requests: '', requested: '', find: '' });
   const queryClient = useQueryClient();
 
   React.useEffect(() => {
@@ -316,6 +317,31 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
       );
       };
 
+  const filterUsers = (userList, query) => {
+    if (!query.trim()) return userList;
+    const q = query.toLowerCase();
+    return userList.filter(u =>
+      (u.full_name || '').toLowerCase().includes(q) ||
+      (u.email || '').toLowerCase().includes(q) ||
+      (u.occupation || '').toLowerCase().includes(q) ||
+      (u.business_name || '').toLowerCase().includes(q)
+    );
+  };
+
+  const SearchInput = ({ value, onChange, placeholder }) => (
+    <div className="relative mb-4">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder || "Search by name, email, occupation..."}
+        className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-[#D8A11F]/50"
+        style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', color: '#000' }}
+      />
+    </div>
+  );
+
   const EmptyState = ({ icon: Icon, message }) => (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -387,14 +413,19 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
             <EmptyState icon={Users} message="No connections yet" />
           ) : (
             <>
+              <SearchInput
+                value={searchQueries.connections}
+                onChange={(v) => setSearchQueries(prev => ({ ...prev, connections: v }))}
+                placeholder="Search connections..."
+              />
               <div className="mb-4 px-1">
                 <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>
-                  {connectedUsers.length} {connectedUsers.length === 1 ? 'Connection' : 'Connections'}
+                  {filterUsers(connectedUsers, searchQueries.connections).length} of {connectedUsers.length} {connectedUsers.length === 1 ? 'Connection' : 'Connections'}
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <AnimatePresence>
-                  {connectedUsers.map((user, index) => (
+                  {filterUsers(connectedUsers, searchQueries.connections).map((user, index) => (
                     <motion.div
                       key={user.email}
                       initial={{ opacity: 0, y: 20 }}
@@ -419,14 +450,19 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
             <EmptyState icon={UserPlus} message="No connection requests" />
           ) : (
             <>
+              <SearchInput
+                value={searchQueries.requests}
+                onChange={(v) => setSearchQueries(prev => ({ ...prev, requests: v }))}
+                placeholder="Search requests..."
+              />
               <div className="mb-6 px-1">
                 <p className="text-lg font-bold" style={{ color: '#000' }}>
-                  {requestingUsers.length} Pending {requestingUsers.length === 1 ? 'Request' : 'Requests'}
+                  {filterUsers(requestingUsers, searchQueries.requests).length} of {requestingUsers.length} Pending {requestingUsers.length === 1 ? 'Request' : 'Requests'}
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <AnimatePresence>
-                  {requestingUsers.map((user, index) => {
+                  {filterUsers(requestingUsers, searchQueries.requests).map((user, index) => {
                     const connection = incomingRequests.find(c => c.user1_email === user.email);
                     return (
                       <motion.div
@@ -454,14 +490,19 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
             <EmptyState icon={UserMinus} message="No pending requests sent" />
           ) : (
             <>
+              <SearchInput
+                value={searchQueries.requested}
+                onChange={(v) => setSearchQueries(prev => ({ ...prev, requested: v }))}
+                placeholder="Search requested connections..."
+              />
               <div className="mb-4 px-1">
                 <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>
-                  {requestedUsers.length} Pending {requestedUsers.length === 1 ? 'Request' : 'Requests'}
+                  {filterUsers(requestedUsers, searchQueries.requested).length} of {requestedUsers.length} Pending {requestedUsers.length === 1 ? 'Request' : 'Requests'}
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <AnimatePresence>
-                  {requestedUsers.map((user, index) => (
+                  {filterUsers(requestedUsers, searchQueries.requested).map((user, index) => (
                     <motion.div
                       key={user.email}
                       initial={{ opacity: 0, y: 20 }}
@@ -499,14 +540,19 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
             <EmptyState icon={Users} message="No new connections to discover" />
           ) : (
             <>
+              <SearchInput
+                value={searchQueries.find}
+                onChange={(v) => setSearchQueries(prev => ({ ...prev, find: v }))}
+                placeholder="Search people to connect with..."
+              />
               <div className="mb-4 px-1">
                 <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>
-                  {potentialConnections.length} {potentialConnections.length === 1 ? 'Person' : 'People'} to Connect With
+                  {filterUsers(potentialConnections, searchQueries.find).length} of {potentialConnections.length} {potentialConnections.length === 1 ? 'Person' : 'People'} to Connect With
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <AnimatePresence>
-                  {potentialConnections.slice(0, 12).map((user, index) => (
+                  {filterUsers(potentialConnections, searchQueries.find).slice(0, 12).map((user, index) => (
                     <motion.div
                       key={user.email}
                       initial={{ opacity: 0, y: 20 }}
