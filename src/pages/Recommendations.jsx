@@ -174,14 +174,19 @@ export default function Recommendations() {
       const data = result?.data;
       if (data?.success && data.matches?.length > 0) {
         setSavedMatches(data.matches);
-        // Store as JSON string for reliable persistence
         await base44.auth.updateMe({
           ai_matches_json: JSON.stringify(data.matches),
           ai_matches_date: new Date().toISOString()
         });
+        toast.success(`Found ${data.matches.length} recommended connections!`);
+      } else if (data?.success && data.matches?.length === 0) {
+        toast.info('No strong matches found at this time. Try adding more interests to your profile.');
+      } else if (!data?.success) {
+        toast.error(data?.error || 'Failed to generate matches. Please try again.');
       }
     } catch (e) {
       console.error('Failed to generate matches:', e);
+      toast.error('Failed to generate matches. Please try again.');
     }
     setLoadingAiMatches(false);
   };
@@ -336,22 +341,35 @@ export default function Recommendations() {
                               if (sendingRequest === match.email) return;
                               setSendingRequest(match.email);
                               try {
+                                // Check if connection already exists
+                                const existing = existingConnections.find(c =>
+                                  (c.user1_email === currentUser.email && c.user2_email === match.email) ||
+                                  (c.user1_email === match.email && c.user2_email === currentUser.email)
+                                );
+                                if (existing) {
+                                  toast.info('You already have a connection or pending request with this user.');
+                                  // Remove from matches list anyway
+                                  const updatedMatches = savedMatches.filter(m => m.email !== match.email);
+                                  setSavedMatches(updatedMatches);
+                                  await base44.auth.updateMe({ ai_matches_json: JSON.stringify(updatedMatches) });
+                                  setSendingRequest(null);
+                                  return;
+                                }
                                 await base44.entities.Connection.create({
                                   user1_email: currentUser.email,
                                   user2_email: match.email,
                                   status: 'pending'
                                 });
-                                await base44.functions.invoke('sendNotification', {
+                                // Send notification (don't let failure block the flow)
+                                base44.functions.invoke('sendNotification', {
                                   recipientEmail: match.email,
                                   type: 'connection_request',
                                   title: '\ud83d\udc4b New Connection Request',
                                   message: `${currentUser.full_name} wants to connect with you`,
                                   link: `/Profile?email=${currentUser.email}`,
                                   sendEmail: true
-                                });
-                                // Invalidate connections so filteredMatches updates immediately
+                                }).catch(e => console.warn('Notification send failed:', e));
                                 queryClient.invalidateQueries({ queryKey: ['connections'] });
-                                // Also persist the removal from saved matches so it stays gone on refresh
                                 const updatedMatches = savedMatches.filter(m => m.email !== match.email);
                                 setSavedMatches(updatedMatches);
                                 await base44.auth.updateMe({
