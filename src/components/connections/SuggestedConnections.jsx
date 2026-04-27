@@ -12,15 +12,16 @@ export default function SuggestedConnections({ userEmail }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: connections = [] } = useQuery({
-    queryKey: ['connections'],
-    queryFn: () => base44.entities.Connection.list(),
+  const { data: connectionsData } = useQuery({
+    queryKey: ['connections-data'],
+    queryFn: async () => {
+      const res = await base44.functions.invoke('getConnectionsData', {});
+      return res.data;
+    },
   });
 
-  const { data: users = [] } = useQuery({
-    queryKey: ['users'],
-    queryFn: () => base44.entities.User.list(),
-  });
+  const connections = connectionsData?.connections || [];
+  const users = connectionsData?.users || [];
 
   const { data: userInterests = [] } = useQuery({
     queryKey: ['userInterests', userEmail],
@@ -83,7 +84,7 @@ export default function SuggestedConnections({ userEmail }) {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['connections'] });
+      queryClient.invalidateQueries({ queryKey: ['connections-data'] });
       setSelectedUser(null);
     },
   });

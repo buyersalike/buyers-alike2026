@@ -26,17 +26,16 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
     base44.auth.me().then(user => setCurrentUser(user)).catch(() => setCurrentUser(null));
   }, []);
 
-  const { data: connections = [], isLoading: loadingConnections } = useQuery({
-    queryKey: ['connections'],
-    queryFn: () => base44.entities.Connection.list(),
+  const { data: connectionsData, isLoading } = useQuery({
+    queryKey: ['connections-data'],
+    queryFn: async () => {
+      const res = await base44.functions.invoke('getConnectionsData', {});
+      return res.data;
+    },
   });
 
-  const { data: users = [], isLoading: loadingUsers } = useQuery({
-    queryKey: ['users'],
-    queryFn: () => base44.entities.User.list(),
-  });
-
-  const isLoading = loadingConnections || loadingUsers;
+  const connections = connectionsData?.connections || [];
+  const users = connectionsData?.users || [];
 
   const { data: aiRecommendations } = useQuery({
     queryKey: ['ai-recommendations', userEmail],
@@ -139,28 +138,28 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['connections'] });
+      queryClient.invalidateQueries({ queryKey: ['connections-data'] });
     },
   });
 
   const rejectRequestMutation = useMutation({
     mutationFn: (connectionId) => base44.entities.Connection.delete(connectionId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['connections'] });
+      queryClient.invalidateQueries({ queryKey: ['connections-data'] });
     },
   });
 
   const cancelRequestMutation = useMutation({
     mutationFn: (connectionId) => base44.entities.Connection.delete(connectionId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['connections'] });
+      queryClient.invalidateQueries({ queryKey: ['connections-data'] });
     },
   });
 
   const disconnectMutation = useMutation({
     mutationFn: (connectionId) => base44.entities.Connection.delete(connectionId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['connections'] });
+      queryClient.invalidateQueries({ queryKey: ['connections-data'] });
     },
   });
 
@@ -192,7 +191,7 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['connections'] });
+      queryClient.invalidateQueries({ queryKey: ['connections-data'] });
       setSelectedUser(null);
     },
   });
