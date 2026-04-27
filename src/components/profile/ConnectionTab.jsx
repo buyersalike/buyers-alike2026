@@ -255,9 +255,9 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
 
       {actionType === 'disconnect' && isOwnProfile && (
         <Button
-          onClick={() => disconnectMutation.mutate(user.connectionId)}
+          onClick={(e) => { e.stopPropagation(); disconnectMutation.mutate(user.connectionId); }}
           variant="outline"
-          className="w-full rounded-xl font-semibold transition-all"
+          className="w-full rounded-xl font-semibold transition-all min-h-[44px] relative z-10"
           style={{ borderColor: '#EF4444', color: '#EF4444' }}
           disabled={disconnectMutation.isPending}
         >
@@ -269,12 +269,12 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
       {actionType === 'accept-reject' && isOwnProfile && (
         <div className="flex gap-3 mt-4">
           <Button
-            onClick={() => acceptRequestMutation.mutate({ 
+            onClick={(e) => { e.stopPropagation(); acceptRequestMutation.mutate({ 
               connectionId: user.connectionId, 
               senderEmail: user.email, 
               senderName: user.full_name 
-            })}
-            className="flex-1 rounded-xl font-bold py-3 transition-all hover:scale-105"
+            }); }}
+            className="flex-1 rounded-xl font-bold transition-all hover:scale-105 min-h-[44px] relative z-10"
             style={{ background: '#22C55E', color: '#fff' }}
             disabled={acceptRequestMutation.isPending}
           >
@@ -282,9 +282,9 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
             {acceptRequestMutation.isPending ? 'Accepting...' : 'Accept'}
           </Button>
           <Button
-            onClick={() => rejectRequestMutation.mutate(user.connectionId)}
+            onClick={(e) => { e.stopPropagation(); rejectRequestMutation.mutate(user.connectionId); }}
             variant="outline"
-            className="flex-1 rounded-xl font-bold py-3 transition-all hover:scale-105"
+            className="flex-1 rounded-xl font-bold transition-all hover:scale-105 min-h-[44px] relative z-10"
             style={{ borderColor: '#EF4444', color: '#EF4444', borderWidth: '2px' }}
             disabled={rejectRequestMutation.isPending}
           >
@@ -296,9 +296,9 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
 
       {actionType === 'cancel' && isOwnProfile && (
         <Button
-          onClick={() => cancelRequestMutation.mutate(user.connectionId)}
+          onClick={(e) => { e.stopPropagation(); cancelRequestMutation.mutate(user.connectionId); }}
           variant="outline"
-          className="w-full rounded-xl font-semibold"
+          className="w-full rounded-xl font-semibold min-h-[44px] relative z-10"
           style={{ borderColor: '#7A8BA6', color: '#7A8BA6' }}
           disabled={cancelRequestMutation.isPending}
         >
@@ -309,9 +309,9 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
 
       {actionType === 'connect' && isOwnProfile && currentUser && (
         <Button
-          onClick={() => setSelectedUser(user)}
+          onClick={(e) => { e.stopPropagation(); setSelectedUser(user); }}
           disabled={sendRequestMutation.isPending}
-          className="w-full rounded-xl font-semibold"
+          className="w-full rounded-xl font-semibold min-h-[44px] relative z-10"
           style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #1F3A8A 100%)', color: '#fff' }}
         >
           <UserPlus className="w-4 h-4 mr-2" />
