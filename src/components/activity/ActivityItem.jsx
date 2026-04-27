@@ -63,7 +63,7 @@ export default function ActivityItem({ activity }) {
               </Badge>
             </div>
             <p className="text-xs font-medium whitespace-nowrap" style={{ color: '#7A8BA6' }}>
-              {moment(activity.created_date).fromNow()}
+              {moment.utc(activity.created_date).fromNow()}
             </p>
           </div>
           

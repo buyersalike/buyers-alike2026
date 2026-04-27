@@ -186,7 +186,7 @@ export default function ActivityTab({ userEmail, isOwnProfile }) {
 
                     <div className="flex items-center gap-4">
                       <p className="text-xs" style={{ color: '#888' }}>
-                        {formatDistanceToNow(new Date(activity.created_date), { addSuffix: true })}
+                        {formatDistanceToNow(new Date(activity.created_date.endsWith('Z') ? activity.created_date : activity.created_date + 'Z'), { addSuffix: true })}
                       </p>
                       
                       {activity.link && (
