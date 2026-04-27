@@ -328,20 +328,6 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
     );
   };
 
-  const SearchInput = ({ value, onChange, placeholder }) => (
-    <div className="relative mb-4">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder || "Search by name, email, occupation..."}
-        className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-[#D8A11F]/50"
-        style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', color: '#000' }}
-      />
-    </div>
-  );
-
   const EmptyState = ({ icon: Icon, message }) => (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -413,11 +399,10 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
             <EmptyState icon={Users} message="No connections yet" />
           ) : (
             <>
-              <SearchInput
-                value={searchQueries.connections}
-                onChange={(v) => setSearchQueries(prev => ({ ...prev, connections: v }))}
-                placeholder="Search connections..."
-              />
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input type="text" value={searchQueries.connections} onChange={(e) => setSearchQueries(prev => ({ ...prev, connections: e.target.value }))} placeholder="Search connections..." className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-[#D8A11F]/50" style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', color: '#000' }} />
+              </div>
               <div className="mb-4 px-1">
                 <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>
                   {filterUsers(connectedUsers, searchQueries.connections).length} of {connectedUsers.length} {connectedUsers.length === 1 ? 'Connection' : 'Connections'}
@@ -450,11 +435,10 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
             <EmptyState icon={UserPlus} message="No connection requests" />
           ) : (
             <>
-              <SearchInput
-                value={searchQueries.requests}
-                onChange={(v) => setSearchQueries(prev => ({ ...prev, requests: v }))}
-                placeholder="Search requests..."
-              />
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input type="text" value={searchQueries.requests} onChange={(e) => setSearchQueries(prev => ({ ...prev, requests: e.target.value }))} placeholder="Search requests..." className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-[#D8A11F]/50" style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', color: '#000' }} />
+              </div>
               <div className="mb-6 px-1">
                 <p className="text-lg font-bold" style={{ color: '#000' }}>
                   {filterUsers(requestingUsers, searchQueries.requests).length} of {requestingUsers.length} Pending {requestingUsers.length === 1 ? 'Request' : 'Requests'}
@@ -490,11 +474,10 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
             <EmptyState icon={UserMinus} message="No pending requests sent" />
           ) : (
             <>
-              <SearchInput
-                value={searchQueries.requested}
-                onChange={(v) => setSearchQueries(prev => ({ ...prev, requested: v }))}
-                placeholder="Search requested connections..."
-              />
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input type="text" value={searchQueries.requested} onChange={(e) => setSearchQueries(prev => ({ ...prev, requested: e.target.value }))} placeholder="Search requested connections..." className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-[#D8A11F]/50" style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', color: '#000' }} />
+              </div>
               <div className="mb-4 px-1">
                 <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>
                   {filterUsers(requestedUsers, searchQueries.requested).length} of {requestedUsers.length} Pending {requestedUsers.length === 1 ? 'Request' : 'Requests'}
@@ -540,11 +523,10 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
             <EmptyState icon={Users} message="No new connections to discover" />
           ) : (
             <>
-              <SearchInput
-                value={searchQueries.find}
-                onChange={(v) => setSearchQueries(prev => ({ ...prev, find: v }))}
-                placeholder="Search people to connect with..."
-              />
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input type="text" value={searchQueries.find} onChange={(e) => setSearchQueries(prev => ({ ...prev, find: e.target.value }))} placeholder="Search people to connect with..." className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm border focus:outline-none focus:ring-2 focus:ring-[#D8A11F]/50" style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', color: '#000' }} />
+              </div>
               <div className="mb-4 px-1">
                 <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>
                   {filterUsers(potentialConnections, searchQueries.find).length} of {potentialConnections.length} {potentialConnections.length === 1 ? 'Person' : 'People'} to Connect With
