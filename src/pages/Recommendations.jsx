@@ -306,7 +306,29 @@ export default function Recommendations() {
                   </Button>
                 </div>
 
-                {filteredMatches.length > 0 ? (
+                {savedMatches.length > 0 && filteredMatches.length === 0 ? (
+                  <div className="text-center py-12 rounded-xl" style={{ background: '#fff', border: '1px solid #E5E7EB' }}>
+                    <Users className="w-12 h-12 mx-auto mb-4" style={{ color: '#22C55E' }} />
+                    <p className="text-lg font-semibold mb-2" style={{ color: '#000' }}>
+                      You're already connected!
+                    </p>
+                    <p className="text-sm mb-4" style={{ color: '#666' }}>
+                      All {savedMatches.length} AI-recommended matches are already in your connections or have pending requests.
+                    </p>
+                    <Button
+                      onClick={handleGenerateAiMatches}
+                      disabled={loadingAiMatches || loadingAiMatchesQuery}
+                      className="gap-2 rounded-xl"
+                      style={{ background: '#D8A11F', color: '#fff' }}
+                    >
+                      {loadingAiMatches ? (
+                        <><Loader2 className="w-4 h-4 animate-spin" /> Generating...</>
+                      ) : (
+                        <><Sparkles className="w-4 h-4" /> Generate New Matches</>
+                      )}
+                    </Button>
+                  </div>
+                ) : filteredMatches.length > 0 ? (
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                     {filteredMatches.map((match, idx) => (
                         <div
@@ -405,7 +427,7 @@ export default function Recommendations() {
                   <div className="text-center py-8 rounded-xl" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
                     <p style={{ color: '#EF4444' }}>{aiMatches.error || 'Failed to generate AI matches'}</p>
                   </div>
-                ) : filteredMatches.length === 0 && savedMatches.length === 0 && !aiMatches ? (
+                ) : savedMatches.length === 0 && !aiMatches ? (
                   <div className="text-center py-12 rounded-xl" style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
                     <Sparkles className="w-12 h-12 mx-auto mb-4" style={{ color: '#D8A11F' }} />
                     <p className="text-lg font-semibold mb-2" style={{ color: '#000' }}>
