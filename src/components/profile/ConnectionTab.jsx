@@ -74,11 +74,10 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
     return true;
   });
 
-  const connectedUsers = myConnections.map(c => {
+  const connectedUsersRaw = myConnections.map(c => {
     const connectedEmail = c.user1_email === userEmail ? c.user2_email : c.user1_email;
     const user = users.find(u => u.email === connectedEmail);
     if (!user) {
-      // Fallback: show connection with minimal data if user not found
       return {
         email: connectedEmail,
         full_name: connectedEmail.split('@')[0],
@@ -86,6 +85,12 @@ export default function ConnectionTab({ userEmail, isOwnProfile }) {
       };
     }
     return { ...user, connectionId: c.id };
+  });
+  const seenConnected = new Set();
+  const connectedUsers = connectedUsersRaw.filter(u => {
+    if (seenConnected.has(u.email)) return false;
+    seenConnected.add(u.email);
+    return true;
   });
 
   const requestingUsers = incomingRequests.map(c => {
