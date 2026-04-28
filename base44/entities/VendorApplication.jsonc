@@ -1,0 +1,112 @@
+{
+  "name": "VendorApplication",
+  "type": "object",
+  "properties": {
+    "business_name": {
+      "type": "string",
+      "description": "Business name"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "User email who applied"
+    },
+    "category": {
+      "type": "string",
+      "description": "Business category"
+    },
+    "province": {
+      "type": "string",
+      "description": "Business province/location"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Application status"
+    },
+    "vendor_id": {
+      "type": "string",
+      "description": "Generated vendor ID when approved"
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this vendor is featured"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "Business logo image URL"
+    },
+    "website": {
+      "type": "string",
+      "description": "Business website URL"
+    },
+    "social_media": {
+      "type": "object",
+      "properties": {
+        "facebook": {
+          "type": "string"
+        },
+        "twitter": {
+          "type": "string"
+        },
+        "linkedin": {
+          "type": "string"
+        },
+        "instagram": {
+          "type": "string"
+        }
+      },
+      "description": "Social media links"
+    },
+    "portfolio_url": {
+      "type": "string",
+      "description": "Portfolio document URL"
+    },
+    "tagline": {
+      "type": "string",
+      "description": "Short compelling tagline or USP (max 60 characters)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed business description"
+    },
+    "unique_value": {
+      "type": "string",
+      "description": "What makes this vendor unique"
+    },
+    "years_experience": {
+      "type": "number",
+      "description": "Years in business"
+    },
+    "certifications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Professional certifications and awards"
+    },
+    "specialties": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Key service specialties"
+    },
+    "client_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Types of clients served"
+    }
+  },
+  "required": [
+    "business_name",
+    "user_email"
+  ]
+}

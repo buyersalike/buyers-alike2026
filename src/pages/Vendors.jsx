@@ -60,7 +60,7 @@ export default function Vendors() {
         address: `${vendor.province}, Canada`,
         province: vendor.province,
         featured: vendor.featured || false,
-        logo: `https://ui-avatars.com/api/?name=${encodeURIComponent(vendor.business_name)}&background=EA580C&color=fff&size=200`
+        logo_url: vendor.logo_url || null
       }));
     },
   });

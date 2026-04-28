@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Store, Upload, X, FileText, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Store, Upload, X, FileText, Facebook, Twitter, Linkedin, Instagram, Image } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
@@ -63,8 +63,10 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [portfolioUrl, setPortfolioUrl] = useState("");
   const [othersUrl, setOthersUrl] = useState("");
+  const [logoUrl, setLogoUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const [uploadingOthers, setUploadingOthers] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [user, setUser] = useState(null);
 
   React.useEffect(() => {
@@ -137,6 +139,7 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
       setUploadedFiles([]);
       setPortfolioUrl("");
       setOthersUrl("");
+      setLogoUrl("");
       setCurrentStep(1);
       onOpenChange(false);
     },
@@ -219,6 +222,7 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
         instagram: formData.instagram,
       },
       portfolio_url: portfolioUrl,
+      logo_url: logoUrl || undefined,
       status: "pending"
     };
 
@@ -280,6 +284,55 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
                 </p>
               </div>
               
+              {/* Logo Upload */}
+              <div>
+                <Label style={{ color: '#B6C4E0' }}>Business Logo</Label>
+                <p className="text-xs mb-2" style={{ color: '#7A8BA6' }}>
+                  Upload your company logo (PNG, JPG — square recommended)
+                </p>
+                {!logoUrl ? (
+                  <label
+                    htmlFor="logoUpload"
+                    className="flex items-center gap-4 w-full p-4 rounded-xl border-2 border-dashed cursor-pointer transition-all hover:border-opacity-50"
+                    style={{ borderColor: 'rgba(255, 255, 255, 0.18)', background: 'rgba(255, 255, 255, 0.03)' }}
+                  >
+                    <div className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(216, 161, 31, 0.15)', border: '1px solid rgba(216, 161, 31, 0.3)' }}>
+                      <Image className="w-7 h-7" style={{ color: '#D8A11F' }} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>
+                        {uploadingLogo ? 'Uploading...' : 'Click to upload logo'}
+                      </p>
+                      <p className="text-xs" style={{ color: '#7A8BA6' }}>PNG, JPG up to 5MB</p>
+                    </div>
+                    <input
+                      id="logoUpload"
+                      type="file"
+                      className="hidden"
+                      accept=".png,.jpg,.jpeg,.svg,.webp"
+                      onChange={(e) => handleFileUpload(e, setLogoUrl, setUploadingLogo)}
+                      disabled={uploadingLogo}
+                    />
+                  </label>
+                ) : (
+                  <div className="flex items-center gap-4 p-4 rounded-xl" style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.3)' }}>
+                    <img src={logoUrl} alt="Logo preview" className="w-16 h-16 rounded-xl object-cover flex-shrink-0" style={{ border: '1px solid rgba(255,255,255,0.1)' }} />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>Logo uploaded</p>
+                      <p className="text-xs" style={{ color: '#7A8BA6' }}>Looking good!</p>
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={() => setLogoUrl("")}
+                      className="rounded-lg p-2"
+                      style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="businessName" style={{ color: '#B6C4E0' }}>Business Name *</Label>
@@ -679,6 +732,14 @@ export default function VendorApplicationDialog({ open, onOpenChange }) {
                     <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>
                       {[formData.streetAddress, formData.city, formData.postalCode].filter(Boolean).join(', ') || '—'}
                     </p>
+                  </div>
+                  <div>
+                    <p className="text-xs" style={{ color: '#7A8BA6' }}>Logo</p>
+                    {logoUrl ? (
+                      <img src={logoUrl} alt="Logo" className="w-10 h-10 rounded-lg object-cover mt-1" />
+                    ) : (
+                      <p className="text-sm font-medium" style={{ color: '#7A8BA6' }}>Not provided</p>
+                    )}
                   </div>
                   <div>
                     <p className="text-xs" style={{ color: '#7A8BA6' }}>Business Document</p>

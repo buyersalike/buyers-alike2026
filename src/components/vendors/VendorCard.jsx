@@ -23,10 +23,14 @@ export default function VendorCard({ vendor, index, featured = false }) {
         >
           {/* Card content */}
           <div className="p-6 pb-4 flex-1">
-            {/* Gold Star */}
-            <div className="mb-5">
-              <Star className="w-10 h-10" style={{ color: '#D8A11F' }} fill="#D8A11F" />
-            </div>
+           {/* Logo or Gold Star */}
+           <div className="mb-5">
+             {vendor.logo_url ? (
+               <img src={vendor.logo_url} alt={vendor.name} className="w-14 h-14 rounded-xl object-cover" style={{ border: '1.5px solid rgba(216, 161, 31, 0.4)' }} />
+             ) : (
+               <Star className="w-10 h-10" style={{ color: '#D8A11F' }} fill="#D8A11F" />
+             )}
+           </div>
 
             {/* Vendor Name */}
             <h3 className="text-2xl font-bold mb-3" style={{ color: '#FFFFFF' }}>
@@ -109,12 +113,16 @@ export default function VendorCard({ vendor, index, featured = false }) {
       >
         {/* Logo */}
         <div className="flex justify-center mb-4">
-          <div className="w-20 h-20 rounded-xl overflow-hidden flex items-center justify-center" style={{ 
-            background: '#D8A11F', 
-            border: '1px solid #000',
-          }}>
-            <Store className="w-10 h-10" style={{ color: '#fff' }} />
-          </div>
+          {vendor.logo_url ? (
+            <img src={vendor.logo_url} alt={vendor.name} className="w-20 h-20 rounded-xl object-cover" style={{ border: '1px solid #000' }} />
+          ) : (
+            <div className="w-20 h-20 rounded-xl overflow-hidden flex items-center justify-center" style={{ 
+              background: '#D8A11F', 
+              border: '1px solid #000',
+            }}>
+              <Store className="w-10 h-10" style={{ color: '#fff' }} />
+            </div>
+          )}
         </div>
 
         {/* Content */}
