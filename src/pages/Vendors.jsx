@@ -114,12 +114,9 @@ export default function Vendors() {
           {/* Featured Vendors Section */}
           {featuredVendors.length > 0 && (
             <div className="mb-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-2 h-8 rounded-full" style={{ background: '#D8A11F' }} />
-                <h2 className="text-2xl font-bold" style={{ color: '#000' }}>
-                  Featured Vendors
-                </h2>
-              </div>
+              <h2 className="text-3xl font-bold mb-6" style={{ color: '#000' }}>
+                Featured Vendors
+              </h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 {featuredVendors.map((vendor, index) => (
                   <VendorCard key={vendor.id} vendor={vendor} index={index} featured />
