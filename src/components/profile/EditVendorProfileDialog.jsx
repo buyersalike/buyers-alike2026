@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { X, Plus } from "lucide-react";
+import { X, Plus, Upload, Image } from "lucide-react";
 import { toast } from "sonner";
 
 export default function EditVendorProfileDialog({ vendor, open, onOpenChange }) {
@@ -18,7 +18,9 @@ export default function EditVendorProfileDialog({ vendor, open, onOpenChange }) 
     client_types: vendor?.client_types || [],
     certifications: vendor?.certifications || [],
     website: vendor?.website || "",
+    logo_url: vendor?.logo_url || "",
   });
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [newSpecialty, setNewSpecialty] = useState("");
   const [newClientType, setNewClientType] = useState("");
   const [newCertification, setNewCertification] = useState("");
@@ -77,6 +79,66 @@ export default function EditVendorProfileDialog({ vendor, open, onOpenChange }) 
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+          {/* Logo Upload */}
+          <div>
+            <label className="block text-sm font-medium mb-2" style={{ color: '#B6C4E0' }}>
+              Business Logo
+            </label>
+            {!formData.logo_url ? (
+              <label
+                htmlFor="editLogoUpload"
+                className="flex items-center gap-4 w-full p-4 rounded-xl border-2 border-dashed cursor-pointer transition-all hover:border-opacity-50"
+                style={{ borderColor: 'rgba(255, 255, 255, 0.18)', background: 'rgba(255, 255, 255, 0.03)' }}
+              >
+                <div className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(216, 161, 31, 0.15)', border: '1px solid rgba(216, 161, 31, 0.3)' }}>
+                  <Image className="w-7 h-7" style={{ color: '#D8A11F' }} />
+                </div>
+                <div>
+                  <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>
+                    {uploadingLogo ? 'Uploading...' : 'Click to upload logo'}
+                  </p>
+                  <p className="text-xs" style={{ color: '#7A8BA6' }}>PNG, JPG up to 5MB — square recommended</p>
+                </div>
+                <input
+                  id="editLogoUpload"
+                  type="file"
+                  className="hidden"
+                  accept=".png,.jpg,.jpeg,.svg,.webp"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setUploadingLogo(true);
+                    try {
+                      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                      setFormData(prev => ({ ...prev, logo_url: file_url }));
+                    } catch {
+                      toast.error("Failed to upload logo");
+                    } finally {
+                      setUploadingLogo(false);
+                    }
+                  }}
+                  disabled={uploadingLogo}
+                />
+              </label>
+            ) : (
+              <div className="flex items-center gap-4 p-4 rounded-xl" style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.3)' }}>
+                <img src={formData.logo_url} alt="Logo" className="w-16 h-16 rounded-xl object-cover flex-shrink-0" style={{ border: '1px solid rgba(255,255,255,0.1)' }} />
+                <div className="flex-1">
+                  <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>Logo uploaded</p>
+                  <p className="text-xs" style={{ color: '#7A8BA6' }}>Looking good!</p>
+                </div>
+                <Button
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, logo_url: "" }))}
+                  className="rounded-lg p-2"
+                  style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
+          </div>
+
           {/* Tagline */}
           <div>
             <label className="block text-sm font-medium mb-2" style={{ color: '#B6C4E0' }}>
