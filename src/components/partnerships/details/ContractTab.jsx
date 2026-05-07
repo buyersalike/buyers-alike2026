@@ -8,6 +8,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function ContractTab({ partnership }) {
   const [uploading, setUploading] = useState(false);
+  const fileInputRef = React.useRef(null);
+  const replaceInputRef = React.useRef(null);
   const queryClient = useQueryClient();
 
   const uploadMutation = useMutation({
@@ -100,38 +102,36 @@ export default function ContractTab({ partnership }) {
                 </span>
               </div>
               
-              <label>
-                <input
-                  type="file"
-                  className="hidden"
-                  accept=".pdf,.doc,.docx"
-                  onChange={handleFileUpload}
-                  disabled={uploading}
-                />
-                <Button variant="outline" as="span" disabled={uploading}>
-                  <Upload className="w-4 h-4 mr-2" />
-                  {uploading ? 'Uploading...' : 'Replace Contract'}
-                </Button>
-              </label>
-            </div>
-          </div>
-        ) : (
-          <div className="p-12 rounded-lg text-center" style={{ background: '#F9FAFB', border: '2px dashed #E5E7EB' }}>
-            <FileText className="w-12 h-12 mx-auto mb-4" style={{ color: '#9CA3AF' }} />
-            <p className="mb-4" style={{ color: '#666' }}>No contract uploaded yet</p>
-            <label>
               <input
+                ref={replaceInputRef}
                 type="file"
                 className="hidden"
                 accept=".pdf,.doc,.docx"
                 onChange={handleFileUpload}
                 disabled={uploading}
               />
-              <Button style={{ background: '#D8A11F', color: '#fff' }} as="span" disabled={uploading}>
+              <Button variant="outline" disabled={uploading} onClick={() => replaceInputRef.current?.click()}>
                 <Upload className="w-4 h-4 mr-2" />
-                {uploading ? 'Uploading...' : 'Upload Contract'}
+                {uploading ? 'Uploading...' : 'Replace Contract'}
               </Button>
-            </label>
+            </div>
+          </div>
+        ) : (
+          <div className="p-12 rounded-lg text-center" style={{ background: '#F9FAFB', border: '2px dashed #E5E7EB' }}>
+            <FileText className="w-12 h-12 mx-auto mb-4" style={{ color: '#9CA3AF' }} />
+            <p className="mb-4" style={{ color: '#666' }}>No contract uploaded yet</p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              accept=".pdf,.doc,.docx"
+              onChange={handleFileUpload}
+              disabled={uploading}
+            />
+            <Button style={{ background: '#D8A11F', color: '#fff' }} disabled={uploading} onClick={() => fileInputRef.current?.click()}>
+              <Upload className="w-4 h-4 mr-2" />
+              {uploading ? 'Uploading...' : 'Upload Contract'}
+            </Button>
           </div>
         )}
       </div>
