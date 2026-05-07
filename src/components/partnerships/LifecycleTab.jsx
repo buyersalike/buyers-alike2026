@@ -4,10 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { BarChart3, Table as TableIcon, Plus } from "lucide-react";
+import { BarChart3, Table as TableIcon, Users } from "lucide-react";
 import CreatePartnershipDialog from "@/components/partnerships/CreatePartnershipDialog";
 import PartnershipDetailsDialog from "@/components/partnerships/PartnershipDetailsDialog";
 import PartnershipDashboard from "@/components/partnerships/PartnershipDashboard";
+import GroupStagesView from "@/components/partnerships/GroupStagesView";
 
 const stageColors = {
   outreach: { bg: '#FEF3C7', text: '#92400E' },
@@ -61,12 +62,26 @@ export default function LifecycleTab() {
             <TableIcon className="w-4 h-4 mr-2" />
             All Partnerships
           </Button>
+          <Button
+            onClick={() => setSubTab("groups")}
+            className="px-5 py-2.5 rounded-lg font-medium text-sm transition-all"
+            style={subTab === "groups"
+              ? { background: '#D8A11F', color: '#fff' }
+              : { background: 'rgba(255, 255, 255, 0.8)', color: '#000', border: '1px solid rgba(0, 0, 0, 0.1)' }
+            }
+          >
+            <Users className="w-4 h-4 mr-2" />
+            Group Stages
+          </Button>
         </div>
         <CreatePartnershipDialog />
       </div>
 
       {/* Dashboard sub-tab */}
       {subTab === "dashboard" && <PartnershipDashboard />}
+
+      {/* Group Stages sub-tab */}
+      {subTab === "groups" && <GroupStagesView />}
 
       {/* All Partnerships sub-tab */}
       {subTab === "all" && (
