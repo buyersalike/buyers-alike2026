@@ -9,6 +9,7 @@ import CreatePartnershipDialog from "@/components/partnerships/CreatePartnership
 import PartnershipDetailsDialog from "@/components/partnerships/PartnershipDetailsDialog";
 import PartnershipDashboard from "@/components/partnerships/PartnershipDashboard";
 import GroupStagesView from "@/components/partnerships/GroupStagesView";
+import PartnershipStageProgress from "@/components/partnerships/PartnershipStageProgress";
 
 const stageColors = {
   outreach: { bg: '#FEF3C7', text: '#92400E' },
@@ -115,7 +116,7 @@ export default function LifecycleTab() {
                         {partnership.stage}
                       </Badge>
                     </div>
-                    <div className="space-y-2 text-sm">
+                    <div className="space-y-2 text-sm mb-4">
                       <p style={{ color: '#000' }}>
                         <span className="font-medium">Partner:</span> {partnership.partner_name}
                       </p>
@@ -134,21 +135,8 @@ export default function LifecycleTab() {
                           <span className="font-medium" style={{ color: '#000' }}>Started:</span> {format(new Date(partnership.start_date), 'MMM d, yyyy')}
                         </p>
                       )}
-                      {partnership.performance_score > 0 && (
-                        <div>
-                          <p className="font-medium mb-1" style={{ color: '#000' }}>Performance: {partnership.performance_score}%</p>
-                          <div className="w-full h-2 rounded-full" style={{ background: '#E5E7EB' }}>
-                            <div
-                              className="h-full rounded-full"
-                              style={{
-                                width: `${partnership.performance_score}%`,
-                                background: partnership.performance_score >= 75 ? '#22C55E' : partnership.performance_score >= 50 ? '#FACC15' : '#EF4444'
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )}
                     </div>
+                    <PartnershipStageProgress stage={partnership.stage} />
                   </div>
                 );
               })}

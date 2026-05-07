@@ -8,6 +8,7 @@ import { Calendar, DollarSign, User, Mail, Building2, Edit, Save, X } from "luci
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
+import PartnershipStageProgress from "@/components/partnerships/PartnershipStageProgress";
 
 export default function OverviewTab({ partnership }) {
   const [editing, setEditing] = useState(false);
@@ -227,6 +228,12 @@ export default function OverviewTab({ partnership }) {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Stage Progress */}
+      <div className="p-4 rounded-xl" style={{ background: '#F9FAFB', border: '1px solid #E5E7EB' }}>
+        <h3 className="font-semibold mb-3" style={{ color: '#000' }}>Stage Progress</h3>
+        <PartnershipStageProgress stage={partnership.stage} />
       </div>
 
       {partnership.notes && (
