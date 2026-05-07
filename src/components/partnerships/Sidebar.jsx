@@ -16,7 +16,8 @@ import {
   User,
   Shield,
   LogOut,
-  Mail
+  Mail,
+  ClipboardList
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Link, useLocation } from "react-router-dom";
@@ -29,6 +30,7 @@ import UpgradeBanner from "@/components/app/UpgradeBanner";
 
 const mainMenuItems = [
   { icon: Handshake, label: "Partnerships", href: "Partnerships" },
+  { icon: ClipboardList, label: "Lifecycle Mgmt", href: "PartnershipManagement", adminOnly: true },
   { icon: Briefcase, label: "Opportunities", href: "Opportunities" },
   { icon: TrendingUp, label: "Recommendations", href: "Recommendations" },
   { icon: Store, label: "Vendors", href: "Vendors" },
@@ -100,6 +102,9 @@ export default function Sidebar() {
           {mainMenuItems.map((item) => {
             // Check permissions for special menu items
             if (item.label === "Ad Campaigns" && (!currentUser || !hasPermission(currentUser.role, 'canManageAdvertisements'))) {
+              return null;
+            }
+            if (item.adminOnly && (!currentUser || !canAccessAdmin(currentUser.role))) {
               return null;
             }
 

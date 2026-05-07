@@ -14,6 +14,7 @@ import {
   Settings,
   Shield,
   LogOut,
+  ClipboardList,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -22,6 +23,7 @@ import { canAccessAdmin, hasPermission } from "@/components/utils/permissions";
 
 const mainMenuItems = [
   { icon: Handshake, label: "Partnerships", href: "Partnerships" },
+  { icon: ClipboardList, label: "Lifecycle Mgmt", href: "PartnershipManagement", adminOnly: true },
   { icon: Briefcase, label: "Opportunities", href: "Opportunities" },
   { icon: TrendingUp, label: "Recommendations", href: "Recommendations" },
   { icon: Store, label: "Vendors", href: "Vendors" },
@@ -79,6 +81,9 @@ export default function MobileSidebar({ isOpen, onClose, currentUser }) {
               <div className="space-y-2 mb-8">
                 {mainMenuItems.map((item) => {
                   if (item.permission && (!currentUser || !hasPermission(currentUser.role, item.permission))) {
+                    return null;
+                  }
+                  if (item.adminOnly && (!currentUser || !canAccessAdmin(currentUser.role))) {
                     return null;
                   }
                   const isActive = currentPath.includes(item.href);
