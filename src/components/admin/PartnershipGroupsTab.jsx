@@ -13,7 +13,7 @@ export default function PartnershipGroupsTab() {
 
   const { data: groups = [], isLoading } = useQuery({
     queryKey: ['partnershipGroups'],
-    queryFn: () => base44.asServiceRole.entities.PartnershipGroup.list('-created_date'),
+    queryFn: () => base44.entities.PartnershipGroup.list('-created_date'),
   });
 
   const getStatusColor = (status) => {

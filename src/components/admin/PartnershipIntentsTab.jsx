@@ -13,7 +13,7 @@ export default function PartnershipIntentsTab() {
 
   const { data: intents = [], isLoading } = useQuery({
     queryKey: ['partnershipIntents'],
-    queryFn: () => base44.asServiceRole.entities.PartnershipIntent.list('-created_date'),
+    queryFn: () => base44.entities.PartnershipIntent.list('-created_date'),
   });
 
   const getStatusColor = (status) => {
