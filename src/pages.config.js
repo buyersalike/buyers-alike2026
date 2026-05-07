@@ -50,7 +50,6 @@
 import ActivityFeed from './pages/ActivityFeed';
 import AdCampaigns from './pages/AdCampaigns';
 import Admin from './pages/Admin';
-import Connections from './pages/Connections';
 import Forum from './pages/Forum';
 import Home from './pages/Home';
 import Messages from './pages/Messages';
@@ -73,7 +72,6 @@ export const PAGES = {
     "ActivityFeed": ActivityFeed,
     "AdCampaigns": AdCampaigns,
     "Admin": Admin,
-    "Connections": Connections,
     "Forum": Forum,
     "Home": Home,
     "Messages": Messages,
