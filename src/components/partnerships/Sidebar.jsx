@@ -30,7 +30,6 @@ import UpgradeBanner from "@/components/app/UpgradeBanner";
 
 const mainMenuItems = [
   { icon: Handshake, label: "Partnerships", href: "Partnerships" },
-  { icon: ClipboardList, label: "Lifecycle Mgmt", href: "PartnershipManagement", adminOnly: true },
   { icon: Briefcase, label: "Opportunities", href: "Opportunities" },
   { icon: TrendingUp, label: "Recommendations", href: "Recommendations" },
   { icon: Store, label: "Vendors", href: "Vendors" },

@@ -11,8 +11,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import SEO from "@/components/seo/SEO";
 import { pageMetadata } from "@/components/seo/seoMetadata";
-import { Users, FileText, TrendingUp, Clock } from "lucide-react";
+import { Users, FileText, TrendingUp, Clock, ClipboardList } from "lucide-react";
 import UpgradeCard from "@/components/app/UpgradeCard";
+import LifecycleTab from "@/components/partnerships/LifecycleTab";
+import { canAccessAdmin } from "@/components/utils/permissions";
 
 const ACTIVE_STATUSES = ["accepted_into_group", "group_forming", "approvals_complete", "documents_gathering", "partnership_active"];
 const INTENT_STATUSES = ["intent_created", "pending_group_join"];
@@ -24,7 +26,8 @@ const tabs = [
   { id: "intent", label: "My Partnership Intents" },
   { id: "available", label: "Available Groups to Join" },
   { id: "completed", label: "Completed Partnerships" },
-  { id: "declined", label: "Declined/Withdrawn/Canceled" }
+  { id: "declined", label: "Declined/Withdrawn/Canceled" },
+  { id: "lifecycle", label: "Lifecycle Management", adminOnly: true }
 ];
 
 export default function Partnerships() {
@@ -177,7 +180,8 @@ export default function Partnerships() {
     };
   }, [intents, allGroups, currentUser]);
 
-  const tabsWithCounts = tabs.map(t => ({ ...t, count: categorized[t.id]?.length || 0 }));
+  const visibleTabs = tabs.filter(t => !t.adminOnly || (currentUser && canAccessAdmin(currentUser.role)));
+  const tabsWithCounts = visibleTabs.map(t => ({ ...t, count: t.id === 'lifecycle' ? null : (categorized[t.id]?.length || 0) }));
 
   // Apply advanced filters to current tab items
   const currentItems = useMemo(() => {
@@ -309,6 +313,7 @@ export default function Partnerships() {
                     : { background: 'rgba(255, 255, 255, 0.8)', color: '#000', border: '1px solid rgba(0, 0, 0, 0.1)' }
                   }
                 >
+                  {tab.id === 'lifecycle' && <ClipboardList className="w-4 h-4 mr-1" />}
                   {tab.label}
                   {tab.count > 0 && (
                     <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold" style={
@@ -324,6 +329,11 @@ export default function Partnerships() {
             </div>
           </div>
 
+          {/* Lifecycle Management Tab */}
+          {activeTab === 'lifecycle' ? (
+            <LifecycleTab />
+          ) : (
+          <>
           {/* Advanced Filters */}
           <div className="mb-6">
             <AdvancedFilters filters={filters} setFilters={setFilters} isOpen={filtersOpen} setIsOpen={setFiltersOpen} />
@@ -389,6 +399,8 @@ export default function Partnerships() {
                 })
               )}
             </div>
+          )}
+          </>
           )}
         </div>
       </main>
