@@ -14,6 +14,8 @@ import { pageMetadata } from "@/components/seo/seoMetadata";
 import { Users, FileText, TrendingUp, Clock, ClipboardList } from "lucide-react";
 import UpgradeCard from "@/components/app/UpgradeCard";
 import LifecycleTab from "@/components/partnerships/LifecycleTab";
+import StageAdvancementControls from "@/components/partnerships/StageAdvancementControls";
+import DocumentUploadSection from "@/components/partnerships/DocumentUploadSection";
 import { canAccessAdmin } from "@/components/utils/permissions";
 
 const ACTIVE_STATUSES = ["accepted_into_group", "group_forming", "approvals_complete", "documents_gathering", "partnership_active"];
@@ -463,26 +465,8 @@ export default function Partnerships() {
                     </div>
                   </div>
                 )}
-                {/* Documents */}
-                {selectedGroup.group?.documents?.length > 0 && (
-                  <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                    <p className="font-semibold mb-3" style={{ color: '#E5EDFF' }}>Documents</p>
-                    <div className="space-y-2">
-                      {selectedGroup.group.documents.map((doc, idx) => (
-                        <a key={idx} href={doc.url} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-3 p-2 rounded-lg hover:opacity-80"
-                          style={{ background: 'rgba(255,255,255,0.05)' }}
-                        >
-                          <FileText className="w-4 h-4" style={{ color: '#3B82F6' }} />
-                          <div>
-                            <p className="text-sm font-medium" style={{ color: '#E5EDFF' }}>{doc.name}</p>
-                            <p className="text-xs" style={{ color: '#7A8BA6' }}>By {doc.uploaded_by}</p>
-                          </div>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                {/* Documents — Upload & View */}
+                <DocumentUploadSection group={selectedGroup.group} currentUser={currentUser} />
                 {/* Notes */}
                 {selectedGroup.group?.notes && (
                   <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
@@ -490,6 +474,13 @@ export default function Partnerships() {
                     <p className="text-sm" style={{ color: '#B6C4E0' }}>{selectedGroup.group.notes}</p>
                   </div>
                 )}
+                {/* Stage Advancement Controls */}
+                <StageAdvancementControls
+                  group={selectedGroup.group}
+                  currentUser={currentUser}
+                  intents={intents}
+                />
+
                 {/* Status History */}
                 {selectedGroup.intent?.status_history?.length > 0 && (
                   <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
