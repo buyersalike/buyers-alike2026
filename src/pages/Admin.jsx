@@ -30,6 +30,7 @@ import InterestManagementTab from "@/components/admin/InterestManagementTab";
 import PartnershipGroupsTab from "@/components/admin/PartnershipGroupsTab";
 import PartnershipIntentsTab from "@/components/admin/PartnershipIntentsTab";
 import OpportunitiesManagementTab from "@/components/admin/OpportunitiesManagementTab";
+import FinanceTab from "@/components/admin/finance/FinanceTab";
 
 export default function Admin() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -275,6 +276,11 @@ export default function Admin() {
                 Contact
               </TabsTrigger>
               {currentUser.role === 'admin' && (
+                <TabsTrigger value="finance" className="rounded-xl px-4 py-2.5 font-semibold data-[state=active]:bg-[#22C55E] data-[state=active]:text-white whitespace-nowrap" style={{ color: '#000' }}>
+                  Finance
+                </TabsTrigger>
+              )}
+              {currentUser.role === 'admin' && (
                 <TabsTrigger value="roles" className="rounded-xl px-4 py-2.5 font-semibold data-[state=active]:bg-[#D8A11F] data-[state=active]:text-white whitespace-nowrap" style={{ color: '#000' }}>
                   Roles
                 </TabsTrigger>
@@ -416,6 +422,12 @@ export default function Admin() {
             <TabsContent value="contact">
               <ContactManagementTab />
             </TabsContent>
+
+            {currentUser.role === 'admin' && (
+              <TabsContent value="finance">
+                <FinanceTab users={users} />
+              </TabsContent>
+            )}
 
             {currentUser.role === 'admin' && (
               <TabsContent value="roles">
